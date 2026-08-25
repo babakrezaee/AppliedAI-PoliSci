@@ -1,4 +1,4 @@
-# "Objects, Vectors, and Data Frames"
+# "Objects, Vectors, and Data Frames" {.unnumbered}
 
 
 *In preparation.*

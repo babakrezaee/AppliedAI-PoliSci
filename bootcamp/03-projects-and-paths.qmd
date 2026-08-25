@@ -1,4 +1,4 @@
-# "Projects, Paths, and Reproducible Habits"
+# "Projects, Paths, and Reproducible Habits" {.unnumbered}
 
 
 *In preparation.*
