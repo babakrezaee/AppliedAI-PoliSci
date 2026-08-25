@@ -1,4 +1,3 @@
 # "Objects, Vectors, and Data Frames" {.unnumbered}
 
-
 *In preparation.*
