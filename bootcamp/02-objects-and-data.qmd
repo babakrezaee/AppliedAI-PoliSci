@@ -1,0 +1,6 @@
+---
+title: "Objects, Vectors, and Data Frames"
+format: html
+---
+
+*In preparation.*
