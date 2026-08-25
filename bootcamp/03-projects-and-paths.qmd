@@ -1,0 +1,6 @@
+---
+title: "Projects, Paths, and Reproducible Habits"
+format: html
+---
+
+*In preparation.*
