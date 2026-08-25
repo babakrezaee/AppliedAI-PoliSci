@@ -1,0 +1,48 @@
+project:
+  type: book
+  output-dir: docs
+
+execute:
+  freeze: auto        # only re-run a chapter whose source changed
+
+book:
+  title: "Applied AI for Political Scientists"
+  author: "Babak RezaeeDaryakenari"
+  date: last-modified
+  downloads: [pdf]    # adds a download button for the whole book
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - part: "R Bootcamp"
+      chapters:
+        - bootcamp/00-install.qmd
+        - bootcamp/01-four-ways-to-run-r.qmd
+        - bootcamp/02-objects-and-data.qmd
+        - bootcamp/03-projects-and-paths.qmd
+        - bootcamp/04-reading-data.qmd
+    - part: "Weekly Handouts"
+      chapters:
+        - handouts/w01-prediction-causation.qmd
+        - handouts/w02-knn.qmd
+        - handouts/w03-trees-forests.qmd
+        - handouts/w04-text-as-data.qmd
+        - handouts/w05-llm.qmd
+        - handouts/w06-evaluation.qmd
+        - handouts/w07-final-project.qmd
+    - references.qmd
+
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 3
+    code-copy: true          # copy button on every code block
+    code-overflow: wrap      # long URLs wrap instead of running off the page
+    link-external-newwindow: true
+  pdf:
+    documentclass: scrreprt
+
+bibliography: references.bib
+
+editor: visual
