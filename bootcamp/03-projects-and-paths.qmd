@@ -1,5 +1,4 @@
----
-title: "Projects, Paths, and Reproducible Habits"
----
+# "Projects, Paths, and Reproducible Habits"
+
 
 *In preparation.*

@@ -1,5 +1,4 @@
----
-title: "Objects, Vectors, and Data Frames"
----
+# "Objects, Vectors, and Data Frames"
+
 
 *In preparation.*

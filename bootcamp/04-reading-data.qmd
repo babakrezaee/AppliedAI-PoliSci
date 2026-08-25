@@ -1,5 +1,4 @@
----
-title: "Reading Data into R"
----
+# "Reading Data into R"
+
 
 *In preparation.*

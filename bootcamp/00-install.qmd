@@ -1,5 +1,4 @@
----
-title: "Installing R and RStudio"
----
+# "Installing R and RStudio"
+
 
 *In preparation.*

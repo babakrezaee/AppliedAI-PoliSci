@@ -1,6 +1,6 @@
----
-title: "Four Ways to Run R Code"
----
+
+# "Four Ways to Run R Code"
+
 
 Within the first hour of using RStudio you will encounter at least four different places where R code can be typed and executed: the console, a script, an R Markdown document, and a Quarto document. Students almost always assume that one of these is the real way to work and that the others are variations on it, and they then spend the semester wondering which one they were supposed to be using. The assumption is understandable, and it is wrong. The four are not competing versions of the same thing. Each answers a different question, and the question you are asking should determine which one you open.
 
