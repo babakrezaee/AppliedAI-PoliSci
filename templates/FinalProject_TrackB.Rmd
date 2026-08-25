@@ -1,0 +1,215 @@
+---
+title: "YOUR TITLE HERE"
+subtitle: "Applied AI for Political Scientists | Final Project"
+author: "Your Name (s0000000)"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 4.5
+)
+
+# Load every package you use, here and nowhere else.
+# Do NOT put install.packages() anywhere in this document.
+library(tidyverse)
+
+# Set a seed wherever randomness enters, so your numbers are stable.
+set.seed(2026)
+```
+
+<!--
+  ------------------------------------------------------------------
+  HOW TO USE THIS TEMPLATE
+
+  Delete every instructional comment (like this one) as you go.
+  The final document should read as a piece of work, not as a form.
+
+  Target: 2,000-2,500 words of prose. Code, output, tables, figure
+  captions, references, and the AI appendix do not count.
+
+  Before you submit: Session > Restart R, then Knit. If it does not
+  run from a clean session, it does not run.
+  ------------------------------------------------------------------
+-->
+
+# Question and motivation
+
+<!--
+  ~400 words.
+
+  - What are you asking?
+  - Why does it matter to political science?
+  - Two or three references are enough. This is not a literature review.
+
+  State plainly whether you are PREDICTING or EXPLAINING. Everything
+  below depends on which one this is.
+-->
+
+*Write here.*
+
+---
+
+# Data
+
+<!--
+  ~400 words.
+
+  - Source, unit of analysis, coverage, number of observations.
+  - What is the outcome variable, and how is it distributed?
+  - What decisions did you make? Missing values, exclusions, how a
+    concept became a variable. Make them visible. Every one could
+    have gone otherwise, and saying so is a strength.
+-->
+
+*Write here.*
+
+```{r load-data}
+# Load your data. Use a relative path so this runs on another machine.
+# dat <- read_csv("data/your_file.csv")
+
+```
+
+```{r describe-data}
+# Show the reader what they are looking at:
+# dimensions, the outcome variable, and the base rate if it is a
+# classification problem. The base rate matters later.
+
+```
+
+---
+
+# Method
+
+<!--
+  ~400 words.
+
+  - Which method, and WHY THIS ONE for THIS question?
+    "It was covered in the course" is not a reason.
+  - How did you split training and test data?
+  - Did you tune anything? What, and how?
+-->
+
+*Write here.*
+
+```{r prepare}
+# Preprocessing and the train/test split.
+#
+# Reminder: anything learned from the data (which variables to keep,
+# scaling, a vocabulary, a threshold) must be derived from the
+# TRAINING set only. Deriving it from everything first is the most
+# common way to get an accuracy figure that is too good to be true.
+
+```
+
+```{r fit}
+# Fit the model on the training data.
+
+```
+
+---
+
+# Results
+
+<!--
+  ~500 words.
+
+  - Report metrics appropriate to your problem.
+  - If your outcome is rare, DO NOT report accuracy alone.
+  - Include a confusion matrix where it applies.
+  - Every table and figure needs a sentence saying what to take from it.
+-->
+
+*Write here.*
+
+```{r predict}
+# Predict on the TEST set. Not the training set.
+
+```
+
+```{r evaluate}
+# Confusion matrix and metrics.
+# For a rare outcome, report precision, recall, and F1 alongside
+# accuracy, and state the base rate for comparison.
+
+```
+
+```{r figure}
+# A figure, if it helps. Label the axes properly.
+
+```
+
+---
+
+# Discussion and limitations
+
+<!--
+  ~500 words.
+
+  - What do these results establish? Be precise.
+  - What do they NOT establish? Be more precise.
+  - If your model predicts well, that is not a causal finding.
+  - If it predicts badly, say so clearly. A well-explained failure
+    earns more than a vague success.
+  - Name the two or three most serious limitations, and what would
+    be needed to address them. "More data" does not count.
+-->
+
+*Write here.*
+
+---
+
+# References
+
+<!-- Any consistent style. Include everything you cited. -->
+
+---
+
+# Appendix: AI use
+
+<!--
+  NOT counted in the word limit.
+
+  Using AI on this project is permitted and expected. Not logging it
+  is the problem.
+
+  Record:
+  - What you used it for (debugging, explaining, drafting, checking).
+  - The prompts, or an honest summary of them.
+  - What you did with the output: accepted, edited, rejected.
+  - Anywhere it was wrong and you caught it. This reflects well on you.
+
+  If you used no AI at all, say that.
+
+  TRACK B ONLY: full call metadata belongs here or in an attached
+  file. Model version strings, timestamps, parameters, raw responses.
+-->
+
+*Write here.*
+
+---
+
+<!--
+  FINAL CHECKLIST before submitting
+
+  [ ] Restarted R and knitted from clean. It works.
+  [ ] Word count 2,000-2,500 (prose only).
+  [ ] Seed set; numbers reproduce.
+  [ ] No install.packages() anywhere.
+  [ ] Relative paths only; data included or downloadable.
+  [ ] Base rate stated if the outcome is rare.
+  [ ] No causal language unless the design earns it.
+  [ ] AI appendix complete and honest.
+  [ ] Both files submitted: .Rmd and the rendered output.
+  [ ] Filename: LastName_FirstName_FinalProject.Rmd
+-->
