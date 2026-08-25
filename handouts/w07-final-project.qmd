@@ -1,6 +1,5 @@
 ---
 title: "Final Project"
-format: html
 ---
 
 *In preparation.*
