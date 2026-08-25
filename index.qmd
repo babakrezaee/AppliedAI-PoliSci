@@ -1,0 +1,7 @@
+# Preface {.unnumbered}
+
+These handouts are prepared for Applied AI for Political Scientists by Dr. Babak RezaeeDaryakenari [s.rezaeedaryakenari\@fsw.leidenuniv.nl](mailto:s.rezaeedaryakenari@fsw.leidenuniv.nl).
+
+Work through the **R Bootcamp** before the first session on 2 September. The **Weekly Handouts** accompany the sessions.
+
+This is an ongoing project. Please do not share or use it without the author's written permission.
