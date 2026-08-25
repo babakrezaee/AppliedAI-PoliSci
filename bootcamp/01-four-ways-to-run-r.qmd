@@ -1,0 +1,128 @@
+---
+title: "Four Ways to Run R Code"
+format: html
+---
+
+Within the first hour of using RStudio you will encounter at least four different places where R code can be typed and executed: the console, a script, an R Markdown document, and a Quarto document. Students almost always assume that one of these is the real way to work and that the others are variations on it, and they then spend the semester wondering which one they were supposed to be using. The assumption is understandable, and it is wrong. The four are not competing versions of the same thing. Each answers a different question, and the question you are asking should determine which one you open.
+
+The distinction matters more in this course than it would in an introductory statistics class. Your final project is submitted as a document that must run from raw inputs to reported numbers on a machine that is not yours. Ten percent of its grade depends on that property alone. Understanding what each of these environments preserves, and what each of them quietly discards, is therefore not a preliminary detail. It is the foundation of everything you submit.
+
+## The console: thinking out loud
+
+The console is the panel where R is actually running. When you type `2 + 2` and press Enter, the console evaluates the expression, prints the answer, and forgets that you asked.
+
+```r
+2 + 2
+#> [1] 4
+```
+
+That last property is the important one. The console keeps a history you can scroll through, but it keeps no record you can hand to anyone, and it imposes no order on what you did. If you fit a model, adjust a variable, fit it again, and then produce a result you are pleased with, the console cannot tell you which sequence of steps produced it. Neither can you, a week later.
+
+The console is therefore the right tool for questions you are asking of yourself rather than of the world. Checking the dimensions of a dataset, inspecting a variable, reading a help file, and testing whether a line does what you expect are all console work. Use it constantly, and use it freely. Nothing you do there is precious, which is precisely what makes it useful.
+
+```r
+dim(dat)
+summary(dat$gdp)
+?mean
+```
+
+## The script: a record of instructions
+
+An R script, saved with the extension `.R`, is a plain text file containing lines of R code and nothing else. When you run a script, R executes each line in order, exactly as if you had typed them into the console yourself.
+
+The difference is that the file survives. A script is a record of what you did, in the order you did it, and it can be run again tomorrow, or by someone else, or by you on a different machine. This is what makes it the first genuinely reproducible unit of work, and it is why the transition from console to script is the single most consequential habit shift in learning R.
+
+```r
+# analysis.R
+library(tidyverse)
+
+dat <- read_csv("data/conflict.csv")
+
+dat_clean <- dat |>
+  filter(!is.na(onset)) |>
+  mutate(log_pop = log(population))
+
+model <- glm(onset ~ log_pop + gdp, data = dat_clean, family = "binomial")
+summary(model)
+```
+
+What a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.
+
+Scripts remain the right choice for work whose product is an action rather than a document: downloading and cleaning a dataset, defining functions you will use elsewhere, or running a long job whose output is a saved file. In the repository for this course you will find several such scripts in the `R/` folder.
+
+## R Markdown: code, prose, and output in one file
+
+An R Markdown document, saved as `.Rmd`, holds three things at once: prose written in Markdown, chunks of R code, and the output those chunks produce. When you knit the document, R runs every chunk in order, captures the results, and weaves them into a finished report as HTML, PDF, or Word.
+
+````markdown
+---
+title: "Civil War Onset"
+output: html_document
+---
+
+Fearon and Laitin (2003) report that per capita income predicts
+civil war onset more reliably than measures of ethnic diversity.
+The model below reproduces that pattern.
+
+```{r}
+model <- glm(onset ~ gdp + ethfrac, data = dat, family = "binomial")
+summary(model)
+```
+
+The coefficient on income is negative and precisely estimated,
+while the coefficient on ethnic fractionalization is not
+distinguishable from zero.
+````
+
+Two consequences follow, and both matter for this course.
+
+The first is that the numbers in your text cannot drift away from the numbers your code produced, because the document generates them each time it is knitted. A reported coefficient that was copied by hand into a sentence will eventually become wrong, quietly, when the analysis changes and the sentence does not. A reported coefficient that is produced by the code cannot.
+
+The second is subtler and catches almost everyone at least once. Knitting starts a fresh R session that knows nothing about your workspace. Any object you created in the console, any package you loaded by hand, and any file path that happens to work on your machine are all invisible to it. A document that runs perfectly line by line in your own session will therefore fail to knit if it depends on something you did outside it. This is not an inconvenience to be worked around. It is the mechanism that makes the format trustworthy, because a document that knits from a clean session is a document that will run on someone else's computer.
+
+The habit that follows is simple and worth adopting now: before you submit anything, restart R (Session, then Restart R) and knit. If it does not run from clean, it does not run.
+
+## Quarto: the same idea, more broadly
+
+Quarto, saved as `.qmd`, is the successor to R Markdown. Everything described above applies to it unchanged, and if you have understood R Markdown you already understand Quarto.
+
+The differences are largely a matter of reach. Quarto is not tied to R, so the same document can execute chunks written in Python or Julia, which is directly relevant given that most of the applied AI ecosystem lives in Python. Its options are declared in a consistent way across output formats, and it renders books and websites as readily as single documents. The materials you are reading now are a Quarto book.
+
+```{{r}}
+#| label: fig-onset
+#| fig-cap: "Predicted probability of onset by income"
+#| warning: false
+
+ggplot(dat, aes(x = gdp, y = fitted)) +
+  geom_line()
+```
+
+For a single analysis document the practical difference between the two is small, and either is acceptable for your final project. I use Quarto for course materials because it handles a multi-chapter book cleanly, and I would suggest it for new work on the general principle that development effort is going there rather than into R Markdown.
+
+## Choosing between them
+
+| | Console | Script (`.R`) | R Markdown (`.Rmd`) | Quarto (`.qmd`) |
+|---|---|---|---|---|
+| Preserves code | No | Yes | Yes | Yes |
+| Preserves output | No | No | Yes | Yes |
+| Holds prose | No | Comments only | Yes | Yes |
+| Runs in a clean session | Not applicable | On request | Every render | Every render |
+| Languages | R | R | R, mainly | R, Python, Julia |
+
+The rule of thumb is short. Explore in the console, because it costs nothing and you will throw the work away. Automate in a script, when the product is an action rather than an argument. Report in Quarto or R Markdown, when someone else needs to see both what you concluded and how you got there.
+
+Your final project falls squarely in the third category, which is why the submission format is a `.qmd` or `.Rmd` file together with the document it renders. The requirement is not a formatting preference. A project submitted as a script and a separate write-up cannot demonstrate that the numbers in the write-up came from the script, and demonstrating exactly that is a substantial part of what the project is for.
+
+## Exercise
+
+Work through this in order. It takes about fifteen minutes and it is worth doing before the first session rather than during it.
+
+1. In the console, compute `mean(c(4, 8, 15, 16, 23, 42))`. Note that the answer appears and then nothing remains except a history entry.
+
+2. Open a new script (File, New File, R Script). Write the same line, save the file as `first-script.R`, and run it with the Source button. The result appears in the console again, but the instruction now lives in a file you could send to someone.
+
+3. Open a new Quarto document (File, New File, Quarto Document). Write one sentence of prose describing what you are about to compute, then a code chunk containing the same line, then one sentence interpreting the result. Render it.
+
+4. Now break it deliberately. In the console, create an object with `x <- c(4, 8, 15, 16, 23, 42)`. Change the chunk in your Quarto document to `mean(x)` and render again.
+
+The render fails, and the error will say that `x` was not found. Sit with that for a moment before fixing it, because you have just met the most common reason a working analysis refuses to knit the night before a deadline. The object exists in your session and does not exist in the document. The fix is to define `x` inside the document, which is also the reason the format can be trusted.
