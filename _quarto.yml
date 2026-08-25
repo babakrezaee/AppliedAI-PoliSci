@@ -9,7 +9,6 @@ book:
   title: "Applied AI for Political Scientists"
   author: "Babak RezaeeDaryakenari"
   date: last-modified
-  downloads: [pdf]    # adds a download button for the whole book
   page-navigation: true
   chapters:
     - index.qmd
@@ -40,8 +39,6 @@ format:
     code-copy: true          # copy button on every code block
     code-overflow: wrap      # long URLs wrap instead of running off the page
     link-external-newwindow: true
-  pdf:
-    documentclass: scrreprt
 
 bibliography: references.bib
 
