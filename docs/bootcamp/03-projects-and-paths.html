@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>“Projects, Paths, and Reproducible Habits” – Applied AI for Political Scientists</title>
+<title>Projects, Paths, and Reproducible Habits – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/03-projects-and-paths.html">“Projects, Paths, and Reproducible Habits”</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/03-projects-and-paths.html">Projects, Paths, and Reproducible Habits</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +163,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +256,31 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-problem-stated-plainly" id="toc-the-problem-stated-plainly" class="nav-link active" data-scroll-target="#the-problem-stated-plainly">The problem, stated plainly</a></li>
+  <li><a href="#r-projects" id="toc-r-projects" class="nav-link" data-scroll-target="#r-projects">R Projects</a></li>
+  <li><a href="#relative-paths" id="toc-relative-paths" class="nav-link" data-scroll-target="#relative-paths">Relative paths</a></li>
+  <li><a href="#a-layout-that-works" id="toc-a-layout-that-works" class="nav-link" data-scroll-target="#a-layout-that-works">A layout that works</a></li>
+  <li><a href="#note-on-this-course" id="toc-note-on-this-course" class="nav-link" data-scroll-target="#note-on-this-course">Note on this course</a></li>
+  <li><a href="#never-save-the-workspace" id="toc-never-save-the-workspace" class="nav-link" data-scroll-target="#never-save-the-workspace">Never save the workspace</a></li>
+  <li><a href="#restart-and-run-from-clean" id="toc-restart-and-run-from-clean" class="nav-link" data-scroll-target="#restart-and-run-from-clean">Restart, and run from clean</a></li>
+  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages">Packages</a></li>
+  <li><a href="#seeds" id="toc-seeds" class="nav-link" data-scroll-target="#seeds">Seeds</a></li>
+  <li><a href="#when-a-path-fails-anyway" id="toc-when-a-path-fails-anyway" class="nav-link" data-scroll-target="#when-a-path-fails-anyway">When a path fails anyway</a></li>
+  <li><a href="01-four-ways-to-run-r.html#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/03-projects-and-paths.html">“Projects, Paths, and Reproducible Habits”</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/03-projects-and-paths.html">Projects, Paths, and Reproducible Habits</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">“Projects, Paths, and Reproducible Habits”</h1>
+<h1 class="title">Projects, Paths, and Reproducible Habits</h1>
 </div>
 
 
@@ -246,9 +297,118 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p>Code that runs on your machine and code that runs are not the same thing. The gap between them is where most of the marks on your final project’s reproducibility criterion are lost, and almost all of it comes down to a handful of habits that cost nothing once you have them.</p>
+<p>This chapter is about those habits. None of the material is difficult. What makes it worth a chapter is that the failures it prevents do not appear until the moment they are most expensive, which is when someone else opens your work.</p>
+<section id="the-problem-stated-plainly" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-stated-plainly">The problem, stated plainly</h2>
+<p>Suppose you write this at the top of an analysis.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"/Users/babak/Documents/AI course/week 4/analysis"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"civil_war.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On your laptop, in that folder, it works. Everywhere else it fails, because no other computer has that folder. Your instructor does not have it, your co-author or colleague does not have it, and neither will you after you reorganize your files in March.</p>
+<p><code>setwd()</code> is the most common single reason a submitted document does not run. You will see it constantly in older code, including in tutorials and in published replication files, and the instinct to copy it is understandable. Do not. Nothing in this course requires it, and using it may cost you points on the project.</p>
+<p>The replacement is not a different function. It is a different way of organizing work.</p>
+</section>
+<section id="r-projects" class="level2">
+<h2 class="anchored" data-anchor-id="r-projects">R Projects</h2>
+<p>An R Project is a folder that R treats as the home of a piece of work. Creating one puts a small file with the extension <code>.Rproj</code> inside the folder, and from then on, opening that file does three useful things at once: it starts a fresh R session, it sets the working directory to that folder, and it remembers which files you had open.</p>
+<p>That second point is the whole trick. Because the working directory is already correct, you never have to set it, and because it is set relative to the project rather than to your machine, the same code works on anyone else’s computer.</p>
+<p>To create one: <strong>File &gt; New Project &gt; New Directory &gt; New Project</strong>, then give the folder a name and a location. For work you already have in a folder, use <strong>File &gt; New Project &gt; Existing Directory</strong> instead.</p>
+<p>From then on, open the project by double-clicking the <code>.Rproj</code> file rather than by opening a script directly. If you open a <code>.qmd</code> from the Finder, R starts with no project and the paths will not resolve, which produces a “cannot open file” error that looks like a problem with the file and is not.</p>
+</section>
+<section id="relative-paths" class="level2">
+<h2 class="anchored" data-anchor-id="relative-paths">Relative paths</h2>
+<p>Inside a project, you refer to files by their location relative to the project folder, with no leading slash and no drive letter.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/civil_war.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That line means “the file <code>civil_war.csv</code>, inside a folder called <code>data</code>, inside whatever folder this project lives in.” It is true on every machine.</p>
+<p>A few conventions worth following:</p>
+<ul>
+<li>Forward slashes, <code>/</code>, on every operating system, including Windows. R accepts them everywhere.</li>
+<li>No spaces in file or folder names. Use <code>civil_war.csv</code> rather than <code>civil war.csv</code>. Spaces are legal, but they will eventually bite you.</li>
+<li>Lower case, consistently. Some systems treat <code>Data/</code> and <code>data/</code> as the same folder and some do not.</li>
+</ul>
+</section>
+<section id="a-layout-that-works" class="level2">
+<h2 class="anchored" data-anchor-id="a-layout-that-works">A layout that works</h2>
+<p>You do not need an elaborate structure. This is enough for the final project and it will still make sense a year from now.</p>
+<pre><code>YourProject/
+  YourProject.Rproj
+  analysis.qmd          the document you submit
+  data/
+    raw/                exactly as downloaded, never edited
+    processed/          anything your code produced
+  R/
+    clean-data.R        scripts that do a job
+  figures/              plots your code saved</code></pre>
+<p>The distinction between <code>data/raw/</code> and <code>data/processed/</code> is the one that earns its keep. Raw files are never opened in Excel and never edited by hand. Every change is made in code, which means every change is visible, reversible, and explicable when a reviewer, instructor, or colleague asks why your sample has 4,318 rows rather than 4,502.</p>
+</section>
+<section id="note-on-this-course" class="level2">
+<h2 class="anchored" data-anchor-id="note-on-this-course">Note on this course</h2>
+<p>The handouts here load their data straight from a web address, so there are no local files to find.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That is deliberate. It means the code in every chapter runs for you immediately, on any machine, with nothing downloaded.</p>
+<p>Your final project is different. You will have data files of your own, and the paths in your document will have to resolve on a machine that is not yours. The habits in this chapter are for that, and it is suggested to adopted for your final project.</p>
+</section>
+<section id="never-save-the-workspace" class="level2">
+<h2 class="anchored" data-anchor-id="never-save-the-workspace">Never save the workspace</h2>
+<p>By default, R offers to save your objects when you quit and to reload them when you return. Turn this off.</p>
+<p><strong>Tools &gt; Global Options &gt; General</strong>, then set <strong>Save workspace to .RData on exit</strong> to <strong>Never</strong>, and untick <strong>Restore .RData into workspace at startup</strong>.</p>
+<p>The reason is that a restored workspace hides broken code. An object created three weeks ago by a line you have since deleted is still sitting in memory, so your analysis appears to work while depending on something that no longer exists anywhere in your files. The failure surfaces when you knit, or when someone else runs it, which is exactly the wrong time.</p>
+<p>Your objects should always be recreatable by running your code. If they are not, the code is incomplete.</p>
+</section>
+<section id="restart-and-run-from-clean" class="level2">
+<h2 class="anchored" data-anchor-id="restart-and-run-from-clean">Restart, and run from clean</h2>
+<p>The companion habit is to restart R often. <strong>Session &gt; Restart R</strong>, or <strong>Cmd and Shift and F10</strong> on a Mac, <strong>Ctrl and Shift and F10</strong> on Windows.</p>
+<p>After restarting, run your document from the top. If it completes, it works. If it does not, you have found a dependency on something that existed only in your session, and you have found it now rather than the night before a deadline.</p>
+<p>Do this before every submission, without exception. It is the entire test, and it takes under a minute.</p>
+</section>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<p>Load every package you use at the top of the document, in one place.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Do not put <code>install.packages()</code> in a document you submit.</strong> Installation is something you do once on your own machine, from the console. Left in a document, it re-installs packages on the reader’s computer, which is slow, occasionally destructive, and never what they wanted.</p>
+<p>If a package is missing, the reader gets a clear error naming it, which is the correct outcome. A short note in your README saying which packages the project needs is a courtesy worth extending.</p>
+</section>
+<section id="seeds" class="level2">
+<h2 class="anchored" data-anchor-id="seeds">Seeds</h2>
+<p>Anything involving randomness, which in this course means splitting data into training and test sets, sampling, and fitting a random forest, gives a different answer each time it runs.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Put that line near the top, once, before anything random happens. The number itself is arbitrary and does not matter. What matters is that with it, your reported numbers reproduce exactly, and without it, a reader who runs your code gets results that disagree with your text for no stated reason.</p>
+</section>
+<section id="when-a-path-fails-anyway" class="level2">
+<h2 class="anchored" data-anchor-id="when-a-path-fails-anyway">When a path fails anyway</h2>
+<p>The error will look like this.</p>
+<pre><code>Warning: cannot open file 'data/civil_war.csv': No such file or directory
+Error in file(file, "rt") : cannot open the connection</code></pre>
+<p>Three checks, in order.</p>
+<p><strong>Where does R think it is?</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If that is not your project folder, you opened the file without opening the project. Close everything and open the <code>.Rproj</code> file.</p>
+<p><strong>Does R see the file?</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the file is not listed, the problem is the name or the location, not the code.</p>
+<p><strong>Is the name exactly right?</strong> Capital letters count. So does the extension, and macOS hides extensions by default, so a file that looks like <code>civil_war.csv</code> in the Finder may actually be <code>civil_war.csv.txt</code>.</p>
+<p>Notice that the fix is never <code>setwd()</code>.</p>
+</section>
+<section id="exercise" class="level2">
+<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
+<p>About fifteen minutes.</p>
+<ol type="1">
+<li><p>Create a new R Project called <code>ai-practice</code>, somewhere you will find it again.</p></li>
+<li><p>Inside the project folder, create a <code>data</code> folder. In the RStudio Files pane, use the <strong>New Folder</strong> button.</p></li>
+<li><p>Download the Fearon and Laitin file into it, using code rather than your browser:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">destfile =</span> <span class="st">"data/FearonLaitin2003.csv"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Write a script that loads it with a relative path and reports its dimensions. Save the script as <code>explore.R</code>.</p></li>
+<li><p>Set the workspace options as described above. Then restart R and run your script from the top. It should work with an empty environment.</p></li>
+<li><p>Now break it on purpose. Change the path to <code>Data/FearonLaitin2003.csv</code>, with a capital D, and run it again. Read the error carefully, then run <code>getwd()</code> and <code>list.files("data")</code> and confirm what each one tells you.</p></li>
+</ol>
+<p>Step 6 is the useful one. That error message will find you again during the block, and recognizing it in ten seconds rather than twenty minutes is the only thing separating an evening’s work from an evening’s frustration.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -658,13 +818,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../bootcamp/02-objects-and-data.html" class="pagination-link" aria-label="&quot;Objects, Vectors, and Data Frames&quot;">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">“Objects, Vectors, and Data Frames”</span>
+      <a href="../bootcamp/02-objects-and-data.html" class="pagination-link" aria-label="Objects, Vectors, and Data Frames">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Objects, Vectors, and Data Frames</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../bootcamp/04-reading-data.html" class="pagination-link" aria-label="&quot;Reading Data into R&quot;">
-        <span class="nav-page-text">“Reading Data into R”</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../bootcamp/04-reading-data.html" class="pagination-link" aria-label="Reading Data into R">
+        <span class="nav-page-text">Reading Data into R</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -12,122 +12,122 @@
   {
     "objectID": "bootcamp/00-install.html",
     "href": "bootcamp/00-install.html",
-    "title": "“Installing R and RStudio”",
+    "title": "Installing R and RStudio",
     "section": "",
-    "text": "In preparation.",
+    "text": "Step 1: install R\nTwo separate pieces of software are needed, and the distinction between them causes more confusion than it should. R is the language: the engine that does the computing. RStudio is the environment you work in: the editor, the panes, the buttons. RStudio cannot do anything without R behind it, which is why R goes first.\nEverything here is free, and the whole process takes about fifteen minutes on a normal connection. Do it before the first session on 2 September rather than during it.\nGo to cran.r-project.org and choose the download link for your system.\nOn Windows, click Download R for Windows, then base, then the download link at the top. Run the installer and accept the defaults.\nOn macOS, click Download R for macOS and pick the correct .pkg file. There are usually two. If your Mac has an Apple silicon chip (M1, M2, M3, or M4), take the arm64 version. If it has an Intel chip, take the other. To check, click the Apple menu, then About This Mac, and read the Chip or Processor line.\nChoosing the wrong one on a Mac is the single most common installation problem, and it produces confusing errors later rather than a clear failure at install time.",
     "crumbs": [
       "R Bootcamp",
-      "\"Installing R and RStudio\""
+      "Installing R and RStudio"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html",
     "href": "bootcamp/01-four-ways-to-run-r.html",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "",
     "text": "The console: thinking out loud\nWithin the first hour of using RStudio you will encounter at least four different places where R code can be typed and executed: the console, a script, an R Markdown document, and a Quarto document. Students almost always assume that one of these is the real way to work and that the others are variations on it, and they then spend the semester wondering which one they were supposed to be using. The assumption is understandable, and it is wrong. The four are not competing versions of the same thing. Each answers a different question, and the question you are asking should determine which one you open.\nThe distinction matters more in this course than it would in an introductory statistics class. Your final project is submitted as a document that must run from raw inputs to reported numbers on a machine that is not yours. Ten percent of its grade depends on that property alone. Understanding what each of these environments preserves, and what each of them quietly discards, is therefore not a preliminary detail. It is the foundation of everything you submit.\nThe console is the panel where R is actually running. When you type 2 + 2 and press Enter, the console evaluates the expression, prints the answer, and forgets that you asked.\nThat last property is the important one. The console keeps a history you can scroll through, but it keeps no record you can hand to anyone, and it imposes no order on what you did. If you fit a model, adjust a variable, fit it again, and then produce a result you are pleased with, the console cannot tell you which sequence of steps produced it. Neither can you, a week later.\nThe console is therefore the right tool for questions you are asking of yourself rather than of the world. Checking the dimensions of a dataset, inspecting a variable, reading a help file, and testing whether a line does what you expect are all console work. Use it constantly, and use it freely. Nothing you do there is precious, which is precisely what makes it useful.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#the-console-thinking-out-loud",
     "href": "bootcamp/01-four-ways-to-run-r.html#the-console-thinking-out-loud",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "",
-    "text": "2 + 2\n#&gt; [1] 4\n\n\ndim(dat)\nsummary(dat$gdp)\n?mean",
+    "text": "2 + 2\n#&gt; [1] 4\n\n\ndim(fl)\nsummary(fl$gdpen)\n?mean",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#the-script-a-record-of-instructions",
     "href": "bootcamp/01-four-ways-to-run-r.html#the-script-a-record-of-instructions",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "The script: a record of instructions",
-    "text": "The script: a record of instructions\nAn R script, saved with the extension .R, is a plain text file containing lines of R code and nothing else. When you run a script, R executes each line in order, exactly as if you had typed them into the console yourself.\nThe difference is that the file survives. A script is a record of what you did, in the order you did it, and it can be run again tomorrow, or by someone else, or by you on a different machine. This is what makes it the first genuinely reproducible unit of work, and it is why the transition from console to script is the single most consequential habit shift in learning R.\n# analysis.R\nlibrary(tidyverse)\n\ndat &lt;- read_csv(\"data/conflict.csv\")\n\ndat_clean &lt;- dat |&gt;\n  filter(!is.na(onset)) |&gt;\n  mutate(log_pop = log(population))\n\nmodel &lt;- glm(onset ~ log_pop + gdp, data = dat_clean, family = \"binomial\")\nsummary(model)\nWhat a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.\nScripts remain the right choice for work whose product is an action rather than a document: downloading and cleaning a dataset, defining functions you will use elsewhere, or running a long job whose output is a saved file. In the repository for this course you will find several such scripts in the R/ folder.",
+    "text": "The script: a record of instructions\nAn R script, saved with the extension .R, is a plain text file containing lines of R code and nothing else. When you run a script, R executes each line in order, exactly as if you had typed them into the console yourself.\nThe difference is that the file survives. A script is a record of what you did, in the order you did it, and it can be run again tomorrow, or by someone else, or by you on a different machine. This is what makes it the first genuinely reproducible unit of work, and it is why the transition from console to script is the single most consequential habit shift in learning R.\n# analysis.R\nlibrary(tidyverse)\n\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\n\nfl_clean &lt;- fl %&gt;%\n  filter(!is.na(onset)) %&gt;%\n  mutate(log_pop = log(pop))\n\nmodel &lt;- glm(onset ~ log_pop + gdpen, data = fl_clean, family = \"binomial\")\nsummary(model)\nWhat a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.\nScripts remain the right choice for work whose product is an action rather than a document: downloading and cleaning a dataset, defining functions you will use elsewhere, or running a long job whose output is a saved file. In the repository for this course you will find several such scripts in the R/ folder.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#r-markdown-code-prose-and-output-in-one-file",
     "href": "bootcamp/01-four-ways-to-run-r.html#r-markdown-code-prose-and-output-in-one-file",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "R Markdown: code, prose, and output in one file",
-    "text": "R Markdown: code, prose, and output in one file\nAn R Markdown document, saved as .Rmd, holds three things at once: prose written in Markdown, chunks of R code, and the output those chunks produce. When you knit the document, R runs every chunk in order, captures the results, and weaves them into a finished report as HTML, PDF, or Word.\n---\ntitle: \"Civil War Onset\"\noutput: html_document\n---\n\nFearon and Laitin (2003) report that per capita income predicts\ncivil war onset more reliably than measures of ethnic diversity.\nThe model below reproduces that pattern.\n\n```{r}\nmodel &lt;- glm(onset ~ gdp + ethfrac, data = dat, family = \"binomial\")\nsummary(model)\n```\n\nThe coefficient on income is negative and precisely estimated,\nwhile the coefficient on ethnic fractionalization is not\ndistinguishable from zero.\nTwo consequences follow, and both matter for this course.\nThe first is that the numbers in your text cannot drift away from the numbers your code produced, because the document generates them each time it is knitted. A reported coefficient that was copied by hand into a sentence will eventually become wrong, quietly, when the analysis changes and the sentence does not. A reported coefficient that is produced by the code cannot.\nThe second is subtler and catches almost everyone at least once. Knitting starts a fresh R session that knows nothing about your workspace. Any object you created in the console, any package you loaded by hand, and any file path that happens to work on your machine are all invisible to it. A document that runs perfectly line by line in your own session will therefore fail to knit if it depends on something you did outside it. This is not an inconvenience to be worked around. It is the mechanism that makes the format trustworthy, because a document that knits from a clean session is a document that will run on someone else’s computer.\nThe habit that follows is simple and worth adopting now: before you submit anything, restart R (Session, then Restart R) and knit. If it does not run from clean, it does not run.",
+    "text": "R Markdown: code, prose, and output in one file\nAn R Markdown document, saved as .Rmd, holds three things at once: prose written in Markdown, chunks of R code, and the output those chunks produce. When you knit the document, R runs every chunk in order, captures the results, and weaves them into a finished report as HTML, PDF, or Word.\n---\ntitle: \"Civil War Onset\"\noutput: html_document\n---\n\nFearon and Laitin (2003) report that per capita income predicts\ncivil war onset more reliably than measures of ethnic diversity.\nThe model below reproduces that pattern.\n\n```{r}\nmodel &lt;- glm(onset ~ gdpen + ethfrac, data = fl, family = \"binomial\")\nsummary(model)\n```\n\nThe coefficient on income is negative and precisely estimated,\nwhile the coefficient on ethnic fractionalization is not\ndistinguishable from zero.\nTwo consequences follow, and both matter for this course.\nThe first is that the numbers in your text cannot drift away from the numbers your code produced, because the document generates them each time it is knitted. A reported coefficient that was copied by hand into a sentence will eventually become wrong, quietly, when the analysis changes and the sentence does not. A reported coefficient that is produced by the code cannot.\nThe second is subtler and catches almost everyone at least once. Knitting starts a fresh R session that knows nothing about your workspace. Any object you created in the console, any package you loaded by hand, and any file path that happens to work on your machine are all invisible to it. A document that runs perfectly line by line in your own session will therefore fail to knit if it depends on something you did outside it. This is not an inconvenience to be worked around. It is the mechanism that makes the format trustworthy, because a document that knits from a clean session is a document that will run on someone else’s computer.\nThe habit that follows is simple and worth adopting now: before you submit anything, restart R (Session, then Restart R) and knit. If it does not run from clean, it does not run.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#quarto-the-same-idea-more-broadly",
     "href": "bootcamp/01-four-ways-to-run-r.html#quarto-the-same-idea-more-broadly",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "Quarto: the same idea, more broadly",
-    "text": "Quarto: the same idea, more broadly\nQuarto, saved as .qmd, is the successor to R Markdown. Everything described above applies to it unchanged, and if you have understood R Markdown you already understand Quarto.\nThe differences are largely a matter of reach. Quarto is not tied to R, so the same document can execute chunks written in Python or Julia, which is directly relevant given that most of the applied AI ecosystem lives in Python. Its options are declared in a consistent way across output formats, and it renders books and websites as readily as single documents. The materials you are reading now are a Quarto book.\n```{r}\n#| label: fig-onset\n#| fig-cap: \"Predicted probability of onset by income\"\n#| warning: false\n\nggplot(dat, aes(x = gdp, y = fitted)) +\n  geom_line()\n```\nFor a single analysis document the practical difference between the two is small, and either is acceptable for your final project. I use Quarto for course materials because it handles a multi-chapter book cleanly, and I would suggest it for new work on the general principle that development effort is going there rather than into R Markdown.",
+    "text": "Quarto: the same idea, more broadly\nQuarto, saved as .qmd, is the successor to R Markdown. Everything described above applies to it unchanged, and if you have understood R Markdown you already understand Quarto.\nThe differences are largely a matter of reach. Quarto is not tied to R, so the same document can execute chunks written in Python or Julia, which is directly relevant given that most of the applied AI ecosystem lives in Python. Its options are declared in a consistent way across output formats, and it renders books and websites as readily as single documents. The materials you are reading now are a Quarto book.\n```{r}\n#| label: fig-onset\n#| fig-cap: \"Predicted probability of onset by income\"\n#| warning: false\n\nggplot(fl, aes(x = gdpen, y = fitted)) +\n  geom_line()\n```\nFor a single analysis document the practical difference between the two is small, and either is acceptable for your final project. I use Quarto for course materials because it handles a multi-chapter book cleanly, and I would suggest it for new work on the general principle that development effort is going there rather than into R Markdown.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#choosing-between-them",
     "href": "bootcamp/01-four-ways-to-run-r.html#choosing-between-them",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "Choosing between them",
     "text": "Choosing between them\n\n\n\n\n\n\n\n\n\n\n\nConsole\nScript (.R)\nR Markdown (.Rmd)\nQuarto (.qmd)\n\n\n\n\nPreserves code\nNo\nYes\nYes\nYes\n\n\nPreserves output\nNo\nNo\nYes\nYes\n\n\nHolds prose\nNo\nComments only\nYes\nYes\n\n\nRuns in a clean session\nNot applicable\nOn request\nEvery render\nEvery render\n\n\nLanguages\nR\nR\nR, mainly\nR, Python, Julia\n\n\n\nThe rule of thumb is short. Explore in the console, because it costs nothing and you will throw the work away. Automate in a script, when the product is an action rather than an argument. Report in Quarto or R Markdown, when someone else needs to see both what you concluded and how you got there.\nYour final project falls squarely in the third category, which is why the submission format is a .qmd or .Rmd file together with the document it renders. The requirement is not a formatting preference. A project submitted as a script and a separate write-up cannot demonstrate that the numbers in the write-up came from the script, and demonstrating exactly that is a substantial part of what the project is for.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/01-four-ways-to-run-r.html#exercise",
     "href": "bootcamp/01-four-ways-to-run-r.html#exercise",
-    "title": "“Four Ways to Run R Code”",
+    "title": "Four Ways to Run R Code",
     "section": "Exercise",
     "text": "Exercise\nWork through this in order. It takes about fifteen minutes and it is worth doing before the first session rather than during it.\n\nIn the console, compute mean(c(4, 8, 15, 16, 23, 42)). Note that the answer appears and then nothing remains except a history entry.\nOpen a new script (File, New File, R Script). Write the same line, save the file as first-script.R, and run it with the Source button. The result appears in the console again, but the instruction now lives in a file you could send to someone.\nOpen a new Quarto document (File, New File, Quarto Document). Write one sentence of prose describing what you are about to compute, then a code chunk containing the same line, then one sentence interpreting the result. Render it.\nNow break it deliberately. In the console, create an object with x &lt;- c(4, 8, 15, 16, 23, 42). Change the chunk in your Quarto document to mean(x) and render again.\n\nThe render fails, and the error will say that x was not found. Sit with that for a moment before fixing it, because you have just met the most common reason a working analysis refuses to knit the night before a deadline. The object exists in your session and does not exist in the document. The fix is to define x inside the document, which is also the reason the format can be trusted.",
     "crumbs": [
       "R Bootcamp",
-      "\"Four Ways to Run R Code\""
+      "Four Ways to Run R Code"
     ]
   },
   {
     "objectID": "bootcamp/02-objects-and-data.html",
     "href": "bootcamp/02-objects-and-data.html",
-    "title": "“Objects, Vectors, and Data Frames”",
+    "title": "Objects, Vectors, and Data Frames",
     "section": "",
-    "text": "In preparation.",
+    "text": "Assignment\nEverything in R is an object, and almost everything you will do in this course amounts to creating an object, inspecting it, and passing it to a function. This chapter covers the three kinds of object you will meet constantly: the vector, which holds a column of values; the data frame, which holds a table of them; and the individual value, which is really just a vector of length one.\nThe order matters. Data frames are what political science data actually look like, and they are the destination. Vectors come first because a data frame is built out of them, and because most of the errors you will hit in Week 2 come from a vector quietly being the wrong type.\nAn object is created by assigning something a name. R accepts two operators for this, and you will see both in the wild.\nUse &lt;-. The two are equivalent in this context, but = also means other things in R, including naming an argument inside a function call, so keeping the two visually distinct saves confusion later. In RStudio, Alt and minus on Windows or Option and minus on a Mac types it for you.\nTo see what an object contains, type its name.\nTo remove one, use rm().\nNames are subject to a few rules. They may contain letters, numbers, a period, and an underscore, but not spaces or symbols such as !, +, or #. They cannot begin with a number. And R is case sensitive, so polity and Polity are two different objects, which is a more common source of “object not found” than anyone expects.",
     "crumbs": [
       "R Bootcamp",
-      "\"Objects, Vectors, and Data Frames\""
+      "Objects, Vectors, and Data Frames"
     ]
   },
   {
     "objectID": "bootcamp/03-projects-and-paths.html",
     "href": "bootcamp/03-projects-and-paths.html",
-    "title": "“Projects, Paths, and Reproducible Habits”",
+    "title": "Projects, Paths, and Reproducible Habits",
     "section": "",
-    "text": "In preparation.",
+    "text": "The problem, stated plainly\nCode that runs on your machine and code that runs are not the same thing. The gap between them is where most of the marks on your final project’s reproducibility criterion are lost, and almost all of it comes down to a handful of habits that cost nothing once you have them.\nThis chapter is about those habits. None of the material is difficult. What makes it worth a chapter is that the failures it prevents do not appear until the moment they are most expensive, which is when someone else opens your work.\nSuppose you write this at the top of an analysis.\nOn your laptop, in that folder, it works. Everywhere else it fails, because no other computer has that folder. Your instructor does not have it, your co-author or colleague does not have it, and neither will you after you reorganize your files in March.\nsetwd() is the most common single reason a submitted document does not run. You will see it constantly in older code, including in tutorials and in published replication files, and the instinct to copy it is understandable. Do not. Nothing in this course requires it, and using it may cost you points on the project.\nThe replacement is not a different function. It is a different way of organizing work.",
     "crumbs": [
       "R Bootcamp",
-      "\"Projects, Paths, and Reproducible Habits\""
+      "Projects, Paths, and Reproducible Habits"
     ]
   },
   {
     "objectID": "bootcamp/04-reading-data.html",
     "href": "bootcamp/04-reading-data.html",
-    "title": "“Reading Data into R”",
+    "title": "Reading Data into R",
     "section": "",
-    "text": "In preparation.",
+    "text": "CSV, the ordinary case\nImporting data feels like the trivial step before the real work, and it is where a surprising share of analytical errors are born. The reason is that R almost never refuses to import a file. It makes a decision about what your data mean, tells you nothing, and carries on. A column of numbers arrives as text, a missing value code of -99 is treated as a real observation, and everything downstream is quietly wrong.\nThis chapter covers the formats you will actually meet and, more importantly, the check that catches the failures.\nA comma-separated (CSV) file is plain text with one row per line and commas between fields. It is the format most political science data arrive in, and R reads it out of the box.\nThere is also a tidyverse version, read_csv(), with an underscore rather than a period.\nThree differences matter in practice. read_csv() is faster on large files, it prints a summary of the column types it guessed, which is useful information rather than clutter, and it returns a tibble rather than a data frame. A tibble is a data frame with better printing behavior, and everything you learned in the previous chapter applies to it unchanged.\nEither is acceptable in this course. The handouts use read.csv() because it needs no package, so the first line of a chapter always runs.",
     "crumbs": [
       "R Bootcamp",
-      "\"Reading Data into R\""
+      "Reading Data into R"
     ]
   },
   {
@@ -205,6 +205,479 @@
     "crumbs": [
       "Weekly Handouts",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Final Project</span>"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#assignment",
+    "href": "bootcamp/02-objects-and-data.html#assignment",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "",
+    "text": "x &lt;- 5\ny = 5\n\n\nx\n#&gt; [1] 5\n\nrm(x)",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#vectors",
+    "href": "bootcamp/02-objects-and-data.html#vectors",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Vectors",
+    "text": "Vectors\nA vector is an ordered collection of values of the same type. You build one with c(), for combine.\ngdp &lt;- c(2.1, 4.7, 1.3, 8.9)\ngdp\n#&gt; [1] 2.1 4.7 1.3 8.9\nSequences of consecutive integers have a shorthand.\nyears &lt;- 1990:1995\nyears\n#&gt; [1] 1990 1991 1992 1993 1994 1995\nThe phrase “of the same type” is the part worth pausing on, and it is where the first real surprise lives.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#types-and-why-they-matter",
+    "href": "bootcamp/02-objects-and-data.html#types-and-why-they-matter",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Types, and why they matter",
+    "text": "Types, and why they matter\nA vector holds numbers, or text, or logical values, but never a mixture. If you supply a mixture, R does not complain. It silently converts everything to the most accommodating type, which is almost always text.\nv1 &lt;- c(1, 2, 3)\nv2 &lt;- c(1, 2, \"a\")\n\nv1\n#&gt; [1] 1 2 3\n\nv2\n#&gt; [1] \"1\" \"2\" \"a\"\nLook closely at v2. The numbers now have quotation marks around them. They are no longer numbers, and arithmetic on them will fail.\nmean(v2)\n#&gt; Warning: argument is not numeric or logical: returning NA\nThis behavior, called coercion, is the single most common reason a calculation returns NA for no visible reason. A real dataset with one stray text entry in an otherwise numeric column, for instance a \"n/a\" typed by hand, will import as a text column and every subsequent calculation on it will quietly fail.\nThe habit that protects you is to check the type whenever a result surprises you.\nclass(v1)\n#&gt; [1] \"numeric\"\n\nclass(v2)\n#&gt; [1] \"character\"\nLogical vectors hold TRUE and FALSE, and you will meet them constantly as the result of a comparison.\ngdp &gt; 3\n#&gt; [1] FALSE  TRUE FALSE  TRUE",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#arithmetic-happens-element-by-element",
+    "href": "bootcamp/02-objects-and-data.html#arithmetic-happens-element-by-element",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Arithmetic happens element by element",
+    "text": "Arithmetic happens element by element\nOperations on vectors apply to every element at once, which is why R rarely needs the loops that other languages depend on.\na &lt;- c(1, 3, 5, 7)\nb &lt;- c(1, 2, 4, 8)\n\na * 5\n#&gt; [1]  5 15 25 35\n\na + b\n#&gt; [1]  2  5  9 15\nIf the two vectors are of unequal length, R recycles the shorter one to match the longer, rather than raising an error.\nc(10, 20) + c(1, 2, 3, 4)\n#&gt; [1] 11 22 13 24\nThis is occasionally convenient and frequently dangerous. If you did not intend the recycling, you now have a result that looks plausible and is wrong. When two vectors should be the same length, check with length() before combining them.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#getting-at-parts-of-a-vector",
+    "href": "bootcamp/02-objects-and-data.html#getting-at-parts-of-a-vector",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Getting at parts of a vector",
+    "text": "Getting at parts of a vector\nSquare brackets extract elements by position, counting from one rather than from zero.\ngdp[2]\n#&gt; [1] 4.7\n\ngdp[c(1, 3)]\n#&gt; [1] 2.1 1.3\n\ngdp[-1]        # everything except the first\n#&gt; [1] 4.7 1.3 8.9\nYou can also select with a logical condition, which is the form you will use most.\ngdp[gdp &gt; 3]\n#&gt; [1] 4.7 8.9",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#missing-values",
+    "href": "bootcamp/02-objects-and-data.html#missing-values",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Missing values",
+    "text": "Missing values\nMissing data is written NA, and it is contagious by design.\npop &lt;- c(12, 45, NA, 8)\nmean(pop)\n#&gt; [1] NA\nR is telling you something true: the mean of a set that includes an unknown value is unknown. If you are content to ignore the missing case, say so explicitly.\nmean(pop, na.rm = TRUE)\n#&gt; [1] 21.66667\nSay so deliberately rather than reflexively. Dropping missing cases is a substantive decision about your sample, and the final project asks you to make such decisions visible rather than silent.\nTo find them:\nis.na(pop)\n#&gt; [1] FALSE FALSE  TRUE FALSE\n\nsum(is.na(pop))\n#&gt; [1] 1",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#data-frames",
+    "href": "bootcamp/02-objects-and-data.html#data-frames",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Data frames",
+    "text": "Data frames\nA data frame is a table: several vectors of equal length standing side by side as columns, each with a name, each with its own type. This is what a political science dataset is.\nLoad one. The read.csv() function accepts a web address directly, so nothing needs downloading.\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\nThese are the data behind Fearon and Laitin’s 2003 article on ethnicity, insurgency, and civil war, one of the most cited studies in the conflict literature. The unit of analysis is the country-year, and we will return to it in Week 6.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#look-before-you-calculate",
+    "href": "bootcamp/02-objects-and-data.html#look-before-you-calculate",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Look before you calculate",
+    "text": "Look before you calculate\nBefore doing anything with a new dataset, find out what you have.\ndim(fl)          # rows and columns\nnrow(fl)\nnames(fl)        # column names\nhead(fl, n = 3)  # first three rows\nstr(fl)          # structure: every column, its type, first few values\nstr() is the most useful of these, because it reports the type of every column. A numeric variable that arrived as text will announce itself here rather than three steps later.\nFor a single variable, summary() gives the distribution and, importantly, the count of missing values.\nsummary(fl$gdpen)\nThe dollar sign extracts one column by name. It is the workhorse of base R and you will use it constantly.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#an-example-of-why-you-look-first",
+    "href": "bootcamp/02-objects-and-data.html#an-example-of-why-you-look-first",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "An example of why you look first",
+    "text": "An example of why you look first\nThe outcome variable in these data is onset, coded one in a country-year when a civil war begins and zero otherwise. Count its values.\ntable(fl$onset)\nYou will find a handful of zeros and ones, as expected, and also a single observation coded 4. That is a data entry error, present in the distributed file, and it has survived into a great many replications.\nIt matters. A model fitted with onset treated as numeric would take that four seriously. Left as a factor with three levels, a classifier would try to predict a category that occurs once in six thousand cases. Either way the result is wrong in a manner no error message will announce.\nThe fix is one line.\nfl$onset[fl$onset &gt; 1] &lt;- 1\ntable(fl$onset)\nThe lesson generalizes beyond this dataset. Run table() on every categorical variable and summary() on every numeric one before you model anything. It takes two minutes and it is the cheapest error-catching you will ever do.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#selecting-rows-and-columns",
+    "href": "bootcamp/02-objects-and-data.html#selecting-rows-and-columns",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Selecting rows and columns",
+    "text": "Selecting rows and columns\nData frames take two indices inside the brackets, rows first and columns second.\nfl[1, ]            # first row, all columns\nfl[, \"onset\"]      # the onset column\nfl[1:5, c(\"country\", \"year\", \"onset\")]\nTo keep rows meeting a condition:\nafrica &lt;- fl[fl$ssafrica == 1, ]\nnrow(africa)\nNote the double equals sign. A single = assigns; a double == asks whether two things are equal. Mixing them up is a rite of passage.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#the-tidyverse-and-the-pipe",
+    "href": "bootcamp/02-objects-and-data.html#the-tidyverse-and-the-pipe",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "The tidyverse, and the pipe",
+    "text": "The tidyverse, and the pipe\nBase R can do everything above, and for many tasks the tidyverse offers a version that reads more like a sentence. Install it once, then load it in each session.\n# install.packages(\"tidyverse\")   # once, ever\nlibrary(tidyverse)                # every session\nThe pipe operator %&gt;% takes whatever is on its left and passes it as the first argument to the function on its right. Written this way, a chain of operations reads in the order it happens.\nfl %&gt;%\n  filter(ssafrica == 1, year &gt;= 1980) %&gt;%\n  select(country, year, onset, gdpen) %&gt;%\n  head()\nCompare that with the base R equivalent, which has to be read from the inside out:\nhead(fl[fl$ssafrica == 1 & fl$year &gt;= 1980, c(\"country\", \"year\", \"onset\", \"gdpen\")])\nBoth are correct. The piped version is easier to modify six weeks later, which is why the handouts use it. In RStudio, Cmd and Shift and M on a Mac, or Ctrl and Shift and M on Windows, types the pipe.\nThree verbs will carry most of your work. filter() keeps rows, select() keeps columns, and mutate() creates new ones.\nfl %&gt;%\n  filter(!is.na(gdpen)) %&gt;%\n  mutate(log_pop = log(pop)) %&gt;%\n  select(country, year, gdpen, log_pop) %&gt;%\n  head()",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#factors",
+    "href": "bootcamp/02-objects-and-data.html#factors",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Factors",
+    "text": "Factors\nA factor is R’s type for a categorical variable: values drawn from a fixed set of levels. Modeling functions expect categorical outcomes as factors, so you will convert deliberately.\nfl$onset &lt;- factor(fl$onset)\nlevels(fl$onset)\n#&gt; [1] \"0\" \"1\"\nOne warning worth carrying. Converting a factor straight to numeric returns the level codes, not the labels, so a factor with levels “0” and “1” becomes 1 and 2. If you need the underlying numbers, route through character first.\nas.numeric(as.character(fl$onset))",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#matrices-briefly",
+    "href": "bootcamp/02-objects-and-data.html#matrices-briefly",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Matrices, briefly",
+    "text": "Matrices, briefly\nA matrix is a rectangle of values that are all the same type, which is the difference from a data frame. You will not build many, but they appear inside modeling functions, and older code uses cbind() and rbind() to assemble them.\nm &lt;- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2)\nm\nt(m)               # transpose\ncbind(m, c(7, 4, 2))  # add a column\nRecognizing them is enough for now. Week 4 returns to matrices when text becomes a document-term matrix.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#getting-help",
+    "href": "bootcamp/02-objects-and-data.html#getting-help",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Getting help",
+    "text": "Getting help\nEvery function has a help page, reachable with a question mark.\n?mean\n?read.csv\nThe Examples section at the bottom is usually the fastest way in, because you can run those lines directly. If you do not know the function’s name, ??regression searches the text of all installed help pages.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/02-objects-and-data.html#exercise",
+    "href": "bootcamp/02-objects-and-data.html#exercise",
+    "title": "Objects, Vectors, and Data Frames",
+    "section": "Exercise",
+    "text": "Exercise\nRoughly twenty minutes. Do it in a script rather than the console, so you still have it afterward.\n\nCreate a numeric vector of five values and a character vector of five country names. Confirm the type of each with class().\nCombine one number and one country name into a single vector with c(). Check its class. Explain in a comment what happened and why.\nLoad the Fearon and Laitin data. Report how many rows and columns it has.\nRun table() on onset. Note the anomaly, correct it, and run table() again to confirm.\nUsing the pipe, keep only country-years from 1990 onward with onset equal to one, and select country, year, and gdpen. How many civil war onsets does that leave?\nCompute the mean of gdpen across the whole dataset. It returns NA. Work out why, then compute it in a way that succeeds, and add a comment saying what your version is actually the mean of.\n\nStep 6 is the one that matters. Every dataset you meet in this course has missing values, and the difference between a mean of the observed cases and a mean of the sample is a difference you will have to state plainly in your final project.",
+    "crumbs": [
+      "R Bootcamp",
+      "Objects, Vectors, and Data Frames"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#the-problem-stated-plainly",
+    "href": "bootcamp/03-projects-and-paths.html#the-problem-stated-plainly",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "",
+    "text": "setwd(\"/Users/babak/Documents/AI course/week 4/analysis\")\nread.csv(\"civil_war.csv\")",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#r-projects",
+    "href": "bootcamp/03-projects-and-paths.html#r-projects",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "R Projects",
+    "text": "R Projects\nAn R Project is a folder that R treats as the home of a piece of work. Creating one puts a small file with the extension .Rproj inside the folder, and from then on, opening that file does three useful things at once: it starts a fresh R session, it sets the working directory to that folder, and it remembers which files you had open.\nThat second point is the whole trick. Because the working directory is already correct, you never have to set it, and because it is set relative to the project rather than to your machine, the same code works on anyone else’s computer.\nTo create one: File &gt; New Project &gt; New Directory &gt; New Project, then give the folder a name and a location. For work you already have in a folder, use File &gt; New Project &gt; Existing Directory instead.\nFrom then on, open the project by double-clicking the .Rproj file rather than by opening a script directly. If you open a .qmd from the Finder, R starts with no project and the paths will not resolve, which produces a “cannot open file” error that looks like a problem with the file and is not.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#relative-paths",
+    "href": "bootcamp/03-projects-and-paths.html#relative-paths",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Relative paths",
+    "text": "Relative paths\nInside a project, you refer to files by their location relative to the project folder, with no leading slash and no drive letter.\ndat &lt;- read.csv(\"data/civil_war.csv\")\nThat line means “the file civil_war.csv, inside a folder called data, inside whatever folder this project lives in.” It is true on every machine.\nA few conventions worth following:\n\nForward slashes, /, on every operating system, including Windows. R accepts them everywhere.\nNo spaces in file or folder names. Use civil_war.csv rather than civil war.csv. Spaces are legal, but they will eventually bite you.\nLower case, consistently. Some systems treat Data/ and data/ as the same folder and some do not.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#a-layout-that-works",
+    "href": "bootcamp/03-projects-and-paths.html#a-layout-that-works",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "A layout that works",
+    "text": "A layout that works\nYou do not need an elaborate structure. This is enough for the final project and it will still make sense a year from now.\nYourProject/\n  YourProject.Rproj\n  analysis.qmd          the document you submit\n  data/\n    raw/                exactly as downloaded, never edited\n    processed/          anything your code produced\n  R/\n    clean-data.R        scripts that do a job\n  figures/              plots your code saved\nThe distinction between data/raw/ and data/processed/ is the one that earns its keep. Raw files are never opened in Excel and never edited by hand. Every change is made in code, which means every change is visible, reversible, and explicable when a reviewer, instructor, or colleague asks why your sample has 4,318 rows rather than 4,502.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#note-on-this-course",
+    "href": "bootcamp/03-projects-and-paths.html#note-on-this-course",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Note on this course",
+    "text": "Note on this course\nThe handouts here load their data straight from a web address, so there are no local files to find.\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\nThat is deliberate. It means the code in every chapter runs for you immediately, on any machine, with nothing downloaded.\nYour final project is different. You will have data files of your own, and the paths in your document will have to resolve on a machine that is not yours. The habits in this chapter are for that, and it is suggested to adopted for your final project.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#never-save-the-workspace",
+    "href": "bootcamp/03-projects-and-paths.html#never-save-the-workspace",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Never save the workspace",
+    "text": "Never save the workspace\nBy default, R offers to save your objects when you quit and to reload them when you return. Turn this off.\nTools &gt; Global Options &gt; General, then set Save workspace to .RData on exit to Never, and untick Restore .RData into workspace at startup.\nThe reason is that a restored workspace hides broken code. An object created three weeks ago by a line you have since deleted is still sitting in memory, so your analysis appears to work while depending on something that no longer exists anywhere in your files. The failure surfaces when you knit, or when someone else runs it, which is exactly the wrong time.\nYour objects should always be recreatable by running your code. If they are not, the code is incomplete.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#restart-and-run-from-clean",
+    "href": "bootcamp/03-projects-and-paths.html#restart-and-run-from-clean",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Restart, and run from clean",
+    "text": "Restart, and run from clean\nThe companion habit is to restart R often. Session &gt; Restart R, or Cmd and Shift and F10 on a Mac, Ctrl and Shift and F10 on Windows.\nAfter restarting, run your document from the top. If it completes, it works. If it does not, you have found a dependency on something that existed only in your session, and you have found it now rather than the night before a deadline.\nDo this before every submission, without exception. It is the entire test, and it takes under a minute.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#packages",
+    "href": "bootcamp/03-projects-and-paths.html#packages",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Packages",
+    "text": "Packages\nLoad every package you use at the top of the document, in one place.\nlibrary(tidyverse)\nlibrary(caret)\nDo not put install.packages() in a document you submit. Installation is something you do once on your own machine, from the console. Left in a document, it re-installs packages on the reader’s computer, which is slow, occasionally destructive, and never what they wanted.\nIf a package is missing, the reader gets a clear error naming it, which is the correct outcome. A short note in your README saying which packages the project needs is a courtesy worth extending.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#seeds",
+    "href": "bootcamp/03-projects-and-paths.html#seeds",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Seeds",
+    "text": "Seeds\nAnything involving randomness, which in this course means splitting data into training and test sets, sampling, and fitting a random forest, gives a different answer each time it runs.\nset.seed(7)\nPut that line near the top, once, before anything random happens. The number itself is arbitrary and does not matter. What matters is that with it, your reported numbers reproduce exactly, and without it, a reader who runs your code gets results that disagree with your text for no stated reason.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#when-a-path-fails-anyway",
+    "href": "bootcamp/03-projects-and-paths.html#when-a-path-fails-anyway",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "When a path fails anyway",
+    "text": "When a path fails anyway\nThe error will look like this.\nWarning: cannot open file 'data/civil_war.csv': No such file or directory\nError in file(file, \"rt\") : cannot open the connection\nThree checks, in order.\nWhere does R think it is?\ngetwd()\nIf that is not your project folder, you opened the file without opening the project. Close everything and open the .Rproj file.\nDoes R see the file?\nlist.files(\"data\")\nIf the file is not listed, the problem is the name or the location, not the code.\nIs the name exactly right? Capital letters count. So does the extension, and macOS hides extensions by default, so a file that looks like civil_war.csv in the Finder may actually be civil_war.csv.txt.\nNotice that the fix is never setwd().",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/03-projects-and-paths.html#exercise",
+    "href": "bootcamp/03-projects-and-paths.html#exercise",
+    "title": "Projects, Paths, and Reproducible Habits",
+    "section": "Exercise",
+    "text": "Exercise\nAbout fifteen minutes.\n\nCreate a new R Project called ai-practice, somewhere you will find it again.\nInside the project folder, create a data folder. In the RStudio Files pane, use the New Folder button.\nDownload the Fearon and Laitin file into it, using code rather than your browser:\ndownload.file(\n  \"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\",\n  destfile = \"data/FearonLaitin2003.csv\"\n)\nWrite a script that loads it with a relative path and reports its dimensions. Save the script as explore.R.\nSet the workspace options as described above. Then restart R and run your script from the top. It should work with an empty environment.\nNow break it on purpose. Change the path to Data/FearonLaitin2003.csv, with a capital D, and run it again. Read the error carefully, then run getwd() and list.files(\"data\") and confirm what each one tells you.\n\nStep 6 is the useful one. That error message will find you again during the block, and recognizing it in ten seconds rather than twenty minutes is the only thing separating an evening’s work from an evening’s frustration.",
+    "crumbs": [
+      "R Bootcamp",
+      "Projects, Paths, and Reproducible Habits"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#csv-the-ordinary-case",
+    "href": "bootcamp/04-reading-data.html#csv-the-ordinary-case",
+    "title": "Reading Data into R",
+    "section": "",
+    "text": "fl &lt;- read.csv(\"data/FearonLaitin2003.csv\")\n\nlibrary(tidyverse)\nfl &lt;- read_csv(\"data/FearonLaitin2003.csv\")",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#straight-from-a-web-address",
+    "href": "bootcamp/04-reading-data.html#straight-from-a-web-address",
+    "title": "Reading Data into R",
+    "section": "Straight from a web address",
+    "text": "Straight from a web address\nBoth functions accept a URL wherever they accept a filename, which means data can be loaded with nothing downloaded.\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\nThis is how every dataset in these handouts is loaded. It has two advantages worth naming: the code runs identically on any machine, and there is no file path to get wrong.\nIt has one disadvantage. If the address ever changes, the code stops working, and if the file behind the address is edited, your results change without your knowing. For the final project, download the file once and put it on your cloud-based platform, then you have control over your data source than relying on someone else’s server.\nNote the address on Github must be the raw one. Clicking a CSV on GitHub shows a formatted preview page, and its address returns HTML rather than data. The Raw button gives the address you want, and it always begins raw.githubusercontent.com. You can also upload your files on Dropbox, Googledrive, and Onedrive; just make sure that you have the permission to put the files on these public cloud-based platforms.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#check-the-import-every-time",
+    "href": "bootcamp/04-reading-data.html#check-the-import-every-time",
+    "title": "Reading Data into R",
+    "section": "Check the import, every time",
+    "text": "Check the import, every time\nThis is the habit the chapter exists for. Three lines, immediately after loading anything.\ndim(fl)\nstr(fl)\nsummary(fl)\nYou are looking for three things.\nDid every column get the type you expected? A numeric variable listed as chr in the str() output has a non-numeric value hiding in it somewhere.\nAre the row and column counts right? If the file should have 6,610 rows and you have 6,609, the header row was probably read as data, or the last line lacks a line break.\nDo the ranges make sense? summary() reports the minimum and maximum of each numeric column. A polity2 score of -88 or a population of -99 is a missing value code, not an observation, and it will wreck any model that takes it seriously.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#missing-value-codes",
+    "href": "bootcamp/04-reading-data.html#missing-value-codes",
+    "title": "Reading Data into R",
+    "section": "Missing value codes",
+    "text": "Missing value codes\nOlder datasets frequently encode missing values as numbers, with -99, -999, and -88 being the common choices. R has no way of knowing this and will treat them as real.\nTell it explicitly at import.\ndat &lt;- read.csv(\"data/survey.csv\", na.strings = c(\"NA\", \"\", \"-99\", \"-999\"))\nOr fix it afterward, which is clearer when only some columns are affected.\ndat$income[dat$income == -99] &lt;- NA\nEither way, do it before anything else. A mean computed over a column containing -99 is not slightly wrong, it is meaningless, and nothing in the output will tell you.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#when-the-commas-are-not-commas",
+    "href": "bootcamp/04-reading-data.html#when-the-commas-are-not-commas",
+    "title": "Reading Data into R",
+    "section": "When the commas are not commas",
+    "text": "When the commas are not commas\nFiles exported from Excel on a European system are often separated by semicolons rather than commas, and they use commas as decimal points. Opening one with read.csv() produces a single column of text.\ndat &lt;- read.csv2(\"data/dutch_export.csv\")   # semicolons, comma decimals\ndat &lt;- read_csv2(\"data/dutch_export.csv\")   # tidyverse equivalent\nWorth knowing here rather than elsewhere, since Dutch-locale Excel does this by default and several of you will hit it with data you export yourselves.\nIf the separator is something else entirely, such as a tab, say so:\ndat &lt;- read.delim(\"data/file.txt\")                    # tab separated\ndat &lt;- read.csv(\"data/file.txt\", sep = \"|\")           # anything else\nThe fastest way to diagnose any of this is to open the file in a plain text editor and look at the first two lines. Two minutes of looking beats an hour of guessing.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#accented-characters",
+    "href": "bootcamp/04-reading-data.html#accented-characters",
+    "title": "Reading Data into R",
+    "section": "Accented characters",
+    "text": "Accented characters\nCountry names, party names, and any text data will contain characters outside plain English. If they arrive mangled, as Ã© where é belongs, the file’s encoding was misread.\ndat &lt;- read.csv(\"data/parties.csv\", encoding = \"UTF-8\")\nUTF-8 is correct for the large majority of files you will meet. This will matter in Week 4, when text becomes data.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#excel-files",
+    "href": "bootcamp/04-reading-data.html#excel-files",
+    "title": "Reading Data into R",
+    "section": "Excel files",
+    "text": "Excel files\nExcel files are not text and cannot be read by read.csv(). Use readxl.\n# install.packages(\"readxl\")\nlibrary(readxl)\n\ndat &lt;- read_excel(\"data/data.xlsx\")\ndat &lt;- read_excel(\"data/data.xlsx\", sheet = \"Coding\")   # a named sheet\ndat &lt;- read_excel(\"data/data.xlsx\", skip = 3)           # skip title rows\nskip earns its place. Spreadsheets kept by humans very often carry a title, a blank line, and a note before the actual header row, and without skip all of that is read as data.\nA note on Excel more generally. It is a reasonable place to receive data and a poor place to edit it, because changes made by hand leave no record. If a value must change, change it in R, where the change is visible in your code and reversible.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#stata-and-spss",
+    "href": "bootcamp/04-reading-data.html#stata-and-spss",
+    "title": "Reading Data into R",
+    "section": "Stata and SPSS",
+    "text": "Stata and SPSS\nPolitical science data arrive as .dta and .sav more often than anyone would like. The haven package reads both.\n# install.packages(\"haven\")\nlibrary(haven)\n\ndat &lt;- read_dta(\"data/anes.dta\")   # Stata\ndat &lt;- read_sav(\"data/ess.sav\")    # SPSS\nOlder tutorials recommend foreign and Hmisc for this. Both still work, and haven handles recent file versions and preserves variable labels better, so prefer it.\nLabelled columns from these formats sometimes behave unexpectedly in models. If one gives you trouble, strip the labels:\ndat$party &lt;- haven::zap_labels(dat$party)",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#saving",
+    "href": "bootcamp/04-reading-data.html#saving",
+    "title": "Reading Data into R",
+    "section": "Saving",
+    "text": "Saving\nTo hand data to someone who may not use R, write a CSV.\nwrite.csv(dat, \"data/processed/cleaned.csv\", row.names = FALSE)\nrow.names = FALSE matters. Without it, R adds a column of row numbers, and a file that is written and read a few times accumulates several of them.\nTo save an R object for your own later use, including model objects and anything else a CSV cannot hold, use saveRDS().\nsaveRDS(model, \"output/model.rds\")\nmodel &lt;- readRDS(\"output/model.rds\")\nThis is worth knowing for the final project, or algorithms that take a longer time to run, such as Random Forest. A model that takes several minutes to fit can be fitted once, saved, and read back, so that re-rendering the document does not refit it.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/04-reading-data.html#exercise",
+    "href": "bootcamp/04-reading-data.html#exercise",
+    "title": "Reading Data into R",
+    "section": "Exercise",
+    "text": "Exercise\nAbout twenty minutes. Work in the ai-practice project from the previous chapter.\n\nLoad the Fearon and Laitin data from the raw URL and confirm its dimensions.\nRun str() on it. List two columns that arrived as text. For each, say whether that is correct or whether it should have been numeric.\nRun summary(fl$polity2). Look at the minimum. Polity scores are defined on a range of minus ten to plus ten. Is anything outside it, and if so, what do you think those values mean?\nMake a deliberately awkward file. In the console:\nmessy &lt;- data.frame(\n  country = c(\"França\", \"Türkiye\", \"España\"),\n  score   = c(1.5, -99, 3.2)\n)\nwrite.csv(messy, \"data/messy.csv\", row.names = FALSE)\nRead it back with read.csv(\"data/messy.csv\"), then compute mean(score). Now read it again treating -99 as missing, and compute the mean a second time. Report both numbers and say which one you would put in a paper.\nCheck whether the accented characters survived the round trip. If they did not, read the file again with encoding = \"UTF-8\".\n\nStep 4 is the point. Two defensible-looking numbers come out of the same file, and only one of them means anything. Nothing in R’s output distinguishes them for you.",
+    "crumbs": [
+      "R Bootcamp",
+      "Reading Data into R"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#step-2-install-rstudio",
+    "href": "bootcamp/00-install.html#step-2-install-rstudio",
+    "title": "Installing R and RStudio",
+    "section": "Step 2: install RStudio",
+    "text": "Step 2: install RStudio\nGo to posit.co/download/rstudio-desktop. The page detects your system and offers the right installer. Take the free Desktop version; there is no need for any paid tier or for RStudio Server.\nInstall it, then open RStudio, not R. From here on, RStudio is the only one of the two you will launch directly.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#step-3-check-that-it-worked",
+    "href": "bootcamp/00-install.html#step-3-check-that-it-worked",
+    "title": "Installing R and RStudio",
+    "section": "Step 3: check that it worked",
+    "text": "Step 3: check that it worked\nYou should see four panes, or two panes with tabs. Find the Console, on the left, and type this at the &gt; prompt, then press Enter.\n2 + 2\nIf [1] 4 appears, both pieces are installed and talking to each other.\nThen check the version:\nR.version.string\nAnything from R 4.3.0 onward is fine for this course. If you have an older installation lying around from a previous course, update it now rather than debugging a version problem in Week 3.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#step-4-install-the-packages",
+    "href": "bootcamp/00-install.html#step-4-install-the-packages",
+    "title": "Installing R and RStudio",
+    "section": "Step 4: install the packages",
+    "text": "Step 4: install the packages\nA package is a bundle of functions someone else has written and shared. R ships with a great many built in, and everything else is installed once and then loaded whenever needed.\nRun this in the Console. It will take several minutes and produce a large amount of scrolling output, which is normal.\ninstall.packages(c(\"tidyverse\", \"rmarkdown\", \"knitr\"))\nThen confirm they load:\nlibrary(tidyverse)\nYou will see a short message listing the packages that came along with it and noting a couple of conflicts. That message is informational, not an error.\nThe remaining packages, for classification, text, and language model work, are installed in the week they are first needed. There is no advantage to installing everything now.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#step-5-install-quarto",
+    "href": "bootcamp/00-install.html#step-5-install-quarto",
+    "title": "Installing R and RStudio",
+    "section": "Step 5: install Quarto",
+    "text": "Step 5: install Quarto\nQuarto renders documents that combine code, prose, and output, and your final project is submitted in that form.\nRecent versions of RStudio include it already. Check in the Console:\nquarto::quarto_version()\nIf that returns a version number, you are done. If it reports that the package is not installed, run install.packages(\"quarto\") and try again. If it still cannot find Quarto itself, download it from quarto.org/docs/get-started and install it separately.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#when-installation-goes-wrong",
+    "href": "bootcamp/00-install.html#when-installation-goes-wrong",
+    "title": "Installing R and RStudio",
+    "section": "When installation goes wrong",
+    "text": "When installation goes wrong\nThree problems account for nearly all of them.\n“Package not available” or a compilation error on macOS. Almost always the arm64 and Intel mismatch from Step 1. Uninstall R, check your chip, and install the matching version.\nPermission denied, or the installation appears to succeed but the package will not load. Common on university-managed laptops, where the default library folder is not writable. R usually offers to use a personal library instead, and you should accept. If it does not offer, run this once and then reinstall:\ndir.create(Sys.getenv(\"R_LIBS_USER\"), recursive = TRUE)\nThe download stalls or times out. More often a network problem than a problem with your machine. Try again, and if it persists, try a different connection or a different CRAN mirror, which you can choose under Tools &gt; Global Options &gt; Packages.\nIf none of these apply, bring the laptop to the first session. A five-minute look in person is faster than an evening of email, and installation problems are common enough that nobody should feel behind because of one.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#a-little-configuration",
+    "href": "bootcamp/00-install.html#a-little-configuration",
+    "title": "Installing R and RStudio",
+    "section": "A little configuration",
+    "text": "A little configuration\nTwo settings are worth changing now. Go to Tools &gt; Global Options &gt; General and:\n\nSet Save workspace to .RData on exit to Never.\nUntick Restore .RData into workspace at startup.\n\nChapter 3 explains why these matter. In short, they are what make it possible to trust that your code actually works rather than merely appearing to.\nWhile you are in Global Options, Appearance lets you change the theme and font size. Not important, but you will be looking at this window for eight weeks, so it is worth a minute.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
+    ]
+  },
+  {
+    "objectID": "bootcamp/00-install.html#before-you-move-on",
+    "href": "bootcamp/00-install.html#before-you-move-on",
+    "title": "Installing R and RStudio",
+    "section": "Before you move on",
+    "text": "Before you move on\nYou should be able to open RStudio, type 2 + 2 in the Console, get 4, and run library(tidyverse) without an error.\nThat is the whole requirement. The next chapter starts from there.",
+    "crumbs": [
+      "R Bootcamp",
+      "Installing R and RStudio"
     ]
   }
 ]

@@ -1,4 +1,4 @@
-# "Four Ways to Run R Code" {.unnumbered}
+# Four Ways to Run R Code {.unnumbered}
 
 Within the first hour of using RStudio you will encounter at least four different places where R code can be typed and executed: the console, a script, an R Markdown document, and a Quarto document. Students almost always assume that one of these is the real way to work and that the others are variations on it, and they then spend the semester wondering which one they were supposed to be using. The assumption is understandable, and it is wrong. The four are not competing versions of the same thing. Each answers a different question, and the question you are asking should determine which one you open.
 
@@ -18,8 +18,8 @@ That last property is the important one. The console keeps a history you can scr
 The console is therefore the right tool for questions you are asking of yourself rather than of the world. Checking the dimensions of a dataset, inspecting a variable, reading a help file, and testing whether a line does what you expect are all console work. Use it constantly, and use it freely. Nothing you do there is precious, which is precisely what makes it useful.
 
 ``` r
-dim(dat)
-summary(dat$gdp)
+dim(fl)
+summary(fl$gdpen)
 ?mean
 ```
 
@@ -33,13 +33,13 @@ The difference is that the file survives. A script is a record of what you did, 
 # analysis.R
 library(tidyverse)
 
-dat <- read_csv("data/conflict.csv")
+fl <- read.csv("https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv")
 
-dat_clean <- dat |>
-  filter(!is.na(onset)) |>
-  mutate(log_pop = log(population))
+fl_clean <- fl %>%
+  filter(!is.na(onset)) %>%
+  mutate(log_pop = log(pop))
 
-model <- glm(onset ~ log_pop + gdp, data = dat_clean, family = "binomial")
+model <- glm(onset ~ log_pop + gdpen, data = fl_clean, family = "binomial")
 summary(model)
 ```
 
@@ -62,7 +62,7 @@ civil war onset more reliably than measures of ethnic diversity.
 The model below reproduces that pattern.
 
 ```{{r}}
-model <- glm(onset ~ gdp + ethfrac, data = dat, family = "binomial")
+model <- glm(onset ~ gdpen + ethfrac, data = fl, family = "binomial")
 summary(model)
 ```
 
@@ -90,7 +90,7 @@ The differences are largely a matter of reach. Quarto is not tied to R, so the s
 #| fig-cap: "Predicted probability of onset by income"
 #| warning: false
 
-ggplot(dat, aes(x = gdp, y = fitted)) +
+ggplot(fl, aes(x = gdpen, y = fitted)) +
   geom_line()
 ```
 

@@ -1,3 +1,104 @@
-# "Installing R and RStudio" {.unnumbered}
+# Installing R and RStudio {.unnumbered}
 
-*In preparation.*
+Two separate pieces of software are needed, and the distinction between them causes more confusion than it should. **R** is the language: the engine that does the computing. **RStudio** is the environment you work in: the editor, the panes, the buttons. RStudio cannot do anything without R behind it, which is why R goes first.
+
+Everything here is free, and the whole process takes about fifteen minutes on a normal connection. Do it before the first session on 2 September rather than during it.
+
+## Step 1: install R
+
+Go to [**cran.r-project.org**](https://cran.r-project.org) and choose the download link for your system.
+
+**On Windows**, click *Download R for Windows*, then *base*, then the download link at the top. Run the installer and accept the defaults.
+
+**On macOS**, click *Download R for macOS* and pick the correct `.pkg` file. There are usually two. If your Mac has an Apple silicon chip (M1, M2, M3, or M4), take the **arm64** version. If it has an Intel chip, take the other. To check, click the Apple menu, then *About This Mac*, and read the Chip or Processor line.
+
+Choosing the wrong one on a Mac is the single most common installation problem, and it produces confusing errors later rather than a clear failure at install time.
+
+## Step 2: install RStudio
+
+Go to [**posit.co/download/rstudio-desktop**](https://posit.co/download/rstudio-desktop). The page detects your system and offers the right installer. Take the free Desktop version; there is no need for any paid tier or for RStudio Server.
+
+Install it, then open **RStudio**, not R. From here on, RStudio is the only one of the two you will launch directly.
+
+## Step 3: check that it worked
+
+You should see four panes, or two panes with tabs. Find the **Console**, on the left, and type this at the `>` prompt, then press Enter.
+
+``` r
+2 + 2
+```
+
+If `[1] 4` appears, both pieces are installed and talking to each other.
+
+Then check the version:
+
+``` r
+R.version.string
+```
+
+Anything from **R 4.3.0** onward is fine for this course. If you have an older installation lying around from a previous course, update it now rather than debugging a version problem in Week 3.
+
+## Step 4: install the packages
+
+A package is a bundle of functions someone else has written and shared. R ships with a great many built in, and everything else is installed once and then loaded whenever needed.
+
+Run this in the Console. It will take several minutes and produce a large amount of scrolling output, which is normal.
+
+``` r
+install.packages(c("tidyverse", "rmarkdown", "knitr"))
+```
+
+Then confirm they load:
+
+``` r
+library(tidyverse)
+```
+
+You will see a short message listing the packages that came along with it and noting a couple of conflicts. That message is informational, not an error.
+
+The remaining packages, for classification, text, and language model work, are installed in the week they are first needed. There is no advantage to installing everything now.
+
+## Step 5: install Quarto
+
+Quarto renders documents that combine code, prose, and output, and your final project is submitted in that form.
+
+Recent versions of RStudio include it already. Check in the Console:
+
+``` r
+quarto::quarto_version()
+```
+
+If that returns a version number, you are done. If it reports that the package is not installed, run `install.packages("quarto")` and try again. If it still cannot find Quarto itself, download it from [**quarto.org/docs/get-started**](https://quarto.org/docs/get-started) and install it separately.
+
+## When installation goes wrong
+
+Three problems account for nearly all of them.
+
+**"Package not available" or a compilation error on macOS.** Almost always the arm64 and Intel mismatch from Step 1. Uninstall R, check your chip, and install the matching version.
+
+**Permission denied, or the installation appears to succeed but the package will not load.** Common on university-managed laptops, where the default library folder is not writable. R usually offers to use a personal library instead, and you should accept. If it does not offer, run this once and then reinstall:
+
+``` r
+dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
+```
+
+**The download stalls or times out.** More often a network problem than a problem with your machine. Try again, and if it persists, try a different connection or a different CRAN mirror, which you can choose under **Tools \> Global Options \> Packages**.
+
+If none of these apply, bring the laptop to the first session. A five-minute look in person is faster than an evening of email, and installation problems are common enough that nobody should feel behind because of one.
+
+## A little configuration
+
+Two settings are worth changing now. Go to **Tools \> Global Options \> General** and:
+
+- Set **Save workspace to .RData on exit** to **Never**.
+- Untick **Restore .RData into workspace at startup**.
+
+Chapter 3 explains why these matter. In short, they are what make it possible to trust that your code actually works rather than merely appearing to.
+
+While you are in Global Options, **Appearance** lets you change the theme and font size. Not important, but you will be looking at this window for eight weeks, so it is worth a minute.
+
+## Before you move on
+
+You should be able to open RStudio, type `2 + 2` in the Console, get `4`, and run `library(tidyverse)` without an error.
+
+That is the whole requirement. The next chapter starts from there.

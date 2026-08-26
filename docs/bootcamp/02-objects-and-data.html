@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>“Objects, Vectors, and Data Frames” – Applied AI for Political Scientists</title>
+<title>Objects, Vectors, and Data Frames – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/02-objects-and-data.html">“Objects, Vectors, and Data Frames”</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/02-objects-and-data.html">Objects, Vectors, and Data Frames</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +163,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +256,35 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#assignment" id="toc-assignment" class="nav-link active" data-scroll-target="#assignment">Assignment</a></li>
+  <li><a href="#vectors" id="toc-vectors" class="nav-link" data-scroll-target="#vectors">Vectors</a></li>
+  <li><a href="#types-and-why-they-matter" id="toc-types-and-why-they-matter" class="nav-link" data-scroll-target="#types-and-why-they-matter">Types, and why they matter</a></li>
+  <li><a href="#arithmetic-happens-element-by-element" id="toc-arithmetic-happens-element-by-element" class="nav-link" data-scroll-target="#arithmetic-happens-element-by-element">Arithmetic happens element by element</a></li>
+  <li><a href="#getting-at-parts-of-a-vector" id="toc-getting-at-parts-of-a-vector" class="nav-link" data-scroll-target="#getting-at-parts-of-a-vector">Getting at parts of a vector</a></li>
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values">Missing values</a></li>
+  <li><a href="#data-frames" id="toc-data-frames" class="nav-link" data-scroll-target="#data-frames">Data frames</a></li>
+  <li><a href="#look-before-you-calculate" id="toc-look-before-you-calculate" class="nav-link" data-scroll-target="#look-before-you-calculate">Look before you calculate</a></li>
+  <li><a href="#an-example-of-why-you-look-first" id="toc-an-example-of-why-you-look-first" class="nav-link" data-scroll-target="#an-example-of-why-you-look-first">An example of why you look first</a></li>
+  <li><a href="#selecting-rows-and-columns" id="toc-selecting-rows-and-columns" class="nav-link" data-scroll-target="#selecting-rows-and-columns">Selecting rows and columns</a></li>
+  <li><a href="#the-tidyverse-and-the-pipe" id="toc-the-tidyverse-and-the-pipe" class="nav-link" data-scroll-target="#the-tidyverse-and-the-pipe">The tidyverse, and the pipe</a></li>
+  <li><a href="#factors" id="toc-factors" class="nav-link" data-scroll-target="#factors">Factors</a></li>
+  <li><a href="#matrices-briefly" id="toc-matrices-briefly" class="nav-link" data-scroll-target="#matrices-briefly">Matrices, briefly</a></li>
+  <li><a href="#getting-help" id="toc-getting-help" class="nav-link" data-scroll-target="#getting-help">Getting help</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/02-objects-and-data.html">“Objects, Vectors, and Data Frames”</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/02-objects-and-data.html">Objects, Vectors, and Data Frames</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">“Objects, Vectors, and Data Frames”</h1>
+<h1 class="title">Objects, Vectors, and Data Frames</h1>
 </div>
 
 
@@ -246,9 +301,208 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p>Everything in R is an object, and almost everything you will do in this course amounts to creating an object, inspecting it, and passing it to a function. This chapter covers the three kinds of object you will meet constantly: the vector, which holds a column of values; the data frame, which holds a table of them; and the individual value, which is really just a vector of length one.</p>
+<p>The order matters. Data frames are what political science data actually look like, and they are the destination. Vectors come first because a data frame is built out of them, and because most of the errors you will hit in Week 2 come from a vector quietly being the wrong type.</p>
+<section id="assignment" class="level2">
+<h2 class="anchored" data-anchor-id="assignment">Assignment</h2>
+<p>An object is created by assigning something a name. R accepts two operators for this, and you will see both in the wild.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>&lt;-</code>. The two are equivalent in this context, but <code>=</code> also means other things in R, including naming an argument inside a function call, so keeping the two visually distinct saves confusion later. In RStudio, <strong>Alt and minus</strong> on Windows or <strong>Option and minus</strong> on a Mac types it for you.</p>
+<p>To see what an object contains, type its name.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To remove one, use <code>rm()</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Names are subject to a few rules. They may contain letters, numbers, a period, and an underscore, but not spaces or symbols such as <code>!</code>, <code>+</code>, or <code>#</code>. They cannot begin with a number. And R is case sensitive, so <code>polity</code> and <code>Polity</code> are two different objects, which is a more common source of “object not found” than anyone expects.</p>
+</section>
+<section id="vectors" class="level2">
+<h2 class="anchored" data-anchor-id="vectors">Vectors</h2>
+<p>A vector is an ordered collection of values of the same type. You build one with <code>c()</code>, for combine.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>gdp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.1</span>, <span class="fl">4.7</span>, <span class="fl">1.3</span>, <span class="fl">8.9</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>gdp</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2.1 4.7 1.3 8.9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sequences of consecutive integers have a shorthand.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="dv">1990</span><span class="sc">:</span><span class="dv">1995</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>years</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1990 1991 1992 1993 1994 1995</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The phrase “of the same type” is the part worth pausing on, and it is where the first real surprise lives.</p>
+</section>
+<section id="types-and-why-they-matter" class="level2">
+<h2 class="anchored" data-anchor-id="types-and-why-they-matter">Types, and why they matter</h2>
+<p>A vector holds numbers, or text, or logical values, but never a mixture. If you supply a mixture, R does not complain. It silently converts everything to the most accommodating type, which is almost always text.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="st">"a"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>v1</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>v2</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "1" "2" "a"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Look closely at <code>v2</code>. The numbers now have quotation marks around them. They are no longer numbers, and arithmetic on them will fail.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(v2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: argument is not numeric or logical: returning NA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This behavior, called coercion, is the single most common reason a calculation returns <code>NA</code> for no visible reason. A real dataset with one stray text entry in an otherwise numeric column, for instance a <code>"n/a"</code> typed by hand, will import as a text column and every subsequent calculation on it will quietly fail.</p>
+<p>The habit that protects you is to check the type whenever a result surprises you.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(v1)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "numeric"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(v2)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "character"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Logical vectors hold <code>TRUE</code> and <code>FALSE</code>, and you will meet them constantly as the result of a comparison.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>gdp <span class="sc">&gt;</span> <span class="dv">3</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE  TRUE FALSE  TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="arithmetic-happens-element-by-element" class="level2">
+<h2 class="anchored" data-anchor-id="arithmetic-happens-element-by-element">Arithmetic happens element by element</h2>
+<p>Operations on vectors apply to every element at once, which is why R rarely needs the loops that other languages depend on.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">8</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">*</span> <span class="dv">5</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  5 15 25 35</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>a <span class="sc">+</span> b</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  2  5  9 15</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the two vectors are of unequal length, R recycles the shorter one to match the longer, rather than raising an error.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>) <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 11 22 13 24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is occasionally convenient and frequently dangerous. If you did not intend the recycling, you now have a result that looks plausible and is wrong. When two vectors should be the same length, check with <code>length()</code> before combining them.</p>
+</section>
+<section id="getting-at-parts-of-a-vector" class="level2">
+<h2 class="anchored" data-anchor-id="getting-at-parts-of-a-vector">Getting at parts of a vector</h2>
+<p>Square brackets extract elements by position, counting from one rather than from zero.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>gdp[<span class="dv">2</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4.7</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>gdp[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2.1 1.3</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>gdp[<span class="sc">-</span><span class="dv">1</span>]        <span class="co"># everything except the first</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4.7 1.3 8.9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You can also select with a logical condition, which is the form you will use most.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gdp[gdp <span class="sc">&gt;</span> <span class="dv">3</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4.7 8.9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="missing-values" class="level2">
+<h2 class="anchored" data-anchor-id="missing-values">Missing values</h2>
+<p>Missing data is written <code>NA</code>, and it is contagious by design.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">45</span>, <span class="cn">NA</span>, <span class="dv">8</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pop)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] NA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>R is telling you something true: the mean of a set that includes an unknown value is unknown. If you are content to ignore the missing case, say so explicitly.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pop, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 21.66667</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Say so deliberately rather than reflexively. Dropping missing cases is a substantive decision about your sample, and the final project asks you to make such decisions visible rather than silent.</p>
+<p>To find them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(pop)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE FALSE  TRUE FALSE</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(pop))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="data-frames">Data frames</h2>
+<p>A data frame is a table: several vectors of equal length standing side by side as columns, each with a name, each with its own type. This is what a political science dataset is.</p>
+<p>Load one. The <code>read.csv()</code> function accepts a web address directly, so nothing needs downloading.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These are the data behind Fearon and Laitin’s 2003 article on ethnicity, insurgency, and civil war, one of the most cited studies in the conflict literature. The unit of analysis is the country-year, and we will return to it in Week 6.</p>
+</section>
+<section id="look-before-you-calculate" class="level2">
+<h2 class="anchored" data-anchor-id="look-before-you-calculate">Look before you calculate</h2>
+<p>Before doing anything with a new dataset, find out what you have.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(fl)          <span class="co"># rows and columns</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(fl)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fl)        <span class="co"># column names</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fl, <span class="at">n =</span> <span class="dv">3</span>)  <span class="co"># first three rows</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fl)          <span class="co"># structure: every column, its type, first few values</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>str()</code> is the most useful of these, because it reports the type of every column. A numeric variable that arrived as text will announce itself here rather than three steps later.</p>
+<p>For a single variable, <code>summary()</code> gives the distribution and, importantly, the count of missing values.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fl<span class="sc">$</span>gdpen)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The dollar sign extracts one column by name. It is the workhorse of base R and you will use it constantly.</p>
+</section>
+<section id="an-example-of-why-you-look-first" class="level2">
+<h2 class="anchored" data-anchor-id="an-example-of-why-you-look-first">An example of why you look first</h2>
+<p>The outcome variable in these data is <code>onset</code>, coded one in a country-year when a civil war begins and zero otherwise. Count its values.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(fl<span class="sc">$</span>onset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You will find a handful of zeros and ones, as expected, and also a single observation coded <code>4</code>. That is a data entry error, present in the distributed file, and it has survived into a great many replications.</p>
+<p>It matters. A model fitted with <code>onset</code> treated as numeric would take that four seriously. Left as a factor with three levels, a classifier would try to predict a category that occurs once in six thousand cases. Either way the result is wrong in a manner no error message will announce.</p>
+<p>The fix is one line.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fl<span class="sc">$</span>onset[fl<span class="sc">$</span>onset <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(fl<span class="sc">$</span>onset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The lesson generalizes beyond this dataset. Run <code>table()</code> on every categorical variable and <code>summary()</code> on every numeric one before you model anything. It takes two minutes and it is the cheapest error-catching you will ever do.</p>
+</section>
+<section id="selecting-rows-and-columns" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-rows-and-columns">Selecting rows and columns</h2>
+<p>Data frames take two indices inside the brackets, rows first and columns second.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fl[<span class="dv">1</span>, ]            <span class="co"># first row, all columns</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fl[, <span class="st">"onset"</span>]      <span class="co"># the onset column</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fl[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="fu">c</span>(<span class="st">"country"</span>, <span class="st">"year"</span>, <span class="st">"onset"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To keep rows meeting a condition:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>africa <span class="ot">&lt;-</span> fl[fl<span class="sc">$</span>ssafrica <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(africa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note the double equals sign. A single <code>=</code> assigns; a double <code>==</code> asks whether two things are equal. Mixing them up is a rite of passage.</p>
+</section>
+<section id="the-tidyverse-and-the-pipe" class="level2">
+<h2 class="anchored" data-anchor-id="the-tidyverse-and-the-pipe">The tidyverse, and the pipe</h2>
+<p>Base R can do everything above, and for many tasks the tidyverse offers a version that reads more like a sentence. Install it once, then load it in each session.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")   # once, ever</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)                <span class="co"># every session</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The pipe operator <code>%&gt;%</code> takes whatever is on its left and passes it as the first argument to the function on its right. Written this way, a chain of operations reads in the order it happens.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fl <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ssafrica <span class="sc">==</span> <span class="dv">1</span>, year <span class="sc">&gt;=</span> <span class="dv">1980</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(country, year, onset, gdpen) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compare that with the base R equivalent, which has to be read from the inside out:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fl[fl<span class="sc">$</span>ssafrica <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> fl<span class="sc">$</span>year <span class="sc">&gt;=</span> <span class="dv">1980</span>, <span class="fu">c</span>(<span class="st">"country"</span>, <span class="st">"year"</span>, <span class="st">"onset"</span>, <span class="st">"gdpen"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Both are correct. The piped version is easier to modify six weeks later, which is why the handouts use it. In RStudio, <strong>Cmd and Shift and M</strong> on a Mac, or <strong>Ctrl and Shift and M</strong> on Windows, types the pipe.</p>
+<p>Three verbs will carry most of your work. <code>filter()</code> keeps rows, <code>select()</code> keeps columns, and <code>mutate()</code> creates new ones.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fl <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gdpen)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_pop =</span> <span class="fu">log</span>(pop)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(country, year, gdpen, log_pop) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="factors" class="level2">
+<h2 class="anchored" data-anchor-id="factors">Factors</h2>
+<p>A factor is R’s type for a categorical variable: values drawn from a fixed set of levels. Modeling functions expect categorical outcomes as factors, so you will convert deliberately.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fl<span class="sc">$</span>onset <span class="ot">&lt;-</span> <span class="fu">factor</span>(fl<span class="sc">$</span>onset)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(fl<span class="sc">$</span>onset)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "0" "1"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One warning worth carrying. Converting a factor straight to numeric returns the level codes, not the labels, so a factor with levels “0” and “1” becomes 1 and 2. If you need the underlying numbers, route through character first.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">as.character</span>(fl<span class="sc">$</span>onset))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="matrices-briefly" class="level2">
+<h2 class="anchored" data-anchor-id="matrices-briefly">Matrices, briefly</h2>
+<p>A matrix is a rectangle of values that are all the same type, which is the difference from a data frame. You will not build many, but they appear inside modeling functions, and older code uses <code>cbind()</code> and <code>rbind()</code> to assemble them.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">7</span>), <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>m</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(m)               <span class="co"># transpose</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(m, <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">4</span>, <span class="dv">2</span>))  <span class="co"># add a column</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Recognizing them is enough for now. Week 4 returns to matrices when text becomes a document-term matrix.</p>
+</section>
+<section id="getting-help" class="level2">
+<h2 class="anchored" data-anchor-id="getting-help">Getting help</h2>
+<p>Every function has a help page, reachable with a question mark.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>?mean</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>?read.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <strong>Examples</strong> section at the bottom is usually the fastest way in, because you can run those lines directly. If you do not know the function’s name, <code>??regression</code> searches the text of all installed help pages.</p>
+</section>
+<section id="exercise" class="level2">
+<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
+<p>Roughly twenty minutes. Do it in a script rather than the console, so you still have it afterward.</p>
+<ol type="1">
+<li><p>Create a numeric vector of five values and a character vector of five country names. Confirm the type of each with <code>class()</code>.</p></li>
+<li><p>Combine one number and one country name into a single vector with <code>c()</code>. Check its class. Explain in a comment what happened and why.</p></li>
+<li><p>Load the Fearon and Laitin data. Report how many rows and columns it has.</p></li>
+<li><p>Run <code>table()</code> on <code>onset</code>. Note the anomaly, correct it, and run <code>table()</code> again to confirm.</p></li>
+<li><p>Using the pipe, keep only country-years from 1990 onward with <code>onset</code> equal to one, and select <code>country</code>, <code>year</code>, and <code>gdpen</code>. How many civil war onsets does that leave?</p></li>
+<li><p>Compute the mean of <code>gdpen</code> across the whole dataset. It returns <code>NA</code>. Work out why, then compute it in a way that succeeds, and add a comment saying what your version is actually the mean of.</p></li>
+</ol>
+<p>Step 6 is the one that matters. Every dataset you meet in this course has missing values, and the difference between a mean of the observed cases and a mean of the sample is a difference you will have to state plainly in your final project.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -658,13 +912,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../bootcamp/01-four-ways-to-run-r.html" class="pagination-link" aria-label="&quot;Four Ways to Run R Code&quot;">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">“Four Ways to Run R Code”</span>
+      <a href="../bootcamp/01-four-ways-to-run-r.html" class="pagination-link" aria-label="Four Ways to Run R Code">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Four Ways to Run R Code</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../bootcamp/03-projects-and-paths.html" class="pagination-link" aria-label="&quot;Projects, Paths, and Reproducible Habits&quot;">
-        <span class="nav-page-text">“Projects, Paths, and Reproducible Habits”</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../bootcamp/03-projects-and-paths.html" class="pagination-link" aria-label="Projects, Paths, and Reproducible Habits">
+        <span class="nav-page-text">Projects, Paths, and Reproducible Habits</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,3 +1,173 @@
-# "Projects, Paths, and Reproducible Habits" {.unnumbered}
+# Projects, Paths, and Reproducible Habits {.unnumbered}
 
-*In preparation.*
+Code that runs on your machine and code that runs are not the same thing. The gap between them is where most of the marks on your final project's reproducibility criterion are lost, and almost all of it comes down to a handful of habits that cost nothing once you have them.
+
+This chapter is about those habits. None of the material is difficult. What makes it worth a chapter is that the failures it prevents do not appear until the moment they are most expensive, which is when someone else opens your work.
+
+## The problem, stated plainly
+
+Suppose you write this at the top of an analysis.
+
+``` r
+setwd("/Users/babak/Documents/AI course/week 4/analysis")
+read.csv("civil_war.csv")
+```
+
+On your laptop, in that folder, it works. Everywhere else it fails, because no other computer has that folder. Your instructor does not have it, your co-author or colleague does not have it, and neither will you after you reorganize your files in March.
+
+`setwd()` is the most common single reason a submitted document does not run. You will see it constantly in older code, including in tutorials and in published replication files, and the instinct to copy it is understandable. Do not. Nothing in this course requires it, and using it may cost you points on the project.
+
+The replacement is not a different function. It is a different way of organizing work.
+
+## R Projects
+
+An R Project is a folder that R treats as the home of a piece of work. Creating one puts a small file with the extension `.Rproj` inside the folder, and from then on, opening that file does three useful things at once: it starts a fresh R session, it sets the working directory to that folder, and it remembers which files you had open.
+
+That second point is the whole trick. Because the working directory is already correct, you never have to set it, and because it is set relative to the project rather than to your machine, the same code works on anyone else's computer.
+
+To create one: **File \> New Project \> New Directory \> New Project**, then give the folder a name and a location. For work you already have in a folder, use **File \> New Project \> Existing Directory** instead.
+
+From then on, open the project by double-clicking the `.Rproj` file rather than by opening a script directly. If you open a `.qmd` from the Finder, R starts with no project and the paths will not resolve, which produces a "cannot open file" error that looks like a problem with the file and is not.
+
+## Relative paths
+
+Inside a project, you refer to files by their location relative to the project folder, with no leading slash and no drive letter.
+
+``` r
+dat <- read.csv("data/civil_war.csv")
+```
+
+That line means "the file `civil_war.csv`, inside a folder called `data`, inside whatever folder this project lives in." It is true on every machine.
+
+A few conventions worth following:
+
+- Forward slashes, `/`, on every operating system, including Windows. R accepts them everywhere.
+- No spaces in file or folder names. Use `civil_war.csv` rather than `civil war.csv`. Spaces are legal, but they will eventually bite you.
+- Lower case, consistently. Some systems treat `Data/` and `data/` as the same folder and some do not.
+
+## A layout that works
+
+You do not need an elaborate structure. This is enough for the final project and it will still make sense a year from now.
+
+```         
+YourProject/
+  YourProject.Rproj
+  analysis.qmd          the document you submit
+  data/
+    raw/                exactly as downloaded, never edited
+    processed/          anything your code produced
+  R/
+    clean-data.R        scripts that do a job
+  figures/              plots your code saved
+```
+
+The distinction between `data/raw/` and `data/processed/` is the one that earns its keep. Raw files are never opened in Excel and never edited by hand. Every change is made in code, which means every change is visible, reversible, and explicable when a reviewer, instructor, or colleague asks why your sample has 4,318 rows rather than 4,502.
+
+## Note on this course
+
+The handouts here load their data straight from a web address, so there are no local files to find.
+
+``` r
+fl <- read.csv("https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv")
+```
+
+That is deliberate. It means the code in every chapter runs for you immediately, on any machine, with nothing downloaded.
+
+Your final project is different. You will have data files of your own, and the paths in your document will have to resolve on a machine that is not yours. The habits in this chapter are for that, and it is suggested to adopted for your final project.
+
+## Never save the workspace
+
+By default, R offers to save your objects when you quit and to reload them when you return. Turn this off.
+
+**Tools \> Global Options \> General**, then set **Save workspace to .RData on exit** to **Never**, and untick **Restore .RData into workspace at startup**.
+
+The reason is that a restored workspace hides broken code. An object created three weeks ago by a line you have since deleted is still sitting in memory, so your analysis appears to work while depending on something that no longer exists anywhere in your files. The failure surfaces when you knit, or when someone else runs it, which is exactly the wrong time.
+
+Your objects should always be recreatable by running your code. If they are not, the code is incomplete.
+
+## Restart, and run from clean
+
+The companion habit is to restart R often. **Session \> Restart R**, or **Cmd and Shift and F10** on a Mac, **Ctrl and Shift and F10** on Windows.
+
+After restarting, run your document from the top. If it completes, it works. If it does not, you have found a dependency on something that existed only in your session, and you have found it now rather than the night before a deadline.
+
+Do this before every submission, without exception. It is the entire test, and it takes under a minute.
+
+## Packages
+
+Load every package you use at the top of the document, in one place.
+
+``` r
+library(tidyverse)
+library(caret)
+```
+
+**Do not put `install.packages()` in a document you submit.** Installation is something you do once on your own machine, from the console. Left in a document, it re-installs packages on the reader's computer, which is slow, occasionally destructive, and never what they wanted.
+
+If a package is missing, the reader gets a clear error naming it, which is the correct outcome. A short note in your README saying which packages the project needs is a courtesy worth extending.
+
+## Seeds
+
+Anything involving randomness, which in this course means splitting data into training and test sets, sampling, and fitting a random forest, gives a different answer each time it runs.
+
+``` r
+set.seed(7)
+```
+
+Put that line near the top, once, before anything random happens. The number itself is arbitrary and does not matter. What matters is that with it, your reported numbers reproduce exactly, and without it, a reader who runs your code gets results that disagree with your text for no stated reason.
+
+## When a path fails anyway
+
+The error will look like this.
+
+```         
+Warning: cannot open file 'data/civil_war.csv': No such file or directory
+Error in file(file, "rt") : cannot open the connection
+```
+
+Three checks, in order.
+
+**Where does R think it is?**
+
+``` r
+getwd()
+```
+
+If that is not your project folder, you opened the file without opening the project. Close everything and open the `.Rproj` file.
+
+**Does R see the file?**
+
+``` r
+list.files("data")
+```
+
+If the file is not listed, the problem is the name or the location, not the code.
+
+**Is the name exactly right?** Capital letters count. So does the extension, and macOS hides extensions by default, so a file that looks like `civil_war.csv` in the Finder may actually be `civil_war.csv.txt`.
+
+Notice that the fix is never `setwd()`.
+
+## Exercise
+
+About fifteen minutes.
+
+1.  Create a new R Project called `ai-practice`, somewhere you will find it again.
+
+2.  Inside the project folder, create a `data` folder. In the RStudio Files pane, use the **New Folder** button.
+
+3.  Download the Fearon and Laitin file into it, using code rather than your browser:
+
+    ``` r
+    download.file(
+      "https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv",
+      destfile = "data/FearonLaitin2003.csv"
+    )
+    ```
+
+4.  Write a script that loads it with a relative path and reports its dimensions. Save the script as `explore.R`.
+
+5.  Set the workspace options as described above. Then restart R and run your script from the top. It should work with an empty environment.
+
+6.  Now break it on purpose. Change the path to `Data/FearonLaitin2003.csv`, with a capital D, and run it again. Read the error carefully, then run `getwd()` and `list.files("data")` and confirm what each one tells you.
+
+Step 6 is the useful one. That error message will find you again during the block, and recognizing it in ten seconds rather than twenty minutes is the only thing separating an evening's work from an evening's frustration.

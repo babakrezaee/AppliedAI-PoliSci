@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>“Installing R and RStudio” – Applied AI for Political Scientists</title>
+<title>Installing R and RStudio – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">“Installing R and RStudio”</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">Installing R and RStudio</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +163,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +256,28 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#step-1-install-r" id="toc-step-1-install-r" class="nav-link active" data-scroll-target="#step-1-install-r">Step 1: install R</a></li>
+  <li><a href="#step-2-install-rstudio" id="toc-step-2-install-rstudio" class="nav-link" data-scroll-target="#step-2-install-rstudio">Step 2: install RStudio</a></li>
+  <li><a href="#step-3-check-that-it-worked" id="toc-step-3-check-that-it-worked" class="nav-link" data-scroll-target="#step-3-check-that-it-worked">Step 3: check that it worked</a></li>
+  <li><a href="#step-4-install-the-packages" id="toc-step-4-install-the-packages" class="nav-link" data-scroll-target="#step-4-install-the-packages">Step 4: install the packages</a></li>
+  <li><a href="#step-5-install-quarto" id="toc-step-5-install-quarto" class="nav-link" data-scroll-target="#step-5-install-quarto">Step 5: install Quarto</a></li>
+  <li><a href="#when-installation-goes-wrong" id="toc-when-installation-goes-wrong" class="nav-link" data-scroll-target="#when-installation-goes-wrong">When installation goes wrong</a></li>
+  <li><a href="#a-little-configuration" id="toc-a-little-configuration" class="nav-link" data-scroll-target="#a-little-configuration">A little configuration</a></li>
+  <li><a href="#before-you-move-on" id="toc-before-you-move-on" class="nav-link" data-scroll-target="#before-you-move-on">Before you move on</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">“Installing R and RStudio”</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">Installing R and RStudio</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">“Installing R and RStudio”</h1>
+<h1 class="title">Installing R and RStudio</h1>
 </div>
 
 
@@ -246,9 +294,72 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p>Two separate pieces of software are needed, and the distinction between them causes more confusion than it should. <strong>R</strong> is the language: the engine that does the computing. <strong>RStudio</strong> is the environment you work in: the editor, the panes, the buttons. RStudio cannot do anything without R behind it, which is why R goes first.</p>
+<p>Everything here is free, and the whole process takes about fifteen minutes on a normal connection. Do it before the first session on 2 September rather than during it.</p>
+<section id="step-1-install-r" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-install-r">Step 1: install R</h2>
+<p>Go to <a href="https://cran.r-project.org"><strong>cran.r-project.org</strong></a> and choose the download link for your system.</p>
+<p><strong>On Windows</strong>, click <em>Download R for Windows</em>, then <em>base</em>, then the download link at the top. Run the installer and accept the defaults.</p>
+<p><strong>On macOS</strong>, click <em>Download R for macOS</em> and pick the correct <code>.pkg</code> file. There are usually two. If your Mac has an Apple silicon chip (M1, M2, M3, or M4), take the <strong>arm64</strong> version. If it has an Intel chip, take the other. To check, click the Apple menu, then <em>About This Mac</em>, and read the Chip or Processor line.</p>
+<p>Choosing the wrong one on a Mac is the single most common installation problem, and it produces confusing errors later rather than a clear failure at install time.</p>
+</section>
+<section id="step-2-install-rstudio" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-install-rstudio">Step 2: install RStudio</h2>
+<p>Go to <a href="https://posit.co/download/rstudio-desktop"><strong>posit.co/download/rstudio-desktop</strong></a>. The page detects your system and offers the right installer. Take the free Desktop version; there is no need for any paid tier or for RStudio Server.</p>
+<p>Install it, then open <strong>RStudio</strong>, not R. From here on, RStudio is the only one of the two you will launch directly.</p>
+</section>
+<section id="step-3-check-that-it-worked" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-check-that-it-worked">Step 3: check that it worked</h2>
+<p>You should see four panes, or two panes with tabs. Find the <strong>Console</strong>, on the left, and type this at the <code>&gt;</code> prompt, then press Enter.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If <code>[1] 4</code> appears, both pieces are installed and talking to each other.</p>
+<p>Then check the version:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>R.version.string</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Anything from <strong>R 4.3.0</strong> onward is fine for this course. If you have an older installation lying around from a previous course, update it now rather than debugging a version problem in Week 3.</p>
+</section>
+<section id="step-4-install-the-packages" class="level2">
+<h2 class="anchored" data-anchor-id="step-4-install-the-packages">Step 4: install the packages</h2>
+<p>A package is a bundle of functions someone else has written and shared. R ships with a great many built in, and everything else is installed once and then loaded whenever needed.</p>
+<p>Run this in the Console. It will take several minutes and produce a large amount of scrolling output, which is normal.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"rmarkdown"</span>, <span class="st">"knitr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then confirm they load:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You will see a short message listing the packages that came along with it and noting a couple of conflicts. That message is informational, not an error.</p>
+<p>The remaining packages, for classification, text, and language model work, are installed in the week they are first needed. There is no advantage to installing everything now.</p>
+</section>
+<section id="step-5-install-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="step-5-install-quarto">Step 5: install Quarto</h2>
+<p>Quarto renders documents that combine code, prose, and output, and your final project is submitted in that form.</p>
+<p>Recent versions of RStudio include it already. Check in the Console:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>quarto<span class="sc">::</span><span class="fu">quarto_version</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If that returns a version number, you are done. If it reports that the package is not installed, run <code>install.packages("quarto")</code> and try again. If it still cannot find Quarto itself, download it from <a href="https://quarto.org/docs/get-started"><strong>quarto.org/docs/get-started</strong></a> and install it separately.</p>
+</section>
+<section id="when-installation-goes-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="when-installation-goes-wrong">When installation goes wrong</h2>
+<p>Three problems account for nearly all of them.</p>
+<p><strong>“Package not available” or a compilation error on macOS.</strong> Almost always the arm64 and Intel mismatch from Step 1. Uninstall R, check your chip, and install the matching version.</p>
+<p><strong>Permission denied, or the installation appears to succeed but the package will not load.</strong> Common on university-managed laptops, where the default library folder is not writable. R usually offers to use a personal library instead, and you should accept. If it does not offer, run this once and then reinstall:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="fu">Sys.getenv</span>(<span class="st">"R_LIBS_USER"</span>), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>The download stalls or times out.</strong> More often a network problem than a problem with your machine. Try again, and if it persists, try a different connection or a different CRAN mirror, which you can choose under <strong>Tools &gt; Global Options &gt; Packages</strong>.</p>
+<p>If none of these apply, bring the laptop to the first session. A five-minute look in person is faster than an evening of email, and installation problems are common enough that nobody should feel behind because of one.</p>
+</section>
+<section id="a-little-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="a-little-configuration">A little configuration</h2>
+<p>Two settings are worth changing now. Go to <strong>Tools &gt; Global Options &gt; General</strong> and:</p>
+<ul>
+<li>Set <strong>Save workspace to .RData on exit</strong> to <strong>Never</strong>.</li>
+<li>Untick <strong>Restore .RData into workspace at startup</strong>.</li>
+</ul>
+<p>Chapter 3 explains why these matter. In short, they are what make it possible to trust that your code actually works rather than merely appearing to.</p>
+<p>While you are in Global Options, <strong>Appearance</strong> lets you change the theme and font size. Not important, but you will be looking at this window for eight weeks, so it is worth a minute.</p>
+</section>
+<section id="before-you-move-on" class="level2">
+<h2 class="anchored" data-anchor-id="before-you-move-on">Before you move on</h2>
+<p>You should be able to open RStudio, type <code>2 + 2</code> in the Console, get <code>4</code>, and run <code>library(tidyverse)</code> without an error.</p>
+<p>That is the whole requirement. The next chapter starts from there.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -663,8 +774,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../bootcamp/01-four-ways-to-run-r.html" class="pagination-link" aria-label="&quot;Four Ways to Run R Code&quot;">
-        <span class="nav-page-text">“Four Ways to Run R Code”</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../bootcamp/01-four-ways-to-run-r.html" class="pagination-link" aria-label="Four Ways to Run R Code">
+        <span class="nav-page-text">Four Ways to Run R Code</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

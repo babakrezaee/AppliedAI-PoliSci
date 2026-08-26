@@ -1,3 +1,335 @@
-# "Objects, Vectors, and Data Frames" {.unnumbered}
+# Objects, Vectors, and Data Frames {.unnumbered}
 
-*In preparation.*
+Everything in R is an object, and almost everything you will do in this course amounts to creating an object, inspecting it, and passing it to a function. This chapter covers the three kinds of object you will meet constantly: the vector, which holds a column of values; the data frame, which holds a table of them; and the individual value, which is really just a vector of length one.
+
+The order matters. Data frames are what political science data actually look like, and they are the destination. Vectors come first because a data frame is built out of them, and because most of the errors you will hit in Week 2 come from a vector quietly being the wrong type.
+
+## Assignment
+
+An object is created by assigning something a name. R accepts two operators for this, and you will see both in the wild.
+
+``` r
+x <- 5
+y = 5
+```
+
+Use `<-`. The two are equivalent in this context, but `=` also means other things in R, including naming an argument inside a function call, so keeping the two visually distinct saves confusion later. In RStudio, **Alt and minus** on Windows or **Option and minus** on a Mac types it for you.
+
+To see what an object contains, type its name.
+
+``` r
+x
+#> [1] 5
+```
+
+To remove one, use `rm()`.
+
+``` r
+rm(x)
+```
+
+Names are subject to a few rules. They may contain letters, numbers, a period, and an underscore, but not spaces or symbols such as `!`, `+`, or `#`. They cannot begin with a number. And R is case sensitive, so `polity` and `Polity` are two different objects, which is a more common source of "object not found" than anyone expects.
+
+## Vectors
+
+A vector is an ordered collection of values of the same type. You build one with `c()`, for combine.
+
+``` r
+gdp <- c(2.1, 4.7, 1.3, 8.9)
+gdp
+#> [1] 2.1 4.7 1.3 8.9
+```
+
+Sequences of consecutive integers have a shorthand.
+
+``` r
+years <- 1990:1995
+years
+#> [1] 1990 1991 1992 1993 1994 1995
+```
+
+The phrase "of the same type" is the part worth pausing on, and it is where the first real surprise lives.
+
+## Types, and why they matter
+
+A vector holds numbers, or text, or logical values, but never a mixture. If you supply a mixture, R does not complain. It silently converts everything to the most accommodating type, which is almost always text.
+
+``` r
+v1 <- c(1, 2, 3)
+v2 <- c(1, 2, "a")
+
+v1
+#> [1] 1 2 3
+
+v2
+#> [1] "1" "2" "a"
+```
+
+Look closely at `v2`. The numbers now have quotation marks around them. They are no longer numbers, and arithmetic on them will fail.
+
+``` r
+mean(v2)
+#> Warning: argument is not numeric or logical: returning NA
+```
+
+This behavior, called coercion, is the single most common reason a calculation returns `NA` for no visible reason. A real dataset with one stray text entry in an otherwise numeric column, for instance a `"n/a"` typed by hand, will import as a text column and every subsequent calculation on it will quietly fail.
+
+The habit that protects you is to check the type whenever a result surprises you.
+
+``` r
+class(v1)
+#> [1] "numeric"
+
+class(v2)
+#> [1] "character"
+```
+
+Logical vectors hold `TRUE` and `FALSE`, and you will meet them constantly as the result of a comparison.
+
+``` r
+gdp > 3
+#> [1] FALSE  TRUE FALSE  TRUE
+```
+
+## Arithmetic happens element by element
+
+Operations on vectors apply to every element at once, which is why R rarely needs the loops that other languages depend on.
+
+``` r
+a <- c(1, 3, 5, 7)
+b <- c(1, 2, 4, 8)
+
+a * 5
+#> [1]  5 15 25 35
+
+a + b
+#> [1]  2  5  9 15
+```
+
+If the two vectors are of unequal length, R recycles the shorter one to match the longer, rather than raising an error.
+
+``` r
+c(10, 20) + c(1, 2, 3, 4)
+#> [1] 11 22 13 24
+```
+
+This is occasionally convenient and frequently dangerous. If you did not intend the recycling, you now have a result that looks plausible and is wrong. When two vectors should be the same length, check with `length()` before combining them.
+
+## Getting at parts of a vector
+
+Square brackets extract elements by position, counting from one rather than from zero.
+
+``` r
+gdp[2]
+#> [1] 4.7
+
+gdp[c(1, 3)]
+#> [1] 2.1 1.3
+
+gdp[-1]        # everything except the first
+#> [1] 4.7 1.3 8.9
+```
+
+You can also select with a logical condition, which is the form you will use most.
+
+``` r
+gdp[gdp > 3]
+#> [1] 4.7 8.9
+```
+
+## Missing values
+
+Missing data is written `NA`, and it is contagious by design.
+
+``` r
+pop <- c(12, 45, NA, 8)
+mean(pop)
+#> [1] NA
+```
+
+R is telling you something true: the mean of a set that includes an unknown value is unknown. If you are content to ignore the missing case, say so explicitly.
+
+``` r
+mean(pop, na.rm = TRUE)
+#> [1] 21.66667
+```
+
+Say so deliberately rather than reflexively. Dropping missing cases is a substantive decision about your sample, and the final project asks you to make such decisions visible rather than silent.
+
+To find them:
+
+``` r
+is.na(pop)
+#> [1] FALSE FALSE  TRUE FALSE
+
+sum(is.na(pop))
+#> [1] 1
+```
+
+## Data frames
+
+A data frame is a table: several vectors of equal length standing side by side as columns, each with a name, each with its own type. This is what a political science dataset is.
+
+Load one. The `read.csv()` function accepts a web address directly, so nothing needs downloading.
+
+``` r
+fl <- read.csv("https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv")
+```
+
+These are the data behind Fearon and Laitin's 2003 article on ethnicity, insurgency, and civil war, one of the most cited studies in the conflict literature. The unit of analysis is the country-year, and we will return to it in Week 6.
+
+## Look before you calculate
+
+Before doing anything with a new dataset, find out what you have.
+
+``` r
+dim(fl)          # rows and columns
+nrow(fl)
+names(fl)        # column names
+head(fl, n = 3)  # first three rows
+str(fl)          # structure: every column, its type, first few values
+```
+
+`str()` is the most useful of these, because it reports the type of every column. A numeric variable that arrived as text will announce itself here rather than three steps later.
+
+For a single variable, `summary()` gives the distribution and, importantly, the count of missing values.
+
+``` r
+summary(fl$gdpen)
+```
+
+The dollar sign extracts one column by name. It is the workhorse of base R and you will use it constantly.
+
+## An example of why you look first
+
+The outcome variable in these data is `onset`, coded one in a country-year when a civil war begins and zero otherwise. Count its values.
+
+``` r
+table(fl$onset)
+```
+
+You will find a handful of zeros and ones, as expected, and also a single observation coded `4`. That is a data entry error, present in the distributed file, and it has survived into a great many replications.
+
+It matters. A model fitted with `onset` treated as numeric would take that four seriously. Left as a factor with three levels, a classifier would try to predict a category that occurs once in six thousand cases. Either way the result is wrong in a manner no error message will announce.
+
+The fix is one line.
+
+``` r
+fl$onset[fl$onset > 1] <- 1
+table(fl$onset)
+```
+
+The lesson generalizes beyond this dataset. Run `table()` on every categorical variable and `summary()` on every numeric one before you model anything. It takes two minutes and it is the cheapest error-catching you will ever do.
+
+## Selecting rows and columns
+
+Data frames take two indices inside the brackets, rows first and columns second.
+
+``` r
+fl[1, ]            # first row, all columns
+fl[, "onset"]      # the onset column
+fl[1:5, c("country", "year", "onset")]
+```
+
+To keep rows meeting a condition:
+
+``` r
+africa <- fl[fl$ssafrica == 1, ]
+nrow(africa)
+```
+
+Note the double equals sign. A single `=` assigns; a double `==` asks whether two things are equal. Mixing them up is a rite of passage.
+
+## The tidyverse, and the pipe
+
+Base R can do everything above, and for many tasks the tidyverse offers a version that reads more like a sentence. Install it once, then load it in each session.
+
+``` r
+# install.packages("tidyverse")   # once, ever
+library(tidyverse)                # every session
+```
+
+The pipe operator `%>%` takes whatever is on its left and passes it as the first argument to the function on its right. Written this way, a chain of operations reads in the order it happens.
+
+``` r
+fl %>%
+  filter(ssafrica == 1, year >= 1980) %>%
+  select(country, year, onset, gdpen) %>%
+  head()
+```
+
+Compare that with the base R equivalent, which has to be read from the inside out:
+
+``` r
+head(fl[fl$ssafrica == 1 & fl$year >= 1980, c("country", "year", "onset", "gdpen")])
+```
+
+Both are correct. The piped version is easier to modify six weeks later, which is why the handouts use it. In RStudio, **Cmd and Shift and M** on a Mac, or **Ctrl and Shift and M** on Windows, types the pipe.
+
+Three verbs will carry most of your work. `filter()` keeps rows, `select()` keeps columns, and `mutate()` creates new ones.
+
+``` r
+fl %>%
+  filter(!is.na(gdpen)) %>%
+  mutate(log_pop = log(pop)) %>%
+  select(country, year, gdpen, log_pop) %>%
+  head()
+```
+
+## Factors
+
+A factor is R's type for a categorical variable: values drawn from a fixed set of levels. Modeling functions expect categorical outcomes as factors, so you will convert deliberately.
+
+``` r
+fl$onset <- factor(fl$onset)
+levels(fl$onset)
+#> [1] "0" "1"
+```
+
+One warning worth carrying. Converting a factor straight to numeric returns the level codes, not the labels, so a factor with levels "0" and "1" becomes 1 and 2. If you need the underlying numbers, route through character first.
+
+``` r
+as.numeric(as.character(fl$onset))
+```
+
+## Matrices, briefly
+
+A matrix is a rectangle of values that are all the same type, which is the difference from a data frame. You will not build many, but they appear inside modeling functions, and older code uses `cbind()` and `rbind()` to assemble them.
+
+``` r
+m <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2)
+m
+t(m)               # transpose
+cbind(m, c(7, 4, 2))  # add a column
+```
+
+Recognizing them is enough for now. Week 4 returns to matrices when text becomes a document-term matrix.
+
+## Getting help
+
+Every function has a help page, reachable with a question mark.
+
+``` r
+?mean
+?read.csv
+```
+
+The **Examples** section at the bottom is usually the fastest way in, because you can run those lines directly. If you do not know the function's name, `??regression` searches the text of all installed help pages.
+
+## Exercise
+
+Roughly twenty minutes. Do it in a script rather than the console, so you still have it afterward.
+
+1.  Create a numeric vector of five values and a character vector of five country names. Confirm the type of each with `class()`.
+
+2.  Combine one number and one country name into a single vector with `c()`. Check its class. Explain in a comment what happened and why.
+
+3.  Load the Fearon and Laitin data. Report how many rows and columns it has.
+
+4.  Run `table()` on `onset`. Note the anomaly, correct it, and run `table()` again to confirm.
+
+5.  Using the pipe, keep only country-years from 1990 onward with `onset` equal to one, and select `country`, `year`, and `gdpen`. How many civil war onsets does that leave?
+
+6.  Compute the mean of `gdpen` across the whole dataset. It returns `NA`. Work out why, then compute it in a way that succeeds, and add a comment saying what your version is actually the mean of.
+
+Step 6 is the one that matters. Every dataset you meet in this course has missing values, and the difference between a mean of the observed cases and a mean of the sample is a difference you will have to state plainly in your final project.

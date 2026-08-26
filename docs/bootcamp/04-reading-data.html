@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>“Reading Data into R” – Applied AI for Political Scientists</title>
+<title>Reading Data into R – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/04-reading-data.html">“Reading Data into R”</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/04-reading-data.html">Reading Data into R</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +163,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +256,30 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#csv-the-ordinary-case" id="toc-csv-the-ordinary-case" class="nav-link active" data-scroll-target="#csv-the-ordinary-case">CSV, the ordinary case</a></li>
+  <li><a href="#straight-from-a-web-address" id="toc-straight-from-a-web-address" class="nav-link" data-scroll-target="#straight-from-a-web-address">Straight from a web address</a></li>
+  <li><a href="#check-the-import-every-time" id="toc-check-the-import-every-time" class="nav-link" data-scroll-target="#check-the-import-every-time">Check the import, every time</a></li>
+  <li><a href="#missing-value-codes" id="toc-missing-value-codes" class="nav-link" data-scroll-target="#missing-value-codes">Missing value codes</a></li>
+  <li><a href="#when-the-commas-are-not-commas" id="toc-when-the-commas-are-not-commas" class="nav-link" data-scroll-target="#when-the-commas-are-not-commas">When the commas are not commas</a></li>
+  <li><a href="#accented-characters" id="toc-accented-characters" class="nav-link" data-scroll-target="#accented-characters">Accented characters</a></li>
+  <li><a href="#excel-files" id="toc-excel-files" class="nav-link" data-scroll-target="#excel-files">Excel files</a></li>
+  <li><a href="#stata-and-spss" id="toc-stata-and-spss" class="nav-link" data-scroll-target="#stata-and-spss">Stata and SPSS</a></li>
+  <li><a href="#saving" id="toc-saving" class="nav-link" data-scroll-target="#saving">Saving</a></li>
+  <li><a href="01-four-ways-to-run-r.html#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/04-reading-data.html">“Reading Data into R”</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../bootcamp/00-install.html">R Bootcamp</a></li><li class="breadcrumb-item"><a href="../bootcamp/04-reading-data.html">Reading Data into R</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">“Reading Data into R”</h1>
+<h1 class="title">Reading Data into R</h1>
 </div>
 
 
@@ -246,9 +296,117 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p>Importing data feels like the trivial step before the real work, and it is where a surprising share of analytical errors are born. The reason is that R almost never refuses to import a file. It makes a decision about what your data mean, tells you nothing, and carries on. A column of numbers arrives as text, a missing value code of <code>-99</code> is treated as a real observation, and everything downstream is quietly wrong.</p>
+<p>This chapter covers the formats you will actually meet and, more importantly, the check that catches the failures.</p>
+<section id="csv-the-ordinary-case" class="level2">
+<h2 class="anchored" data-anchor-id="csv-the-ordinary-case">CSV, the ordinary case</h2>
+<p>A comma-separated (CSV) file is plain text with one row per line and commas between fields. It is the format most political science data arrive in, and R reads it out of the box.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/FearonLaitin2003.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>There is also a tidyverse version, <code>read_csv()</code>, with an underscore rather than a period.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/FearonLaitin2003.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Three differences matter in practice. <code>read_csv()</code> is faster on large files, it prints a summary of the column types it guessed, which is useful information rather than clutter, and it returns a tibble rather than a data frame. A tibble is a data frame with better printing behavior, and everything you learned in the previous chapter applies to it unchanged.</p>
+<p>Either is acceptable in this course. The handouts use <code>read.csv()</code> because it needs no package, so the first line of a chapter always runs.</p>
+</section>
+<section id="straight-from-a-web-address" class="level2">
+<h2 class="anchored" data-anchor-id="straight-from-a-web-address">Straight from a web address</h2>
+<p>Both functions accept a URL wherever they accept a filename, which means data can be loaded with nothing downloaded.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is how every dataset in these handouts is loaded. It has two advantages worth naming: the code runs identically on any machine, and there is no file path to get wrong.</p>
+<p>It has one disadvantage. If the address ever changes, the code stops working, and if the file behind the address is edited, your results change without your knowing. For the final project, download the file once and put it on your cloud-based platform, then you have control over your data source than relying on someone else’s server.</p>
+<p>Note the address on Github must be the <strong>raw</strong> one. Clicking a CSV on GitHub shows a formatted preview page, and its address returns HTML rather than data. The <strong>Raw</strong> button gives the address you want, and it always begins <code>raw.githubusercontent.com</code>. You can also upload your files on Dropbox, Googledrive, and Onedrive; just make sure that you have the permission to put the files on these public cloud-based platforms.</p>
+</section>
+<section id="check-the-import-every-time" class="level2">
+<h2 class="anchored" data-anchor-id="check-the-import-every-time">Check the import, every time</h2>
+<p>This is the habit the chapter exists for. Three lines, immediately after loading anything.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(fl)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fl)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You are looking for three things.</p>
+<p><strong>Did every column get the type you expected?</strong> A numeric variable listed as <code>chr</code> in the <code>str()</code> output has a non-numeric value hiding in it somewhere.</p>
+<p><strong>Are the row and column counts right?</strong> If the file should have 6,610 rows and you have 6,609, the header row was probably read as data, or the last line lacks a line break.</p>
+<p><strong>Do the ranges make sense?</strong> <code>summary()</code> reports the minimum and maximum of each numeric column. A <code>polity2</code> score of <code>-88</code> or a population of <code>-99</code> is a missing value code, not an observation, and it will wreck any model that takes it seriously.</p>
+</section>
+<section id="missing-value-codes" class="level2">
+<h2 class="anchored" data-anchor-id="missing-value-codes">Missing value codes</h2>
+<p>Older datasets frequently encode missing values as numbers, with <code>-99</code>, <code>-999</code>, and <code>-88</code> being the common choices. R has no way of knowing this and will treat them as real.</p>
+<p>Tell it explicitly at import.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/survey.csv"</span>, <span class="at">na.strings =</span> <span class="fu">c</span>(<span class="st">"NA"</span>, <span class="st">""</span>, <span class="st">"-99"</span>, <span class="st">"-999"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or fix it afterward, which is clearer when only some columns are affected.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>income[dat<span class="sc">$</span>income <span class="sc">==</span> <span class="sc">-</span><span class="dv">99</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Either way, do it before anything else. A mean computed over a column containing <code>-99</code> is not slightly wrong, it is meaningless, and nothing in the output will tell you.</p>
+</section>
+<section id="when-the-commas-are-not-commas" class="level2">
+<h2 class="anchored" data-anchor-id="when-the-commas-are-not-commas">When the commas are not commas</h2>
+<p>Files exported from Excel on a European system are often separated by semicolons rather than commas, and they use commas as decimal points. Opening one with <code>read.csv()</code> produces a single column of text.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(<span class="st">"data/dutch_export.csv"</span>)   <span class="co"># semicolons, comma decimals</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"data/dutch_export.csv"</span>)   <span class="co"># tidyverse equivalent</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Worth knowing here rather than elsewhere, since Dutch-locale Excel does this by default and several of you will hit it with data you export yourselves.</p>
+<p>If the separator is something else entirely, such as a tab, say so:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"data/file.txt"</span>)                    <span class="co"># tab separated</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/file.txt"</span>, <span class="at">sep =</span> <span class="st">"|"</span>)           <span class="co"># anything else</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The fastest way to diagnose any of this is to open the file in a plain text editor and look at the first two lines. Two minutes of looking beats an hour of guessing.</p>
+</section>
+<section id="accented-characters" class="level2">
+<h2 class="anchored" data-anchor-id="accented-characters">Accented characters</h2>
+<p>Country names, party names, and any text data will contain characters outside plain English. If they arrive mangled, as <code>Ã©</code> where <code>é</code> belongs, the file’s encoding was misread.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/parties.csv"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>UTF-8 is correct for the large majority of files you will meet. This will matter in Week 4, when text becomes data.</p>
+</section>
+<section id="excel-files" class="level2">
+<h2 class="anchored" data-anchor-id="excel-files">Excel files</h2>
+<p>Excel files are not text and cannot be read by <code>read.csv()</code>. Use <code>readxl</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("readxl")</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/data.xlsx"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/data.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Coding"</span>)   <span class="co"># a named sheet</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/data.xlsx"</span>, <span class="at">skip =</span> <span class="dv">3</span>)           <span class="co"># skip title rows</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>skip</code> earns its place. Spreadsheets kept by humans very often carry a title, a blank line, and a note before the actual header row, and without <code>skip</code> all of that is read as data.</p>
+<p>A note on Excel more generally. It is a reasonable place to receive data and a poor place to edit it, because changes made by hand leave no record. If a value must change, change it in R, where the change is visible in your code and reversible.</p>
+</section>
+<section id="stata-and-spss" class="level2">
+<h2 class="anchored" data-anchor-id="stata-and-spss">Stata and SPSS</h2>
+<p>Political science data arrive as <code>.dta</code> and <code>.sav</code> more often than anyone would like. The <code>haven</code> package reads both.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("haven")</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/anes.dta"</span>)   <span class="co"># Stata</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">"data/ess.sav"</span>)    <span class="co"># SPSS</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Older tutorials recommend <code>foreign</code> and <code>Hmisc</code> for this. Both still work, and <code>haven</code> handles recent file versions and preserves variable labels better, so prefer it.</p>
+<p>Labelled columns from these formats sometimes behave unexpectedly in models. If one gives you trouble, strip the labels:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>party <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">zap_labels</span>(dat<span class="sc">$</span>party)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="saving" class="level2">
+<h2 class="anchored" data-anchor-id="saving">Saving</h2>
+<p>To hand data to someone who may not use R, write a CSV.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"data/processed/cleaned.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>row.names = FALSE</code> matters. Without it, R adds a column of row numbers, and a file that is written and read a few times accumulates several of them.</p>
+<p>To save an R object for your own later use, including model objects and anything else a CSV cannot hold, use <code>saveRDS()</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(model, <span class="st">"output/model.rds"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"output/model.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is worth knowing for the final project, or algorithms that take a longer time to run, such as Random Forest. A model that takes several minutes to fit can be fitted once, saved, and read back, so that re-rendering the document does not refit it.</p>
+</section>
+<section id="exercise" class="level2">
+<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
+<p>About twenty minutes. Work in the <code>ai-practice</code> project from the previous chapter.</p>
+<ol type="1">
+<li><p>Load the Fearon and Laitin data from the raw URL and confirm its dimensions.</p></li>
+<li><p>Run <code>str()</code> on it. List two columns that arrived as text. For each, say whether that is correct or whether it should have been numeric.</p></li>
+<li><p>Run <code>summary(fl$polity2)</code>. Look at the minimum. Polity scores are defined on a range of minus ten to plus ten. Is anything outside it, and if so, what do you think those values mean?</p></li>
+<li><p>Make a deliberately awkward file. In the console:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>messy <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">country =</span> <span class="fu">c</span>(<span class="st">"França"</span>, <span class="st">"Türkiye"</span>, <span class="st">"España"</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">score   =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="sc">-</span><span class="dv">99</span>, <span class="fl">3.2</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(messy, <span class="st">"data/messy.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read it back with <code>read.csv("data/messy.csv")</code>, then compute <code>mean(score)</code>. Now read it again treating <code>-99</code> as missing, and compute the mean a second time. Report both numbers and say which one you would put in a paper.</p></li>
+<li><p>Check whether the accented characters survived the round trip. If they did not, read the file again with <code>encoding = "UTF-8"</code>.</p></li>
+</ol>
+<p>Step 4 is the point. Two defensible-looking numbers come out of the same file, and only one of them means anything. Nothing in R’s output distinguishes them for you.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -658,8 +816,8 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../bootcamp/03-projects-and-paths.html" class="pagination-link" aria-label="&quot;Projects, Paths, and Reproducible Habits&quot;">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">“Projects, Paths, and Reproducible Habits”</span>
+      <a href="../bootcamp/03-projects-and-paths.html" class="pagination-link" aria-label="Projects, Paths, and Reproducible Habits">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Projects, Paths, and Reproducible Habits</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
