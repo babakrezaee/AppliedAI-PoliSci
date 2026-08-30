@@ -1,5 +1,196 @@
----
-title: "Prediction, Causation, and the Vocabulary of AI"
----
+# Prediction, Causation, and the Vocabulary of AI {.unnumbered}
 
-*In preparation.*
+*Week 1, 2 September*
+
+This first session has two purposes. First, we need to distinguish between correlation, causation, prediction, and forecasting. These are related, but they are not the same research goal, and confusing them can produce bad research. Second, we need a working vocabulary for talking about artificial intelligence. Terms such as machine learning, generative AI, reasoning model, and agent are often used as though they refer to the same thing. They do not.
+
+There is no code in this handout. The work this week is conceptual. That may sound less exciting than fitting a model, but it matters. A model can be technically impressive and still answer the wrong question. The same problem appears in public debates about AI, where a loose use of one term can hide who designed a system, what it actually does, and who is responsible when it fails.
+
+Developing a theoretical argument about a political phenomenon is work you do across the programme. This course adds three things to it. We ask how evidence can be used to evaluate an argument. We ask how statistical and machine-learning models can be used to anticipate outcomes. And we treat AI systems themselves as objects of political analysis, because they are increasingly part of how states, parties, platforms, and administrations act.
+
+# What kind of question are we asking?
+
+Political scientists use qualitative, quantitative, and mixed-method research designs. All three can be empirical, and they share an underlying scientific principle: theoretical claims should be exposed to evidence that could count against them.
+
+For Popper, a theory is scientific when it produces claims that are empirically testable and open to falsification. This does not mean that one study can prove a theory. Evidence can support a hypothesis without proving that it is true. That support remains provisional and depends on the quality of the research design, the measurement, and the alternatives that have been considered.
+
+Lakatos asks us to look beyond the fate of one hypothesis and consider the development of a research programme [@lakatos1970]. Does it generate new expectations and improve our understanding, or does it survive only because its supporters keep adding qualifications after every failure? We will return to this question when we compare models: improving performance is useful, but adding complexity without learning anything substantive is not necessarily scientific progress.
+
+The same care is needed when discussing null hypotheses. Rejecting a null hypothesis can provide support for a substantive alternative. Failing to reject a null hypothesis is also evidence from the study and can be informative, particularly when the design is strong and the test has adequate power. It does not prove the null hypothesis. More generally, when observations remain consistent with the implications of a theory, we may describe this as empirical support, not as final confirmation.
+
+Publishing research is therefore an invitation to other scholars to attack the argument scientifically: to examine the assumptions, repeat the analysis, use other data, and try to show that the finding does not hold.
+
+The four questions below organize the first part of the course.
+
+| Research goal | Main question | What the evidence can establish |
+|------------------------|------------------------|------------------------|
+| Correlation | Do two or more variables vary together? | The presence, direction, and strength of an association |
+| Causation | Would changing $X$ change $Y$, all else being equal? | A causal effect, if the identification strategy is credible |
+| Prediction | How well can we estimate an outcome for cases the model has not seen? | Whether the available information generalizes to unseen cases |
+| Forecasting | How well can we anticipate outcomes that have not yet occurred? | Whether a model can provide useful information about the future |
+
+Forecasting is a form of prediction in a technical sense, but we keep it as a separate category in this course. The temporal dimension creates additional problems that deserve separate attention.
+
+## Correlation
+
+Sometimes our research is descriptive. We want to know whether two variables are associated and how strong that association is. Descriptive and correlational research has sometimes been downplayed following the causal-inference revolution in economics and political science. That is unfortunate. Description is often the first step in bringing a new political phenomenon into view, and a reliable pattern can be important even before its cause is established.
+
+Consider the long-standing debate about economic development and democracy. There is a well-known association between them: wealthier countries tend, on average, to be more democratic. But that association does not tell us which way the causal arrow runs. Economic development may encourage democratization. Democracy may contribute to economic development. A third factor may affect both, or the relationship may run in both directions.
+
+We can present the distinction schematically:
+
+**Correlation**
+
+$$Economic~development \overset{?; +/-}{\longleftrightarrow} Political~development$$
+
+**Possible causal relationships**
+
+$$Economic~development \overset{+/-}{\longrightarrow} Political~development$$
+
+$$Economic~development \overset{+/-}{\longleftarrow} Political~development$$
+
+The correlation is a finding. The arrows are additional claims that require additional evidence.
+
+## Causation
+
+A causal study needs an identification strategy: an argument about why the estimated relationship can be interpreted as the effect of $X$ on $Y$, rather than as selection, reverse causation, measurement error, or the influence of an omitted factor. Calling $X$ an independent variable does not automatically make it exogenous. Exogeneity is an assumption that must be defended through the design.
+
+Bias is also worth defining carefully. In statistical terms, an estimator is biased when its expected value differs systematically from the parameter it is intended to estimate. This is not the same as finding that one estimate is statistically significant. Omitted variables, selection, and measurement problems are among the reasons an estimate may fail to recover the causal quantity we care about.
+
+### The experimental ideal
+
+Randomized experiments provide a particularly clear identification strategy. In one of my research projects, I examined whether information about the principles of nonviolent resistance changes attitudes toward this form of political action. Participants were randomly assigned to two groups. One group watched a clip about International Relations. The other watched a clip about nonviolent resistance. I then compared their average attitudes after the intervention.
+
+Random assignment means that treatment status is independent of participants' pre-treatment characteristics by design. Across repeated random assignments, the groups are comparable on average. In one realized experiment, however, the groups do not have to be perfectly identical on every characteristic. Covariate summaries can help us describe the sample and identify surprising imbalances, but they do not make the assignment random; the assignment procedure does that.
+
+The comparison between the two groups gives us an estimate of the average effect of receiving the information in that study. Notice how much work the design is doing. The difference in outcomes becomes interpretable because the intervention was assigned, rather than selected by participants.
+
+### Observational data
+
+Political scientists often cannot conduct experiments. Think about conflict research. Can we randomly assign some countries to civil war and others to peace in order to study the economic consequences? Of course not.
+
+We therefore rely on observational data produced by political and social processes that we do not control. If we want to estimate the effect of democracy on economic development, countries are not assigned randomly to different levels of democracy. Democratic countries may also have stronger state institutions, more secure property rights, different colonial histories, or other characteristics that affect economic performance.
+
+Adding observed confounders to a model may reduce some of these problems, but it does not automatically solve them. Matching, instrumental variables, regression discontinuity, panel designs, and other methods can support an identification strategy under particular assumptions. Developing those strategies is outside the scope of this course. Recognizing when a claim requires one is not.
+
+## Prediction
+
+Prediction changes the question. Given what we know about a case, how accurately can we estimate its outcome?
+
+Suppose we want to predict civil-war onset. Income, terrain, state capacity, political institutions, conflict history, and regional conditions may all carry useful information. A predictive model combines that information and is evaluated by how well it performs on cases it did not use for fitting.
+
+This is different from estimating the causal effect of one variable. A model may predict well even when some of its inputs are only proxies. Imagine a bank using postal code to predict loan default. Postal code may carry information about income, employment, housing, and ethnicity. It can therefore be useful for prediction without providing a causal explanation of why a person defaults. Intervening on the postal code would not necessarily change the outcome.
+
+Shmueli distinguishes explanatory modeling from predictive modeling [@shmueli2010]. Cranmer and Desmarais argue that political science has paid too little attention to predictive performance [@cranmer2017]. Hofman, Sharma, and Watts make a related case for taking prediction more seriously when evaluating explanations of social phenomena [@hofman2017]. None of this means that accuracy should replace theory or causal identification.
+
+Predictive performance can discipline an explanation. If an account repeatedly fails to anticipate the phenomenon it claims to explain, we have reason to examine it more closely. But predictive performance is not the same thing as causal evidence, and strong prediction is not sufficient for a good explanation. Social outcomes can also contain substantial noise, which means that a credible causal explanation will not always generate highly accurate individual predictions.
+
+The purpose of the model therefore matters. If the task is prediction, performance on unseen cases is central. Flexible functional forms may be useful even when no single coefficient provides a simple substantive interpretation. If the task is causal inference, good test-set accuracy does not rescue a weak identification strategy.
+
+## Forecasting
+
+Forecasting asks about outcomes that have not happened yet.
+
+Suppose we have housing-price data from 1990 to 2026. We fit a model using observations from 1990 to 2019 and test it on sales from 2020 to 2026. When the model estimates the price of a house sold in 2023, it is making a prediction for a case whose outcome was hidden from the model but is already known to us. We can calculate the error immediately.
+
+If we use the same model to estimate prices in 2027 or 2028, we are forecasting. The outcomes do not yet exist, so the forecast cannot be fully evaluated until time passes.
+
+When forecasting is the goal, we normally divide training and test data by time rather than at random. A random split could allow a model trained on 2025 observations to predict an outcome from 2010. That may be acceptable for some prediction tasks, but it does not simulate the information problem faced by someone trying to anticipate the future.
+
+A temporal test set is still not a genuine forecast. It is a simulation of forecasting using outcomes that are already known to the researcher. It tells us how the model would have performed in a previous period. It cannot guarantee that relationships will remain stable when the model is used later. Early-warning systems such as ViEWS [@hegre2019] produce forecasts in real time and can be fully judged only after the forecast period has passed.
+
+# Why does confusing these goals produce bad research?
+
+There are several common mistakes.
+
+**Causal language after a predictive model.** High accuracy shows that the predictors contain information about the outcome. It does not show that intervening on one of them would change the outcome. A random forest does not turn an association into a causal effect.
+
+**Predictive claims from a causal design.** A well-identified estimate of one causal effect may be a poor predictor of the outcome as a whole. The design was built to isolate an effect, not necessarily to anticipate every case.
+
+**Treating test-set performance as demonstrated forecast performance.** Good performance on held-out historical years is useful evidence. It is not proof that the model will work next year, particularly when political conditions change.
+
+**Applying the wrong evaluation standard.** Predictive models are sometimes dismissed because they do not have easily interpretable coefficients. Causal estimates are sometimes dismissed because they have a low $R^2$. Neither criticism is automatically relevant. We first need to know what the model was built to do.
+
+# What is under the hood of AI?
+
+For many contemporary AI systems, machine learning is the motor under the hood. Credit scoring, content moderation, fraud detection, political-text classification, recommendation systems, and large language models all rely heavily on models fitted to data.
+
+AI is nevertheless broader than machine learning. Some systems rely on written rules, search, optimization, or combinations of these with fitted models. It is therefore safer to say that machine learning powers many of the AI systems we study, not that every AI system is machine learning.
+
+Before moving to specific algorithms, we need several basic terms.
+
+**Features** are the inputs available to the model. **Labels** are known outcomes attached to cases in the training data. **Training** or **fitting** is the process of adjusting a model's internal quantities so that its outputs correspond more closely to the examples. A **test set** contains cases that were not used for fitting and allows us to examine whether the model generalizes.
+
+## Supervised, unsupervised, and self-supervised learning
+
+**Supervised learning** uses labeled examples. If country-years in the training data are labeled as war or peace, or parliamentary motions are labeled by topic, the model learns a mapping from the features to those known labels. The classifiers in Weeks 2 through 4 are supervised-learning methods.
+
+**Unsupervised learning** starts without an outcome label. It looks for structure in the data, such as clusters of similar cases or dimensions along which cases vary. Because there is no known correct label, evaluation is less straightforward. We will discuss the distinction even though the applied models in the first half of this course are supervised.
+
+**Self-supervised learning** is often treated as a branch of unsupervised learning, although it creates a supervised-style prediction problem from unlabeled data. The training data do not need labels supplied by a human, because the data provide the training signal. In language-model pretraining, parts of the text provide targets for predicting other parts. Next-token prediction is the main example: the preceding text is the input and the next token becomes the target.
+
+Large language models are therefore commonly described as being pretrained through self-supervised learning. They may later undergo supervised fine-tuning, preference optimization, reinforcement learning, or other forms of post-training.
+
+Using an LLM to code or label political data is a separate matter. At that point, we are using an already trained generative model to perform a classification task. With examples in the prompt, it may act as a few-shot classifier; without examples, it may act as a zero-shot classifier. The task is classification, but that does not retroactively change how the underlying model was pretrained.
+
+## Generative, reasoning, and agentic systems
+
+**Generative models** produce new content rather than only assigning a predefined label. Large language models generate text by estimating plausible continuations given the preceding context. Their ability to produce fluent answers comes from large-scale pretraining and later post-training, not from looking up a single stored response.
+
+**Reasoning models** are language models optimized to perform better on tasks that require multiple inferential steps, often through additional training and more computation at inference time. Some produce visible intermediate text before giving an answer. We should not assume that this text is a literal transcript of an internal reasoning process. It is model output and must be evaluated as such.
+
+**Agentic systems** place a model inside a process in which it can choose actions, use tools, inspect results, and continue working toward a goal. The model may search, run code, retrieve documents, or call other services. This expands what can be automated. It also makes verification harder: if a system searched, selected, summarized, and coded evidence for us, we must still decide what parts of that process we can defend as researchers.
+
+# Why is this vocabulary political?
+
+These distinctions are not only technical. They affect regulation, responsibility, and the distribution of power.
+
+A supervised classifier used to identify potentially fraudulent benefit claims raises different problems from a generative model drafting letters to claimants. The systems may differ in their training data, output, error patterns, and opportunities for appeal. Regulation that refers only to "AI" can miss those differences.
+
+The source of a problem also affects who can address it. Unequal treatment may arise from the training data, the objective used to fit the model, post-training decisions, instructions written by the deploying organization, or the inputs supplied in a particular case. Responsibility may therefore be distributed across model developers, vendors, public organizations, and individual users. Saying only that "the algorithm is biased" does not tell us which part of the system produced the result.
+
+The phrase "the algorithm decided" creates a related problem. An organization selected the system, defined the purpose, chose the data and threshold, and decided how the output would be used. Describing the final outcome as the algorithm's decision can make those organizational choices disappear.
+
+# An older analogy: artificial political entities
+
+Political theory and public-administration scholarship give us older ways of thinking about artificial and collective decision-making. These were not theories of artificial intelligence in the modern technical sense. They are useful analogies because they direct our attention to rules, information, authority, and responsibility.
+
+On the first page of *Leviathan*, Hobbes describes the commonwealth as an "Artificiall Man" [@hobbes1651]. The sovereign is an artificial person created through political agreement. The famous frontispiece shows a body composed of many individual people. Hobbes is describing an artificial political entity, not a machine-learning system. Still, the image raises a familiar question: how can a constructed entity perceive, decide, and act in ways that cannot be reduced to one individual inside it?
+
+Weberian bureaucracy offers a second analogy [@weber1978]. Bureaucracy is designed to make decisions impersonally through offices, written rules, files, and established procedures. Its political attraction is predictability: similar cases should receive similar treatment regardless of who happens to sit at the desk. In that limited sense, we can think of bureaucracy as an algorithm implemented through people and documents. But this remains an analogy. A written administrative rule and a fitted statistical model are not the same thing. Or are they?
+
+Herbert Simon provides the closest bridge [@simon1947; @simon1969]. He treated organizations as information-processing and decision-making systems while also contributing to the development of artificial intelligence. Because individuals have limited information, attention, and computational capacity, organizations use routines and decision procedures to reach acceptable rather than perfectly optimal outcomes.
+
+These analogies help us ask political questions about contemporary systems. Who designed the procedure? What information can it use? What is invisible to it? Who has the authority to override it? And who answers for the result when it is wrong? The technology is new, but several of the institutional questions are not.
+
+# The plan for the block
+
+There are seven teaching weeks, each organized around one main idea.
+
+Weeks 2 through 4 develop supervised classifiers, beginning with a method simple enough to draw on the board and ending with political text as data. Week 5 examines large language models, including self-supervised pretraining, post-training, prompts, decoding, and the use of LLMs for structured political analysis. Week 6 turns to evaluation: confusion matrices, precision, recall, F1, calibration, reliability, and the problems created by rare outcomes. Week 7 moves from AI as a research method to AI as a political and administrative object.
+
+Basic evaluation begins in Week 2. From the first classifier onward, we will use a training/test split, compare the model with a simple baseline, and examine a confusion matrix. Week 6 returns to these ideas in a more systematic way and adds calibration and the evaluation of generative systems.
+
+The central thread is the distinction introduced in this handout. You will learn to build models, evaluate whether they work on unseen cases, and state honestly what their results do and do not establish. You will then use that technical understanding to examine political arguments about AI.
+
+# Reading
+
+Cranmer, S. J., and Desmarais, B. A. 2017. "What Can We Learn from Predictive Modeling?" *Political Analysis* 25(2): 145–166. [@cranmer2017]
+
+Read the article for its argument rather than its technique. The authors are responding to a discipline that has usually given explanation and causal inference priority over prediction. Pay attention to what they think predictive performance adds to political science, but also to what they do not claim it can replace.
+
+# Questions for the session
+
+Come with a view on at least two of these questions. They will structure the first part of the session.
+
+1.  What should count as empirical support for a theoretical claim? At what point, if any, does repeated support become confirmation?
+
+2.  Cranmer and Desmarais argue that political science has neglected prediction. What is the strongest objection to their position, and can it be answered?
+
+3.  Take a claim you believe about politics. Is it correlational, causal, predictive, or a forecast? What evidence would make you reconsider it?
+
+4.  A model predicts civil-war onset accurately using income, terrain, and state capacity. What has the model taught us about civil war, and what has it not taught us?
+
+5.  If a bureaucracy following written rules is an artificial decision system, what changes when the written rule is replaced by a fitted model? Try to identify a specific institutional or political difference rather than answering only that the model is more complex.
+
+6.  An LLM assigns political texts to ideological categories. Is this supervised, unsupervised, self-supervised, or something else? Does your answer refer to how the model was trained or to how it is now being used?

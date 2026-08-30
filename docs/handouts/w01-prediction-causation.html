@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1&nbsp; Prediction, Causation, and the Vocabulary of AI – Applied AI for Political Scientists</title>
+<title>Prediction, Causation, and the Vocabulary of AI – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -73,6 +92,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -85,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Prediction, Causation, and the Vocabulary of AI</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +176,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -169,43 +217,43 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w01-prediction-causation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span></a>
+ <span class="menu-text">Prediction, Causation, and the Vocabulary of AI</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w02-knn.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w03-trees-forests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w05-llm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +269,42 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-kind-of-question-are-we-asking" id="toc-what-kind-of-question-are-we-asking" class="nav-link active" data-scroll-target="#what-kind-of-question-are-we-asking">What kind of question are we asking?</a>
+  <ul class="collapse">
+  <li><a href="#correlation" id="toc-correlation" class="nav-link" data-scroll-target="#correlation">Correlation</a></li>
+  <li><a href="#causation" id="toc-causation" class="nav-link" data-scroll-target="#causation">Causation</a>
+  <ul class="collapse">
+  <li><a href="#the-experimental-ideal" id="toc-the-experimental-ideal" class="nav-link" data-scroll-target="#the-experimental-ideal">The experimental ideal</a></li>
+  <li><a href="#observational-data" id="toc-observational-data" class="nav-link" data-scroll-target="#observational-data">Observational data</a></li>
+  </ul></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction">Prediction</a></li>
+  <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting">Forecasting</a></li>
+  </ul></li>
+  <li><a href="#why-does-confusing-these-goals-produce-bad-research" id="toc-why-does-confusing-these-goals-produce-bad-research" class="nav-link" data-scroll-target="#why-does-confusing-these-goals-produce-bad-research">Why does confusing these goals produce bad research?</a></li>
+  <li><a href="#what-is-under-the-hood-of-ai" id="toc-what-is-under-the-hood-of-ai" class="nav-link" data-scroll-target="#what-is-under-the-hood-of-ai">What is under the hood of AI?</a>
+  <ul class="collapse">
+  <li><a href="#supervised-unsupervised-and-self-supervised-learning" id="toc-supervised-unsupervised-and-self-supervised-learning" class="nav-link" data-scroll-target="#supervised-unsupervised-and-self-supervised-learning">Supervised, unsupervised, and self-supervised learning</a></li>
+  <li><a href="#generative-reasoning-and-agentic-systems" id="toc-generative-reasoning-and-agentic-systems" class="nav-link" data-scroll-target="#generative-reasoning-and-agentic-systems">Generative, reasoning, and agentic systems</a></li>
+  </ul></li>
+  <li><a href="#why-is-this-vocabulary-political" id="toc-why-is-this-vocabulary-political" class="nav-link" data-scroll-target="#why-is-this-vocabulary-political">Why is this vocabulary political?</a></li>
+  <li><a href="#an-older-analogy-artificial-political-entities" id="toc-an-older-analogy-artificial-political-entities" class="nav-link" data-scroll-target="#an-older-analogy-artificial-political-entities">An older analogy: artificial political entities</a></li>
+  <li><a href="#the-plan-for-the-block" id="toc-the-plan-for-the-block" class="nav-link" data-scroll-target="#the-plan-for-the-block">The plan for the block</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading">Reading</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session">Questions for the session</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Prediction, Causation, and the Vocabulary of AI</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></h1>
+<h1 class="title">Prediction, Causation, and the Vocabulary of AI</h1>
 </div>
 
 
@@ -246,9 +321,201 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p><em>Week 1, 2 September</em></p>
+<p>This first session has two purposes. First, we need to distinguish between correlation, causation, prediction, and forecasting. These are related, but they are not the same research goal, and confusing them can produce bad research. Second, we need a working vocabulary for talking about artificial intelligence. Terms such as machine learning, generative AI, reasoning model, and agent are often used as though they refer to the same thing. They do not.</p>
+<p>There is no code in this handout. The work this week is conceptual. That may sound less exciting than fitting a model, but it matters. A model can be technically impressive and still answer the wrong question. The same problem appears in public debates about AI, where a loose use of one term can hide who designed a system, what it actually does, and who is responsible when it fails.</p>
+<p>Developing a theoretical argument about a political phenomenon is work you do across the programme. This course adds three things to it. We ask how evidence can be used to evaluate an argument. We ask how statistical and machine-learning models can be used to anticipate outcomes. And we treat AI systems themselves as objects of political analysis, because they are increasingly part of how states, parties, platforms, and administrations act.</p>
+<section id="what-kind-of-question-are-we-asking" class="level1">
+<h1>What kind of question are we asking?</h1>
+<p>Political scientists use qualitative, quantitative, and mixed-method research designs. All three can be empirical, and they share an underlying scientific principle: theoretical claims should be exposed to evidence that could count against them.</p>
+<p>For Popper, a theory is scientific when it produces claims that are empirically testable and open to falsification. This does not mean that one study can prove a theory. Evidence can support a hypothesis without proving that it is true. That support remains provisional and depends on the quality of the research design, the measurement, and the alternatives that have been considered.</p>
+<p>Lakatos asks us to look beyond the fate of one hypothesis and consider the development of a research programme <span class="citation" data-cites="lakatos1970">(<a href="../references.html#ref-lakatos1970" role="doc-biblioref">Lakatos 1970</a>)</span>. Does it generate new expectations and improve our understanding, or does it survive only because its supporters keep adding qualifications after every failure? We will return to this question when we compare models: improving performance is useful, but adding complexity without learning anything substantive is not necessarily scientific progress.</p>
+<p>The same care is needed when discussing null hypotheses. Rejecting a null hypothesis can provide support for a substantive alternative. Failing to reject a null hypothesis is also evidence from the study and can be informative, particularly when the design is strong and the test has adequate power. It does not prove the null hypothesis. More generally, when observations remain consistent with the implications of a theory, we may describe this as empirical support, not as final confirmation.</p>
+<p>Publishing research is therefore an invitation to other scholars to attack the argument scientifically: to examine the assumptions, repeat the analysis, use other data, and try to show that the finding does not hold.</p>
+<p>The four questions below organize the first part of the course.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Research goal</th>
+<th>Main question</th>
+<th>What the evidence can establish</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Correlation</td>
+<td>Do two or more variables vary together?</td>
+<td>The presence, direction, and strength of an association</td>
+</tr>
+<tr class="even">
+<td>Causation</td>
+<td>Would changing <span class="math inline">\(X\)</span> change <span class="math inline">\(Y\)</span>, all else being equal?</td>
+<td>A causal effect, if the identification strategy is credible</td>
+</tr>
+<tr class="odd">
+<td>Prediction</td>
+<td>How well can we estimate an outcome for cases the model has not seen?</td>
+<td>Whether the available information generalizes to unseen cases</td>
+</tr>
+<tr class="even">
+<td>Forecasting</td>
+<td>How well can we anticipate outcomes that have not yet occurred?</td>
+<td>Whether a model can provide useful information about the future</td>
+</tr>
+</tbody>
+</table>
+<p>Forecasting is a form of prediction in a technical sense, but we keep it as a separate category in this course. The temporal dimension creates additional problems that deserve separate attention.</p>
+<section id="correlation" class="level2">
+<h2 class="anchored" data-anchor-id="correlation">Correlation</h2>
+<p>Sometimes our research is descriptive. We want to know whether two variables are associated and how strong that association is. Descriptive and correlational research has sometimes been downplayed following the causal-inference revolution in economics and political science. That is unfortunate. Description is often the first step in bringing a new political phenomenon into view, and a reliable pattern can be important even before its cause is established.</p>
+<p>Consider the long-standing debate about economic development and democracy. There is a well-known association between them: wealthier countries tend, on average, to be more democratic. But that association does not tell us which way the causal arrow runs. Economic development may encourage democratization. Democracy may contribute to economic development. A third factor may affect both, or the relationship may run in both directions.</p>
+<p>We can present the distinction schematically:</p>
+<p><strong>Correlation</strong></p>
+<p><span class="math display">\[Economic~development \overset{?; +/-}{\longleftrightarrow} Political~development\]</span></p>
+<p><strong>Possible causal relationships</strong></p>
+<p><span class="math display">\[Economic~development \overset{+/-}{\longrightarrow} Political~development\]</span></p>
+<p><span class="math display">\[Economic~development \overset{+/-}{\longleftarrow} Political~development\]</span></p>
+<p>The correlation is a finding. The arrows are additional claims that require additional evidence.</p>
+</section>
+<section id="causation" class="level2">
+<h2 class="anchored" data-anchor-id="causation">Causation</h2>
+<p>A causal study needs an identification strategy: an argument about why the estimated relationship can be interpreted as the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>, rather than as selection, reverse causation, measurement error, or the influence of an omitted factor. Calling <span class="math inline">\(X\)</span> an independent variable does not automatically make it exogenous. Exogeneity is an assumption that must be defended through the design.</p>
+<p>Bias is also worth defining carefully. In statistical terms, an estimator is biased when its expected value differs systematically from the parameter it is intended to estimate. This is not the same as finding that one estimate is statistically significant. Omitted variables, selection, and measurement problems are among the reasons an estimate may fail to recover the causal quantity we care about.</p>
+<section id="the-experimental-ideal" class="level3">
+<h3 class="anchored" data-anchor-id="the-experimental-ideal">The experimental ideal</h3>
+<p>Randomized experiments provide a particularly clear identification strategy. In one of my research projects, I examined whether information about the principles of nonviolent resistance changes attitudes toward this form of political action. Participants were randomly assigned to two groups. One group watched a clip about International Relations. The other watched a clip about nonviolent resistance. I then compared their average attitudes after the intervention.</p>
+<p>Random assignment means that treatment status is independent of participants’ pre-treatment characteristics by design. Across repeated random assignments, the groups are comparable on average. In one realized experiment, however, the groups do not have to be perfectly identical on every characteristic. Covariate summaries can help us describe the sample and identify surprising imbalances, but they do not make the assignment random; the assignment procedure does that.</p>
+<p>The comparison between the two groups gives us an estimate of the average effect of receiving the information in that study. Notice how much work the design is doing. The difference in outcomes becomes interpretable because the intervention was assigned, rather than selected by participants.</p>
+</section>
+<section id="observational-data" class="level3">
+<h3 class="anchored" data-anchor-id="observational-data">Observational data</h3>
+<p>Political scientists often cannot conduct experiments. Think about conflict research. Can we randomly assign some countries to civil war and others to peace in order to study the economic consequences? Of course not.</p>
+<p>We therefore rely on observational data produced by political and social processes that we do not control. If we want to estimate the effect of democracy on economic development, countries are not assigned randomly to different levels of democracy. Democratic countries may also have stronger state institutions, more secure property rights, different colonial histories, or other characteristics that affect economic performance.</p>
+<p>Adding observed confounders to a model may reduce some of these problems, but it does not automatically solve them. Matching, instrumental variables, regression discontinuity, panel designs, and other methods can support an identification strategy under particular assumptions. Developing those strategies is outside the scope of this course. Recognizing when a claim requires one is not.</p>
+</section>
+</section>
+<section id="prediction" class="level2">
+<h2 class="anchored" data-anchor-id="prediction">Prediction</h2>
+<p>Prediction changes the question. Given what we know about a case, how accurately can we estimate its outcome?</p>
+<p>Suppose we want to predict civil-war onset. Income, terrain, state capacity, political institutions, conflict history, and regional conditions may all carry useful information. A predictive model combines that information and is evaluated by how well it performs on cases it did not use for fitting.</p>
+<p>This is different from estimating the causal effect of one variable. A model may predict well even when some of its inputs are only proxies. Imagine a bank using postal code to predict loan default. Postal code may carry information about income, employment, housing, and ethnicity. It can therefore be useful for prediction without providing a causal explanation of why a person defaults. Intervening on the postal code would not necessarily change the outcome.</p>
+<p>Shmueli distinguishes explanatory modeling from predictive modeling <span class="citation" data-cites="shmueli2010">(<a href="../references.html#ref-shmueli2010" role="doc-biblioref">Shmueli 2010</a>)</span>. Cranmer and Desmarais argue that political science has paid too little attention to predictive performance <span class="citation" data-cites="cranmer2017">(<a href="../references.html#ref-cranmer2017" role="doc-biblioref">Cranmer and Desmarais 2017</a>)</span>. Hofman, Sharma, and Watts make a related case for taking prediction more seriously when evaluating explanations of social phenomena <span class="citation" data-cites="hofman2017">(<a href="../references.html#ref-hofman2017" role="doc-biblioref">Hofman et al. 2017</a>)</span>. None of this means that accuracy should replace theory or causal identification.</p>
+<p>Predictive performance can discipline an explanation. If an account repeatedly fails to anticipate the phenomenon it claims to explain, we have reason to examine it more closely. But predictive performance is not the same thing as causal evidence, and strong prediction is not sufficient for a good explanation. Social outcomes can also contain substantial noise, which means that a credible causal explanation will not always generate highly accurate individual predictions.</p>
+<p>The purpose of the model therefore matters. If the task is prediction, performance on unseen cases is central. Flexible functional forms may be useful even when no single coefficient provides a simple substantive interpretation. If the task is causal inference, good test-set accuracy does not rescue a weak identification strategy.</p>
+</section>
+<section id="forecasting" class="level2">
+<h2 class="anchored" data-anchor-id="forecasting">Forecasting</h2>
+<p>Forecasting asks about outcomes that have not happened yet.</p>
+<p>Suppose we have housing-price data from 1990 to 2026. We fit a model using observations from 1990 to 2019 and test it on sales from 2020 to 2026. When the model estimates the price of a house sold in 2023, it is making a prediction for a case whose outcome was hidden from the model but is already known to us. We can calculate the error immediately.</p>
+<p>If we use the same model to estimate prices in 2027 or 2028, we are forecasting. The outcomes do not yet exist, so the forecast cannot be fully evaluated until time passes.</p>
+<p>When forecasting is the goal, we normally divide training and test data by time rather than at random. A random split could allow a model trained on 2025 observations to predict an outcome from 2010. That may be acceptable for some prediction tasks, but it does not simulate the information problem faced by someone trying to anticipate the future.</p>
+<p>A temporal test set is still not a genuine forecast. It is a simulation of forecasting using outcomes that are already known to the researcher. It tells us how the model would have performed in a previous period. It cannot guarantee that relationships will remain stable when the model is used later. Early-warning systems such as ViEWS <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span> produce forecasts in real time and can be fully judged only after the forecast period has passed.</p>
+</section>
+</section>
+<section id="why-does-confusing-these-goals-produce-bad-research" class="level1">
+<h1>Why does confusing these goals produce bad research?</h1>
+<p>There are several common mistakes.</p>
+<p><strong>Causal language after a predictive model.</strong> High accuracy shows that the predictors contain information about the outcome. It does not show that intervening on one of them would change the outcome. A random forest does not turn an association into a causal effect.</p>
+<p><strong>Predictive claims from a causal design.</strong> A well-identified estimate of one causal effect may be a poor predictor of the outcome as a whole. The design was built to isolate an effect, not necessarily to anticipate every case.</p>
+<p><strong>Treating test-set performance as demonstrated forecast performance.</strong> Good performance on held-out historical years is useful evidence. It is not proof that the model will work next year, particularly when political conditions change.</p>
+<p><strong>Applying the wrong evaluation standard.</strong> Predictive models are sometimes dismissed because they do not have easily interpretable coefficients. Causal estimates are sometimes dismissed because they have a low <span class="math inline">\(R^2\)</span>. Neither criticism is automatically relevant. We first need to know what the model was built to do.</p>
+</section>
+<section id="what-is-under-the-hood-of-ai" class="level1">
+<h1>What is under the hood of AI?</h1>
+<p>For many contemporary AI systems, machine learning is the motor under the hood. Credit scoring, content moderation, fraud detection, political-text classification, recommendation systems, and large language models all rely heavily on models fitted to data.</p>
+<p>AI is nevertheless broader than machine learning. Some systems rely on written rules, search, optimization, or combinations of these with fitted models. It is therefore safer to say that machine learning powers many of the AI systems we study, not that every AI system is machine learning.</p>
+<p>Before moving to specific algorithms, we need several basic terms.</p>
+<p><strong>Features</strong> are the inputs available to the model. <strong>Labels</strong> are known outcomes attached to cases in the training data. <strong>Training</strong> or <strong>fitting</strong> is the process of adjusting a model’s internal quantities so that its outputs correspond more closely to the examples. A <strong>test set</strong> contains cases that were not used for fitting and allows us to examine whether the model generalizes.</p>
+<section id="supervised-unsupervised-and-self-supervised-learning" class="level2">
+<h2 class="anchored" data-anchor-id="supervised-unsupervised-and-self-supervised-learning">Supervised, unsupervised, and self-supervised learning</h2>
+<p><strong>Supervised learning</strong> uses labeled examples. If country-years in the training data are labeled as war or peace, or parliamentary motions are labeled by topic, the model learns a mapping from the features to those known labels. The classifiers in Weeks 2 through 4 are supervised-learning methods.</p>
+<p><strong>Unsupervised learning</strong> starts without an outcome label. It looks for structure in the data, such as clusters of similar cases or dimensions along which cases vary. Because there is no known correct label, evaluation is less straightforward. We will discuss the distinction even though the applied models in the first half of this course are supervised.</p>
+<p><strong>Self-supervised learning</strong> is often treated as a branch of unsupervised learning, although it creates a supervised-style prediction problem from unlabeled data. The training data do not need labels supplied by a human, because the data provide the training signal. In language-model pretraining, parts of the text provide targets for predicting other parts. Next-token prediction is the main example: the preceding text is the input and the next token becomes the target.</p>
+<p>Large language models are therefore commonly described as being pretrained through self-supervised learning. They may later undergo supervised fine-tuning, preference optimization, reinforcement learning, or other forms of post-training.</p>
+<p>Using an LLM to code or label political data is a separate matter. At that point, we are using an already trained generative model to perform a classification task. With examples in the prompt, it may act as a few-shot classifier; without examples, it may act as a zero-shot classifier. The task is classification, but that does not retroactively change how the underlying model was pretrained.</p>
+</section>
+<section id="generative-reasoning-and-agentic-systems" class="level2">
+<h2 class="anchored" data-anchor-id="generative-reasoning-and-agentic-systems">Generative, reasoning, and agentic systems</h2>
+<p><strong>Generative models</strong> produce new content rather than only assigning a predefined label. Large language models generate text by estimating plausible continuations given the preceding context. Their ability to produce fluent answers comes from large-scale pretraining and later post-training, not from looking up a single stored response.</p>
+<p><strong>Reasoning models</strong> are language models optimized to perform better on tasks that require multiple inferential steps, often through additional training and more computation at inference time. Some produce visible intermediate text before giving an answer. We should not assume that this text is a literal transcript of an internal reasoning process. It is model output and must be evaluated as such.</p>
+<p><strong>Agentic systems</strong> place a model inside a process in which it can choose actions, use tools, inspect results, and continue working toward a goal. The model may search, run code, retrieve documents, or call other services. This expands what can be automated. It also makes verification harder: if a system searched, selected, summarized, and coded evidence for us, we must still decide what parts of that process we can defend as researchers.</p>
+</section>
+</section>
+<section id="why-is-this-vocabulary-political" class="level1">
+<h1>Why is this vocabulary political?</h1>
+<p>These distinctions are not only technical. They affect regulation, responsibility, and the distribution of power.</p>
+<p>A supervised classifier used to identify potentially fraudulent benefit claims raises different problems from a generative model drafting letters to claimants. The systems may differ in their training data, output, error patterns, and opportunities for appeal. Regulation that refers only to “AI” can miss those differences.</p>
+<p>The source of a problem also affects who can address it. Unequal treatment may arise from the training data, the objective used to fit the model, post-training decisions, instructions written by the deploying organization, or the inputs supplied in a particular case. Responsibility may therefore be distributed across model developers, vendors, public organizations, and individual users. Saying only that “the algorithm is biased” does not tell us which part of the system produced the result.</p>
+<p>The phrase “the algorithm decided” creates a related problem. An organization selected the system, defined the purpose, chose the data and threshold, and decided how the output would be used. Describing the final outcome as the algorithm’s decision can make those organizational choices disappear.</p>
+</section>
+<section id="an-older-analogy-artificial-political-entities" class="level1">
+<h1>An older analogy: artificial political entities</h1>
+<p>Political theory and public-administration scholarship give us older ways of thinking about artificial and collective decision-making. These were not theories of artificial intelligence in the modern technical sense. They are useful analogies because they direct our attention to rules, information, authority, and responsibility.</p>
+<p>On the first page of <em>Leviathan</em>, Hobbes describes the commonwealth as an “Artificiall Man” <span class="citation" data-cites="hobbes1651">(<a href="../references.html#ref-hobbes1651" role="doc-biblioref">Hobbes 1651</a>)</span>. The sovereign is an artificial person created through political agreement. The famous frontispiece shows a body composed of many individual people. Hobbes is describing an artificial political entity, not a machine-learning system. Still, the image raises a familiar question: how can a constructed entity perceive, decide, and act in ways that cannot be reduced to one individual inside it?</p>
+<p>Weberian bureaucracy offers a second analogy <span class="citation" data-cites="weber1978">(<a href="../references.html#ref-weber1978" role="doc-biblioref">Weber 1978</a>)</span>. Bureaucracy is designed to make decisions impersonally through offices, written rules, files, and established procedures. Its political attraction is predictability: similar cases should receive similar treatment regardless of who happens to sit at the desk. In that limited sense, we can think of bureaucracy as an algorithm implemented through people and documents. But this remains an analogy. A written administrative rule and a fitted statistical model are not the same thing. Or are they?</p>
+<p>Herbert Simon provides the closest bridge <span class="citation" data-cites="simon1947 simon1969">(<a href="../references.html#ref-simon1947" role="doc-biblioref">Simon 1947</a>, <a href="../references.html#ref-simon1969" role="doc-biblioref">1969</a>)</span>. He treated organizations as information-processing and decision-making systems while also contributing to the development of artificial intelligence. Because individuals have limited information, attention, and computational capacity, organizations use routines and decision procedures to reach acceptable rather than perfectly optimal outcomes.</p>
+<p>These analogies help us ask political questions about contemporary systems. Who designed the procedure? What information can it use? What is invisible to it? Who has the authority to override it? And who answers for the result when it is wrong? The technology is new, but several of the institutional questions are not.</p>
+</section>
+<section id="the-plan-for-the-block" class="level1">
+<h1>The plan for the block</h1>
+<p>There are seven teaching weeks, each organized around one main idea.</p>
+<p>Weeks 2 through 4 develop supervised classifiers, beginning with a method simple enough to draw on the board and ending with political text as data. Week 5 examines large language models, including self-supervised pretraining, post-training, prompts, decoding, and the use of LLMs for structured political analysis. Week 6 turns to evaluation: confusion matrices, precision, recall, F1, calibration, reliability, and the problems created by rare outcomes. Week 7 moves from AI as a research method to AI as a political and administrative object.</p>
+<p>Basic evaluation begins in Week 2. From the first classifier onward, we will use a training/test split, compare the model with a simple baseline, and examine a confusion matrix. Week 6 returns to these ideas in a more systematic way and adds calibration and the evaluation of generative systems.</p>
+<p>The central thread is the distinction introduced in this handout. You will learn to build models, evaluate whether they work on unseen cases, and state honestly what their results do and do not establish. You will then use that technical understanding to examine political arguments about AI.</p>
+</section>
+<section id="reading" class="level1">
+<h1>Reading</h1>
+<p>Cranmer, S. J., and Desmarais, B. A. 2017. “What Can We Learn from Predictive Modeling?” <em>Political Analysis</em> 25(2): 145–166. <span class="citation" data-cites="cranmer2017">(<a href="../references.html#ref-cranmer2017" role="doc-biblioref">Cranmer and Desmarais 2017</a>)</span></p>
+<p>Read the article for its argument rather than its technique. The authors are responding to a discipline that has usually given explanation and causal inference priority over prediction. Pay attention to what they think predictive performance adds to political science, but also to what they do not claim it can replace.</p>
+</section>
+<section id="questions-for-the-session" class="level1">
+<h1>Questions for the session</h1>
+<p>Come with a view on at least two of these questions. They will structure the first part of the session.</p>
+<ol type="1">
+<li><p>What should count as empirical support for a theoretical claim? At what point, if any, does repeated support become confirmation?</p></li>
+<li><p>Cranmer and Desmarais argue that political science has neglected prediction. What is the strongest objection to their position, and can it be answered?</p></li>
+<li><p>Take a claim you believe about politics. Is it correlational, causal, predictive, or a forecast? What evidence would make you reconsider it?</p></li>
+<li><p>A model predicts civil-war onset accurately using income, terrain, and state capacity. What has the model taught us about civil war, and what has it not taught us?</p></li>
+<li><p>If a bureaucracy following written rules is an artificial decision system, what changes when the written rule is replaced by a fitted model? Try to identify a specific institutional or political difference rather than answering only that the model is more complex.</p></li>
+<li><p>An LLM assigns political texts to ideological categories. Is this supervised, unsupervised, self-supervised, or something else? Does your answer refer to how the model was trained or to how it is now being used?</p></li>
+</ol>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-cranmer2017" class="csl-entry" role="listitem">
+Cranmer, Skyler J., and Bruce A. Desmarais. 2017. <span>“What Can We Learn from Predictive Modeling?”</span> <em>Political Analysis</em> 25 (2): 145–66. <a href="https://doi.org/10.1017/pan.2017.3">https://doi.org/10.1017/pan.2017.3</a>.
+</div>
+<div id="ref-hegre2019" class="csl-entry" role="listitem">
+<span class="nocase">Hegre, Håvard et al.</span> 2019. <span>“<span>ViEWS</span>: A Political Violence Early-Warning System.”</span> <em>Journal of Peace Research</em> 56 (2): 155–74. <a href="https://doi.org/10.1177/0022343319823860">https://doi.org/10.1177/0022343319823860</a>.
+</div>
+<div id="ref-hobbes1651" class="csl-entry" role="listitem">
+Hobbes, Thomas. 1651. <em>Leviathan</em>. Andrew Crooke.
+</div>
+<div id="ref-hofman2017" class="csl-entry" role="listitem">
+Hofman, Jake M., Amit Sharma, and Duncan J. Watts. 2017. <span>“Prediction and Explanation in Social Systems.”</span> <em>Science</em> 355 (6324): 486–88. <a href="https://doi.org/10.1126/science.aal3856">https://doi.org/10.1126/science.aal3856</a>.
+</div>
+<div id="ref-lakatos1970" class="csl-entry" role="listitem">
+Lakatos, Imre. 1970. <span>“Falsification and the Methodology of Scientific Research Programmes.”</span> In <em>Criticism and the Growth of Knowledge</em>, edited by Imre Lakatos and Alan Musgrave. Cambridge University Press.
+</div>
+<div id="ref-shmueli2010" class="csl-entry" role="listitem">
+Shmueli, Galit. 2010. <span>“To Explain or to Predict?”</span> <em>Statistical Science</em> 25 (3): 289–310. <a href="https://doi.org/10.1214/10-STS330">https://doi.org/10.1214/10-STS330</a>.
+</div>
+<div id="ref-simon1947" class="csl-entry" role="listitem">
+Simon, Herbert A. 1947. <em>Administrative Behavior: A Study of Decision-Making Processes in Administrative Organization</em>. Macmillan.
+</div>
+<div id="ref-simon1969" class="csl-entry" role="listitem">
+Simon, Herbert A. 1969. <em>The Sciences of the Artificial</em>. MIT Press.
+</div>
+<div id="ref-weber1978" class="csl-entry" role="listitem">
+Weber, Max. 1978. <em>Economy and Society: An Outline of Interpretive Sociology</em>. Edited by Guenther Roth and Claus Wittich. University of California Press.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -658,13 +925,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../bootcamp/04-reading-data.html" class="pagination-link" aria-label="&quot;Reading Data into R&quot;">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">“Reading Data into R”</span>
+      <a href="../bootcamp/04-reading-data.html" class="pagination-link" aria-label="Reading Data into R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Reading Data into R</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../handouts/w02-knn.html" class="pagination-link" aria-label="K-Nearest Neighbors">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
