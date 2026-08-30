@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; K-Nearest Neighbors – Applied AI for Political Scientists</title>
+<title>Classification I: K-Nearest Neighbors – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -41,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-95edd58b3b27b9774827898c46d4f452.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -73,6 +108,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -85,7 +149,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html">Classification I: K-Nearest Neighbors</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,31 +192,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/00-install.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Installing R and RStudio”</span></a>
+ <span class="menu-text">Installing R and RStudio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/01-four-ways-to-run-r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Four Ways to Run R Code”</span></a>
+ <span class="menu-text">Four Ways to Run R Code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/02-objects-and-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Objects, Vectors, and Data Frames”</span></a>
+ <span class="menu-text">Objects, Vectors, and Data Frames</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/03-projects-and-paths.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Projects, Paths, and Reproducible Habits”</span></a>
+ <span class="menu-text">Projects, Paths, and Reproducible Habits</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../bootcamp/04-reading-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">“Reading Data into R”</span></a>
+ <span class="menu-text">Reading Data into R</span></a>
   </div>
 </li>
       </ul>
@@ -169,43 +233,43 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w01-prediction-causation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span></a>
+ <span class="menu-text">Prediction, Causation, and the Vocabulary of AI</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w02-knn.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
+ <span class="menu-text">Classification I: K-Nearest Neighbors</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w03-trees-forests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w05-llm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
   </div>
 </li>
       </ul>
@@ -221,15 +285,53 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#fitting-a-function-without-assuming-its-shape" id="toc-fitting-a-function-without-assuming-its-shape" class="nav-link active" data-scroll-target="#fitting-a-function-without-assuming-its-shape">Fitting a function without assuming its shape</a></li>
+  <li><a href="#drawing-it-development-and-infant-mortality" id="toc-drawing-it-development-and-infant-mortality" class="nav-link" data-scroll-target="#drawing-it-development-and-infant-mortality">Drawing it: development and infant mortality</a>
+  <ul class="collapse">
+  <li><a href="#what-the-algorithm-actually-did" id="toc-what-the-algorithm-actually-did" class="nav-link" data-scroll-target="#what-the-algorithm-actually-did">What the algorithm actually did</a></li>
+  </ul></li>
+  <li><a href="#the-choice-of-k" id="toc-the-choice-of-k" class="nav-link" data-scroll-target="#the-choice-of-k">The choice of k</a></li>
+  <li><a href="#why-a-perfect-fit-should-worry-you" id="toc-why-a-perfect-fit-should-worry-you" class="nav-link" data-scroll-target="#why-a-perfect-fit-should-worry-you">Why a perfect fit should worry you</a>
+  <ul class="collapse">
+  <li><a href="#the-same-picture-drawn-the-conventional-way" id="toc-the-same-picture-drawn-the-conventional-way" class="nav-link" data-scroll-target="#the-same-picture-drawn-the-conventional-way">The same picture, drawn the conventional way</a></li>
+  </ul></li>
+  <li><a href="#bias-and-variance" id="toc-bias-and-variance" class="nav-link" data-scroll-target="#bias-and-variance">Bias and variance</a>
+  <ul class="collapse">
+  <li><a href="#seeing-variance-directly" id="toc-seeing-variance-directly" class="nav-link" data-scroll-target="#seeing-variance-directly">Seeing variance directly</a></li>
+  </ul></li>
+  <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-validation</a>
+  <ul class="collapse">
+  <li><a href="#leave-one-out" id="toc-leave-one-out" class="nav-link" data-scroll-target="#leave-one-out">Leave-one-out</a></li>
+  <li><a href="#k-fold" id="toc-k-fold" class="nav-link" data-scroll-target="#k-fold">k-fold</a></li>
+  <li><a href="#the-same-thing-with-caret" id="toc-the-same-thing-with-caret" class="nav-link" data-scroll-target="#the-same-thing-with-caret">The same thing, with caret</a></li>
+  </ul></li>
+  <li><a href="#more-than-one-feature-and-the-problem-of-units" id="toc-more-than-one-feature-and-the-problem-of-units" class="nav-link" data-scroll-target="#more-than-one-feature-and-the-problem-of-units">More than one feature, and the problem of units</a>
+  <ul class="collapse">
+  <li><a href="#what-the-algorithm-now-sees" id="toc-what-the-algorithm-now-sees" class="nav-link" data-scroll-target="#what-the-algorithm-now-sees">What the algorithm now sees</a></li>
+  <li><a href="#what-the-neighborhood-looks-like" id="toc-what-the-neighborhood-looks-like" class="nav-link" data-scroll-target="#what-the-neighborhood-looks-like">What the neighborhood looks like</a></li>
+  </ul></li>
+  <li><a href="#from-averaging-to-voting" id="toc-from-averaging-to-voting" class="nav-link" data-scroll-target="#from-averaging-to-voting">From averaging to voting</a></li>
+  <li><a href="#reading-a-confusion-matrix" id="toc-reading-a-confusion-matrix" class="nav-link" data-scroll-target="#reading-a-confusion-matrix">Reading a confusion matrix</a></li>
+  <li><a href="#the-baseline-that-is-hard-to-beat" id="toc-the-baseline-that-is-hard-to-beat" class="nav-link" data-scroll-target="#the-baseline-that-is-hard-to-beat">The baseline that is hard to beat</a></li>
+  <li><a href="#what-this-model-cannot-tell-you" id="toc-what-this-model-cannot-tell-you" class="nav-link" data-scroll-target="#what-this-model-cannot-tell-you">What this model cannot tell you</a></li>
+  <li><a href="#the-politics-of-similarity" id="toc-the-politics-of-similarity" class="nav-link" data-scroll-target="#the-politics-of-similarity">The politics of similarity</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading">Reading</a></li>
+  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop">Before the workshop</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session">Questions for the session</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html">Classification I: K-Nearest Neighbors</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></h1>
+<h1 class="title">Classification I: K-Nearest Neighbors</h1>
 </div>
 
 
@@ -246,9 +348,733 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p><em>Week 2, 9 September</em></p>
+<p>Last week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, <span class="math inline">\(K\)</span>-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.</p>
+<p>That is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.</p>
+<p>There is code in this handout, and you should run it rather than read it. The workshop assumes you have.</p>
+<section id="fitting-a-function-without-assuming-its-shape" class="level1">
+<h1>Fitting a function without assuming its shape</h1>
+<p>We usually want to know how an outcome varies with something else: how <span class="math inline">\(Y\)</span> behaves conditional on <span class="math inline">\(X\)</span>, written <span class="math inline">\(P(Y=y \mid X=x)\)</span>.</p>
+<p>The most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are <strong>parametric</strong> models, and the assumption is doing a great deal of work.</p>
+<p>Assuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.</p>
+<p>It also costs something. If the true relationship is not the shape you assumed, the model is wrong in a way that more data will not fix. Collecting a thousand more observations does not rescue a straight line drawn through a curve.</p>
+<p>When the assumption looks doubtful, there are two responses. The first is to stay inside the parametric framework and repair the model: transform a variable, add an interaction, take logarithms. The second is to use a <strong>non-parametric</strong> method, which assumes much less about the shape and lets the data determine it.</p>
+<p><span class="math inline">\(K\)</span>-nearest neighbors is the simplest non-parametric method there is. Here is the entire algorithm:</p>
+<blockquote class="blockquote">
+<p>To predict the outcome for a case, find the <span class="math inline">\(k\)</span> cases in your data most similar to it, and average their outcomes. If the outcome is a category rather than a number, take the majority vote instead of the average.</p>
+</blockquote>
+<p>There is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.</p>
+</section>
+<section id="drawing-it-development-and-infant-mortality" class="level1">
+<h1>Drawing it: development and infant mortality</h1>
+<p>Last week’s running example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle it.</p>
+<p>We will use national development indicators for 199 countries, which ship with the <code>carData</code> package.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"carData"</span>, <span class="st">"kknn"</span>, <span class="st">"caret"</span>, <span class="st">"scatterplot3d"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(carData)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(UN, <span class="at">package =</span> <span class="st">"carData"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 193</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             ppgdp infantMortality fertility pctUrban lifeExpF  group
+Afghanistan  499.0         124.535     5.968       23    49.49  other
+Albania     3677.2          16.561     1.525       53    80.40  other
+Algeria     4473.0          21.458     2.142       67    75.00 africa
+Angola      4321.9          96.191     5.135       59    53.17 africa
+Argentina   9162.1          12.337     2.172       93    79.89  other
+Armenia     3030.7          24.272     1.735       64    77.33  other</code></pre>
+</div>
+</div>
+<p><code>ppgdp</code> is per capita gross domestic product in US dollars, and <code>infantMortality</code> is deaths per thousand live births. Start by looking at them.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The shape is the point. Infant mortality falls very steeply across the poorest range and then flattens out almost completely. The difference between a country at $500 and a country at $2,000 is enormous. The difference between $30,000 and $40,000 is close to nothing.</p>
+<p>Now put a straight line through it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fit_ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(infantMortality <span class="sc">~</span> ppgdp, <span class="at">data =</span> countries)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit_ols, <span class="at">col =</span> <span class="st">"navy"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The line is not a small approximation to the truth here. It is systematically wrong in a patterned way: too low for the poorest countries, too high through the middle, and it eventually predicts negative infant mortality, which is not a quantity that exists.</p>
+<p>You could repair this without leaving the parametric framework, and in a paper you probably would. Taking the logarithm of per capita GDP would straighten most of the curve, and that transformation has a defensible substantive reading: what matters for infant mortality is proportional differences in income, not absolute ones. That is a real modeling decision and a good one.</p>
+<p>The point of this week is that <span class="math inline">\(K\)</span>-nearest neighbors requires no such decision. It does not need to be told the shape.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ppgdp =</span> <span class="fu">sort</span>(countries<span class="sc">$</span>ppgdp))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fit_15 <span class="ot">&lt;-</span> <span class="fu">kknn</span>(infantMortality <span class="sc">~</span> ppgdp,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">train =</span> countries, <span class="at">test =</span> grid,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">k =</span> <span class="dv">15</span>, <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"k = 15"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(grid<span class="sc">$</span>ppgdp, fit_15<span class="sc">$</span>fitted.values, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">lwd =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The argument <code>kernel = "rectangular"</code> means that all <span class="math inline">\(k\)</span> neighbors count equally. Other choices give closer neighbors more weight. Rectangular is the plain version of the algorithm, and it is the one described above.</p>
+<section id="what-the-algorithm-actually-did" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-algorithm-actually-did">What the algorithm actually did</h2>
+<p>Take one point on that curve. To produce a prediction for a country with a per capita GDP of $2,000, the algorithm found the fifteen countries in the data closest to $2,000 on that axis and averaged their infant mortality. To produce the prediction at $3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.</p>
+<p>The curve is the trace left behind by that moving neighborhood. It is not a formula, and it cannot be written as one. It is a record of what the neighbors did.</p>
+<p>This is also why the curve wobbles where the data are sparse. On the right-hand side there are few countries, so the fifteen nearest neighbors of a rich country may be spread across a very wide range of incomes. The algorithm still returns an answer. It does not warn you that the answer came from a neighborhood stretching across $40,000.</p>
+</section>
+</section>
+<section id="the-choice-of-k" class="level1">
+<h1>The choice of k</h1>
+<p>Nothing so far told us to use fifteen. Try several values.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray75"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"The same data, four values of k"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>kvals  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">15</span>, <span class="dv">50</span>, <span class="dv">150</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>kcols  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"darkred"</span>, <span class="st">"maroon"</span>, <span class="st">"navy"</span>, <span class="st">"darkgreen"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(kvals)) {</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  f <span class="ot">&lt;-</span> <span class="fu">kknn</span>(infantMortality <span class="sc">~</span> ppgdp,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">train =</span> countries, <span class="at">test =</span> grid,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">k =</span> kvals[i], <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(grid<span class="sc">$</span>ppgdp, f<span class="sc">$</span>fitted.values, <span class="at">col =</span> kcols[i], <span class="at">lwd =</span> <span class="fl">2.5</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">paste</span>(<span class="st">"k ="</span>, kvals),</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> kcols, <span class="at">lwd =</span> <span class="fl">2.5</span>, <span class="at">box.lty =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At <span class="math inline">\(k=3\)</span> the curve is jagged. It follows every local fluctuation, including fluctuations produced by the fact that we happen to have these 199 countries rather than some other set. At <span class="math inline">\(k=150\)</span> the curve is nearly flat, close to the overall average, and it has erased a difference between rich and poor countries that is obviously real.</p>
+<p>Both failures are informative, and they are opposite failures.</p>
+<p>A small <span class="math inline">\(k\)</span> takes every wiggle in the data seriously. Some of those wiggles are the relationship we want. Others are noise. A model flexible enough to reproduce the training data exactly has reproduced the noise along with the signal, and the noise will not be there next time.</p>
+<p>We can state this in one line. Write the outcome as</p>
+<p><span class="math display">\[Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}\]</span></p>
+<p>What we want is <span class="math inline">\(f\)</span>. The term <span class="math inline">\(\varepsilon\)</span> is whatever is left over: measurement error, idiosyncrasy, the particular history of the particular countries in this dataset. It is not a stable feature of the world, and a model that has learned it has learned something that will not recur.</p>
+<p>So here is the sentence to take away from this week. <strong>A model that fits your data perfectly has told you nothing, because all it has done is recite back the data you already had.</strong> This is the opposite of the instinct most people arrive with, which is that a closer fit is a better model.</p>
+<p>A large <span class="math inline">\(k\)</span> fails in the other direction. It averages across countries that are not comparable, and it produces a model too rigid to represent a relationship that genuinely exists.</p>
+</section>
+<section id="why-a-perfect-fit-should-worry-you" class="level1">
+<h1>Why a perfect fit should worry you</h1>
+<p>To choose between these we need to stop grading the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>n        <span class="ot">&lt;-</span> <span class="fu">nrow</span>(countries)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="fu">floor</span>(<span class="fl">0.7</span> <span class="sc">*</span> n))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>Train <span class="ot">&lt;-</span> countries[train_id, ]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>Test  <span class="ot">&lt;-</span> countries[<span class="sc">-</span>train_id, ]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(Train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 135</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(Test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 58</code></pre>
+</div>
+</div>
+<p><code>set.seed()</code> fixes the random draw so that you and I get the same split. Use it every time you do anything random. Without it your results change on every run and neither you nor anyone else can reproduce them.</p>
+<p>Now measure the error. For a continuous outcome the usual summary is the root mean squared error,</p>
+<p><span class="math display">\[\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left[y_i - \hat{f}(x_i)\right]^2},\]</span></p>
+<p>which is roughly the size of a typical prediction error, in the units of the outcome. Here that means deaths per thousand live births, so an RMSE of 15 means the model is typically off by about fifteen deaths per thousand.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rmse <span class="ot">&lt;-</span> <span class="cf">function</span>(y, yhat) <span class="fu">sqrt</span>(<span class="fu">mean</span>((y <span class="sc">-</span> yhat)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>kseq     <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">60</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>err_test <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(kseq))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>err_train <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(kseq))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(kseq)) {</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  f_test <span class="ot">&lt;-</span> <span class="fu">kknn</span>(infantMortality <span class="sc">~</span> ppgdp, Train, Test,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">k =</span> kseq[i], <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  err_test[i] <span class="ot">&lt;-</span> <span class="fu">rmse</span>(Test<span class="sc">$</span>infantMortality, f_test<span class="sc">$</span>fitted.values)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  f_train <span class="ot">&lt;-</span> <span class="fu">kknn</span>(infantMortality <span class="sc">~</span> ppgdp, Train, Train,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">k =</span> kseq[i], <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  err_train[i] <span class="ot">&lt;-</span> <span class="fu">rmse</span>(Train<span class="sc">$</span>infantMortality, f_train<span class="sc">$</span>fitted.values)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kseq, err_test, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(err_test, err_train)),</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"k"</span>, <span class="at">ylab =</span> <span class="st">"RMSE"</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Error on data the model has seen, and data it has not"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(kseq, err_train, <span class="at">col =</span> <span class="st">"navy"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Test (unseen)"</span>, <span class="st">"Training (seen)"</span>),</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"maroon"</span>, <span class="st">"navy"</span>), <span class="at">lwd =</span> <span class="fl">2.5</span>, <span class="at">box.lty =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>kseq[<span class="fu">which.min</span>(err_test)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17</code></pre>
+</div>
+</div>
+<p>Read the two curves against each other, because the comparison is the lesson.</p>
+<p>The training error keeps falling as <span class="math inline">\(k\)</span> gets smaller. It is lowest at the far left, where the model is most flexible. If you had only this curve, you would conclude that the best model is the most complicated one available, and you would conclude that every single time, on every dataset, regardless of the truth.</p>
+<p>The test error does something different. It falls, reaches a minimum, and then rises again. Past that minimum the model is no longer learning the relationship. It is learning the training countries.</p>
+<p>One caution before you go looking for the best <span class="math inline">\(k\)</span>. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the problem. The precise minimum is a property of one arbitrary split. Do not report “the optimal <span class="math inline">\(k\)</span> is 11” as though you had discovered something about infant mortality. We will fix this properly in a moment.</p>
+<section id="the-same-picture-drawn-the-conventional-way" class="level2">
+<h2 class="anchored" data-anchor-id="the-same-picture-drawn-the-conventional-way">The same picture, drawn the conventional way</h2>
+<p>That plot has an awkward feature: its horizontal axis runs backwards. A large <span class="math inline">\(k\)</span> is a <em>simple</em> model, so complexity increases as you move to the <em>left</em>, which is the opposite of how you will see this drawn everywhere else.</p>
+<p>The usual fix is to plot against <span class="math inline">\(\log(1/k)\)</span>, which increases as the model gets more flexible.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> kseq), err_test, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(err_test, err_train)),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Model complexity, log(1/k)"</span>, <span class="at">ylab =</span> <span class="st">"RMSE"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Complexity increases to the right"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> kseq), err_train, <span class="at">col =</span> <span class="st">"navy"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="dv">60</span>), err_test[<span class="fu">length</span>(kseq)], <span class="st">"k = 60"</span>, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"gray30"</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>),  err_test[<span class="dv">1</span>],            <span class="st">"k = 2"</span>,  <span class="at">pos =</span> <span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"gray30"</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"top"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Test (unseen)"</span>, <span class="st">"Training (seen)"</span>),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"maroon"</span>, <span class="st">"navy"</span>), <span class="at">lwd =</span> <span class="fl">2.5</span>, <span class="at">box.lty =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Identical numbers, identical conclusion, drawn so that “further right” means “more flexible model.” Every version of this figure you meet from now on, in any textbook and for any method, has this orientation, and the two curves always behave this way: the training curve slides downward forever, and the test curve turns around.</p>
+</section>
+</section>
+<section id="bias-and-variance" class="level1">
+<h1>Bias and variance</h1>
+<p>We now have the picture. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.</p>
+<p>Return to the decomposition from earlier:</p>
+<p><span class="math display">\[Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}\]</span></p>
+<p>A model can be wrong about <span class="math inline">\(f\)</span> in two ways.</p>
+<p><strong>Bias</strong> is systematic error. The model is too rigid to represent the shape of <span class="math inline">\(f\)</span>, so it is wrong in the same direction every time, and it would still be wrong if you handed it a million more countries. The straight line we drew through the infant mortality data has high bias. So does <span class="math inline">\(K\)</span>-nearest neighbors at <span class="math inline">\(k=150\)</span>, which flattens a real curve into something close to a horizontal line.</p>
+<p><strong>Variance</strong> is instability. The model is flexible enough to represent <span class="math inline">\(f\)</span>, but it responds so eagerly to the particular cases in front of it that a different sample would have produced a noticeably different answer. It is not systematically wrong. It is just not reliable, and the specific answer you got is partly an accident of the data you happen to hold.</p>
+<p>The trade-off is that reducing one usually increases the other, which is what produces the U.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/bias-variance-tradeoff.png" class="img-fluid figure-img"></p>
+<figcaption>Test and training error as a function of model complexity. Reproduced from Hastie, T., Tibshirani, R., and Friedman, J., <em>The Elements of Statistical Learning</em>, 2nd edition, Springer, 2009.</figcaption>
+</figure>
+</div>
+<p>This is a schematic, not a fit to anything. It is the shape you just produced from real data, and the shape you will produce from almost any dataset with almost any flexible method.</p>
+<p>Read the two arrows at the top. Moving left, the model gets simpler: variance falls, bias rises, and eventually the model is too rigid to represent what is there. Moving right, the model gets more flexible: bias falls, variance rises, and eventually the model is chasing noise. The training curve slides downward the whole way and never turns, which is why it cannot be used to choose anything. The test curve has a minimum, and finding it is the entire problem.</p>
+<section id="seeing-variance-directly" class="level2">
+<h2 class="anchored" data-anchor-id="seeing-variance-directly">Seeing variance directly</h2>
+<p>Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true <span class="math inline">\(f\)</span> in order to say how far the model sits from it, and if you knew <span class="math inline">\(f\)</span> you would not be modeling.</p>
+<p>So we simulate. We invent a function, add noise to it, draw many samples from it, and fit a model to each. Because we wrote down the truth ourselves, we can measure exactly how far off each fit lands.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1364</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>f_true <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">cospi</span>(x)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">f_true</span>(x) <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>sim   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x, y)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>grid2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">sort</span>(x))</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>kvec   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">40</span>, <span class="dv">150</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>nsim   <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>ntrain <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>spot   <span class="ot">&lt;-</span> <span class="dv">400</span>                       <span class="co"># one x value we will watch closely</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>x_spot <span class="ot">&lt;-</span> grid2<span class="sc">$</span>x[spot]</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, nsim, <span class="fu">length</span>(kvec))</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(kvec)) {</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">col =</span> <span class="st">"gray70"</span>, <span class="at">pch =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"k ="</span>, kvec[j]), <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nsim) {</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    draw <span class="ot">&lt;-</span> sim[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>N, ntrain), ]</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    f    <span class="ot">&lt;-</span> <span class="fu">kknn</span>(y <span class="sc">~</span> x, draw, grid2, <span class="at">k =</span> kvec[j], <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(grid2<span class="sc">$</span>x, f<span class="sc">$</span>fitted.values, <span class="at">col =</span> <span class="st">"royalblue2"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>)</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    preds[i, j] <span class="ot">&lt;-</span> f<span class="sc">$</span>fitted.values[spot]</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v =</span> x_spot, <span class="at">col =</span> <span class="st">"gray40"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(kvec)) {</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">boxplot</span>(preds[, j], <span class="at">ylim =</span> <span class="fu">range</span>(preds), <span class="at">col =</span> <span class="st">"gray90"</span>,</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Predictions at one point, k ="</span>, kvec[j]),</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>          <span class="at">font.main =</span> <span class="dv">1</span>, <span class="at">cex.main =</span> <span class="fl">0.9</span>)</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">f_true</span>(x_spot), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Thirty samples, three values of <span class="math inline">\(k\)</span>, and the same underlying truth throughout. The red line in the lower row marks the correct answer at the point we are watching.</p>
+<p>At <span class="math inline">\(k=5\)</span> the fitted curves scatter all over the plot. Each one is chasing its own two hundred observations. The predictions center roughly on the truth, so the bias is small, but any single one of them could be well off. That is variance.</p>
+<p>At <span class="math inline">\(k=150\)</span> the curves lie almost on top of one another. Run the study again and you would get essentially the same answer, which sounds like a virtue until you notice where that answer sits: the box is nowhere near the red line. The model is stable and consistently wrong. That is bias.</p>
+<p>At <span class="math inline">\(k=40\)</span> the box is both reasonably tight and reasonably close. That is the whole idea.</p>
+<p>Notice what this means for how you read a result. A model with high variance can be badly wrong without giving any sign of it, because the fit to the data in front of you looks excellent. Nothing in the output announces that a different sample would have said something else.</p>
+</section>
+</section>
+<section id="cross-validation" class="level1">
+<h1>Cross-validation</h1>
+<p>Now back to the problem we left hanging. We chose <span class="math inline">\(k\)</span> using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:</p>
+<ol type="1">
+<li>The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.</li>
+<li>We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.</li>
+</ol>
+<p><strong>Cross-validation</strong> addresses both by rotating the role of the held-out set.</p>
+<section id="leave-one-out" class="level2">
+<h2 class="anchored" data-anchor-id="leave-one-out">Leave-one-out</h2>
+<p>Set aside a single observation, train on the remaining <span class="math inline">\(n-1\)</span>, predict the one you left out, and record the error. Do it again with the next observation. Repeat <span class="math inline">\(n\)</span> times and average.</p>
+<p><span class="math display">\[\text{RMSE}_{\text{LOO}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i - \hat{y}_i\right)^2}\]</span></p>
+<p>Every case gets used for training almost every time and for testing exactly once. Nothing is wasted, and there is no arbitrary split to be at the mercy of. The cost is that you have to fit the model <span class="math inline">\(n\)</span> times.</p>
+</section>
+<section id="k-fold" class="level2">
+<h2 class="anchored" data-anchor-id="k-fold">k-fold</h2>
+<p>The practical compromise is to hold out a group instead of a single case. Split the data at random into a number of roughly equal folds. Hold out the first fold, train on the rest, and record the error on the fold you held out. Then hold out the second fold, and so on, until every fold has served once as the test set. Average the results.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[\text{CV RMSE} = \sqrt{\frac{1}{\text{nfold}}\sum_{f=1}^{\text{nfold}} \text{MSE}_f}\]</span></p>
+<p><strong>One warning about names before the code.</strong> The <span class="math inline">\(k\)</span> in “<span class="math inline">\(k\)</span>-fold” has nothing whatever to do with the <span class="math inline">\(k\)</span> in “<span class="math inline">\(K\)</span>-nearest neighbors.” They are two unrelated numbers that unfortunately share a letter, and we are about to choose one of them using the other. To keep them apart, the code below calls the number of folds <code>nfold</code> and never <code>k</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cv_knn <span class="ot">&lt;-</span> <span class="cf">function</span>(data, kvals, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">seed =</span> <span class="dv">7</span>) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  fold <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="at">length.out =</span> <span class="fu">nrow</span>(data)))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  out  <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(kvals))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(kvals)) {</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    fold_mse <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, nfold)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (f <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nfold) {</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      tr  <span class="ot">&lt;-</span> data[fold <span class="sc">!=</span> f, ]</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      te  <span class="ot">&lt;-</span> data[fold <span class="sc">==</span> f, ]</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      fit <span class="ot">&lt;-</span> <span class="fu">kknn</span>(infantMortality <span class="sc">~</span> ppgdp, tr, te,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">k =</span> kvals[j], <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      fold_mse[f] <span class="ot">&lt;-</span> <span class="fu">mean</span>((te<span class="sc">$</span>infantMortality <span class="sc">-</span> fit<span class="sc">$</span>fitted.values)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    out[j] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(fold_mse))</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You are not expected to be able to write that from scratch. You are expected to be able to read it and say in words what it does, which is the standard this course applies to code generally.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>kseq2  <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">60</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>cv_5  <span class="ot">&lt;-</span> <span class="fu">cv_knn</span>(countries, kseq2, <span class="at">nfold =</span> <span class="dv">5</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>cv_10 <span class="ot">&lt;-</span> <span class="fu">cv_knn</span>(countries, kseq2, <span class="at">nfold =</span> <span class="dv">10</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kseq2, cv_10, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(cv_5, cv_10)),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"k"</span>, <span class="at">ylab =</span> <span class="st">"Cross-validated RMSE"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Choosing k by cross-validation"</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(kseq2, cv_5, <span class="at">col =</span> <span class="st">"navyblue"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> kseq2[<span class="fu">which.min</span>(cv_10)], <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"maroon"</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"10-fold"</span>, <span class="st">"5-fold"</span>),</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"maroon"</span>, <span class="st">"navyblue"</span>), <span class="at">lwd =</span> <span class="fl">2.5</span>, <span class="at">box.lty =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>kseq2[<span class="fu">which.min</span>(cv_5)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>kseq2[<span class="fu">which.min</span>(cv_10)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 27</code></pre>
+</div>
+</div>
+<p>Compare this curve with the single-split version. It is smoother, because each point averages several held-out sets rather than resting on one, and the two fold counts broadly agree with each other. That agreement is the reassurance we were missing before.</p>
+<p>It does not make the choice of <span class="math inline">\(k\)</span> objective. Cross-validation still leaves you with a range of values that perform about equally well, and picking the exact minimum of a flat curve is reading precision into noise. Report the range, say what you chose, and say why.</p>
+</section>
+<section id="the-same-thing-with-caret" class="level2">
+<h2 class="anchored" data-anchor-id="the-same-thing-with-caret">The same thing, with caret</h2>
+<p>Nobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.</p>
+<p><code>caret</code> is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because Week 6 uses it again for evaluation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"caret"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>cv_caret <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  infantMortality <span class="sc">~</span> ppgdp,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data       =</span> countries,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">method     =</span> <span class="st">"knn"</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">"range"</span>),</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl  =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>),</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid   =</span> <span class="fu">data.frame</span>(<span class="at">k =</span> kseq2)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>cv_caret<span class="sc">$</span>bestTune</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    k
+26 27</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_caret)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Four arguments carry the work, and each corresponds to something we did by hand.</p>
+<p><code>method = "knn"</code> picks the algorithm. <code>caret</code> supports well over a hundred, and swapping this one string is how you will fit a random forest next week.</p>
+<p><code>trControl = trainControl(method = "cv", number = 10)</code> is the cross-validation. <code>number</code> is the fold count, our <code>nfold</code>. Set <code>method = "LOOCV"</code> here and you get leave-one-out instead.</p>
+<p><code>tuneGrid = data.frame(k = kseq2)</code> gives it the values of <span class="math inline">\(k\)</span> to try, the same sequence we looped over. Leave this out and <code>caret</code> quietly tries three values of its own choosing, which is almost never what you want.</p>
+<p><code>preProcess = c("range")</code> rescales the features to lie between zero and one, which is the first of the two formulas from the previous section. <strong>This is not the default.</strong> Omit it and <code>caret</code> uses the raw units.</p>
+<p>One honest caveat about that last point here. With a single predictor, rescaling makes no difference at all: stretching one axis cannot change which countries are nearest to which. It is in the argument above because it becomes essential the moment we add a second feature, and because a habit formed on the easy case is one you still have on the hard one.</p>
+<p>The answer should land close to what the loop produced, though not necessarily identical, since <code>caret</code> draws its own folds. If the two disagree by more than a few units of <span class="math inline">\(k\)</span> on a curve this flat, that is the flatness talking rather than a real disagreement.</p>
+<p>Week 6 returns to evaluation and takes it further, into the metrics that matter when the outcome is rare and accuracy stops being informative.</p>
+</section>
+</section>
+<section id="more-than-one-feature-and-the-problem-of-units" class="level1">
+<h1>More than one feature, and the problem of units</h1>
+<p>So far similarity has meant closeness on a single axis, which is easy. With several features we need a general definition of distance, and the usual one is Euclidean distance. For a case <span class="math inline">\(f\)</span> with features <span class="math inline">\((x_{f1}, \dots, x_{fp})\)</span> and a case <span class="math inline">\(i\)</span> in the training data,</p>
+<p><span class="math display">\[d_{if} = \sqrt{\sum_{j=1}^{p}\left(x_{fj} - x_{ij}\right)^2}.\]</span></p>
+<p>This is the straight-line distance you already know, extended to more than two dimensions. And it introduces a problem that is easy to miss and consequential when you do.</p>
+<p>Our features are measured in wildly different units. Per capita GDP runs into the tens of thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(countries[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"pctUrban"</span>, <span class="st">"fertility"</span>, <span class="st">"lifeExpF"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ppgdp             pctUrban       fertility        lifeExpF    
+ Min.   :   114.8   Min.   : 11.0   Min.   :1.134   Min.   :48.11  
+ 1st Qu.:  1239.8   1st Qu.: 39.0   1st Qu.:1.750   1st Qu.:65.10  
+ Median :  4495.8   Median : 59.0   Median :2.264   Median :75.57  
+ Mean   : 12291.1   Mean   : 57.1   Mean   :2.780   Mean   :72.08  
+ 3rd Qu.: 14497.3   3rd Qu.: 75.0   3rd Qu.:3.700   3rd Qu.:79.07  
+ Max.   :105095.4   Max.   :100.0   Max.   :6.925   Max.   :87.12  </code></pre>
+</div>
+</div>
+<p>Put those into the distance formula unchanged and a difference of $10,000 in income contributes a hundred million to the sum under the square root, while the entire possible range of fertility contributes about thirty-six. Income does not merely dominate the calculation. It effectively is the calculation, and the other three features have no influence on which cases count as neighbors.</p>
+<p>The standard fix is to put all features on a common scale first, either</p>
+<p><span class="math display">\[\tilde{x} = \frac{x - \min(x)}{\max(x) - \min(x)} \qquad \text{or} \qquad \tilde{x} = \frac{x - \bar{x}}{\sigma_x}.\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rescale <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>feats <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"pctUrban"</span>, <span class="st">"fertility"</span>, <span class="st">"lifeExpF"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>countries_s <span class="ot">&lt;-</span> countries</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>countries_s[feats] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(countries_s[feats], rescale)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(countries_s[, feats])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ppgdp            pctUrban        fertility         lifeExpF     
+ Min.   :0.00000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.01072   1st Qu.:0.3146   1st Qu.:0.1064   1st Qu.:0.4355  
+ Median :0.04173   Median :0.5393   Median :0.1951   Median :0.7039  
+ Mean   :0.11599   Mean   :0.5180   Mean   :0.2843   Mean   :0.6144  
+ 3rd Qu.:0.13700   3rd Qu.:0.7191   3rd Qu.:0.4431   3rd Qu.:0.7936  
+ Max.   :1.00000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  </code></pre>
+</div>
+</div>
+<p>The first thing to establish is that this is a harmless operation. Rescaling does not change the relationship between any feature and the outcome. Look at two features before and after.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>pctUrban, countries<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>pctUrban, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The clouds of points are identical in shape. Only the numbers on the horizontal axis have moved. Nothing about the association between any feature and the outcome has been altered.</p>
+<p>What has changed is invisible in these plots, because it is not about any single feature. It is about the space the features jointly define.</p>
+<section id="what-the-algorithm-now-sees" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-algorithm-now-sees">What the algorithm now sees</h2>
+<p>With two features rather than one, cases no longer sit along a line. They sit in a plane, and the outcome rises above it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">scatterplot3d</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>pctUrban, countries_s<span class="sc">$</span>infantMortality,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">color =</span> <span class="st">"maroon"</span>, <span class="at">pch =</span> <span class="dv">1</span>, <span class="at">cex.symbols =</span> <span class="fl">0.7</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled)"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">"Percent urban (rescaled)"</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">zlab =</span> <span class="st">"Infant mortality"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Add a third feature and the picture cannot be drawn at all, which is the last point in this course at which you can see the space a model is working in. From Week 3 onward you will have to reason about it rather than look at it. The arithmetic does not care: the distance formula extends to any number of features without complaint, and it is only our eyes that stop at three.</p>
+</section>
+<section id="what-the-neighborhood-looks-like" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-neighborhood-looks-like">What the neighborhood looks like</h2>
+<p>Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>target_raw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries<span class="sc">$</span>ppgdp),   <span class="fu">median</span>(countries<span class="sc">$</span>pctUrban))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>target_s   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries_s<span class="sc">$</span>ppgdp), <span class="fu">median</span>(countries_s<span class="sc">$</span>pctUrban))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Euclidean distance, exactly the formula above, computed by hand</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>dist_raw <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries<span class="sc">$</span>ppgdp   <span class="sc">-</span> target_raw[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                 (countries<span class="sc">$</span>pctUrban <span class="sc">-</span> target_raw[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>dist_s   <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries_s<span class="sc">$</span>ppgdp   <span class="sc">-</span> target_s[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                 (countries_s<span class="sc">$</span>pctUrban <span class="sc">-</span> target_s[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>nb_raw <span class="ot">&lt;-</span> <span class="fu">order</span>(dist_raw)[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>]</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>nb_s   <span class="ot">&lt;-</span> <span class="fu">order</span>(dist_s)[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>]</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>pctUrban, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>, <span class="at">ylab =</span> <span class="st">"Percent urban"</span>,</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units, k = 25"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries<span class="sc">$</span>ppgdp[nb_raw], countries<span class="sc">$</span>pctUrban[nb_raw], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(target_raw[<span class="dv">1</span>], target_raw[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.7</span>)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> target_raw[<span class="dv">1</span>], <span class="at">h =</span> target_raw[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>pctUrban, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled)"</span>, <span class="at">ylab =</span> <span class="st">"Percent urban (rescaled)"</span>,</span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled, k = 25"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries_s<span class="sc">$</span>ppgdp[nb_s], countries_s<span class="sc">$</span>pctUrban[nb_s], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(target_s[<span class="dv">1</span>], target_s[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.7</span>)</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> target_s[<span class="dv">1</span>], <span class="at">h =</span> target_s[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w02-knn_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The filled red point is the country we are predicting for. The circled points are the twenty-five the algorithm chose as most similar to it.</p>
+<p>On the right, with both features on a common scale, the neighborhood is roughly a disc around the target. Both features contributed to picking it, which is what we asked for.</p>
+<p>On the left it is a narrow vertical band. The selected countries share almost exactly the target’s income and are spread across nearly the whole range of urbanization, from barely urban to almost entirely so. In raw units, per capita GDP runs into the tens of thousands and percent urban tops out at a hundred, so a difference of a few thousand dollars swamps the entire possible range of the second feature. The algorithm did not ignore urbanization because anybody decided it was unimportant. It ignored it because of the units it was measured in.</p>
+<p>Note also what the model would have reported. Both versions return predictions. Neither prints a warning. The left-hand model would have gone into a paper as a two-feature model, and the fact that it was a one-feature model in disguise would appear nowhere in the output.</p>
+<p>Stay with that, because it is not a technical footnote. The algorithm’s entire operation rests on its definition of “similar,” and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.</p>
+</section>
+</section>
+<section id="from-averaging-to-voting" class="level1">
+<h1>From averaging to voting</h1>
+<p>Everything so far predicted a number. Now predict a category, which is the same algorithm with the average replaced by a vote.</p>
+<p>Our outcome is whether a country belongs to the OECD, which the data record in <code>group</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>countries_s<span class="sc">$</span>oecd <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(countries_s<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"oecd"</span>, <span class="st">"OECD"</span>, <span class="st">"Not OECD"</span>),</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not OECD"</span>, <span class="st">"OECD"</span>))</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(countries_s<span class="sc">$</span>oecd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Not OECD     OECD 
+     162       31 </code></pre>
+</div>
+</div>
+<p>This is a genuinely political outcome and not a manufactured one. OECD membership is a fact about which states belong to a particular club of wealthy democracies, arrived at through a real accession process. The question we are asking is whether a country’s development indicators are enough to tell you whether it is in that club.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>n_s      <span class="ot">&lt;-</span> <span class="fu">nrow</span>(countries_s)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_s, <span class="fu">floor</span>(<span class="fl">0.7</span> <span class="sc">*</span> n_s))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>Train_s <span class="ot">&lt;-</span> countries_s[train_id, ]</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>Test_s  <span class="ot">&lt;-</span> countries_s[<span class="sc">-</span>train_id, ]</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>fit_class <span class="ot">&lt;-</span> <span class="fu">kknn</span>(oecd <span class="sc">~</span> ppgdp <span class="sc">+</span> pctUrban <span class="sc">+</span> fertility <span class="sc">+</span> lifeExpF,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">train =</span> Train_s, <span class="at">test =</span> Test_s,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">k =</span> <span class="dv">7</span>, <span class="at">kernel =</span> <span class="st">"rectangular"</span>)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">fitted</span>(fit_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Among the seven nearest neighbors of each test country, the algorithm counted how many were OECD members and assigned whichever label won.</p>
+</section>
+<section id="reading-a-confusion-matrix" class="level1">
+<h1>Reading a confusion matrix</h1>
+<p>Do not go straight to a single accuracy number. Look at the table first.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> pred, <span class="at">Actual =</span> Test_s<span class="sc">$</span>oecd)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Actual
+Predicted  Not OECD OECD
+  Not OECD       44    4
+  OECD            4    6</code></pre>
+</div>
+</div>
+<p>Four cells, and they are not interchangeable. Naming them requires first choosing which class counts as <strong>positive</strong>, which is a decision you make and not a property of the data. Here we will call OECD membership positive.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Actually OECD</th>
+<th>Actually not OECD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Predicted OECD</strong></td>
+<td>True positive</td>
+<td>False positive</td>
+</tr>
+<tr class="even">
+<td><strong>Predicted not OECD</strong></td>
+<td>False negative</td>
+<td>True negative</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>false positive</strong> is a country the model puts in the club that is not in it. A <strong>false negative</strong> is a member the model fails to recognize. These are different mistakes, and in almost every real application one of them costs more than the other. A screening test that misses a disease and a screening test that raises a false alarm fail in ways that are not remotely comparable, even when they are wrong equally often.</p>
+<p>Accuracy is the two correct cells over the total.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(cm)) <span class="sc">/</span> <span class="fu">sum</span>(cm)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>accuracy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.862069</code></pre>
+</div>
+</div>
+</section>
+<section id="the-baseline-that-is-hard-to-beat" class="level1">
+<h1>The baseline that is hard to beat</h1>
+<p>Now the part that matters most this week, and the part most often skipped.</p>
+<p>Before you can say whether that accuracy is good, you have to know what you would have achieved with no model at all. The dumbest possible rule here is to predict “Not OECD” for every country in the world, without looking at any data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">mean</span>(Test_s<span class="sc">$</span>oecd <span class="sc">==</span> <span class="st">"Not OECD"</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>baseline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8275862</code></pre>
+</div>
+</div>
+<p>Compare the two numbers. Most countries are not OECD members, so the rule that ignores everything already scores very highly, and whatever the model achieved has to be read against that figure rather than against zero.</p>
+<p>This is why an accuracy figure reported on its own tells you almost nothing. It is not a small technical caveat. It is the single most common way that a model with no useful content gets presented as a success, and you will encounter it in published research, in vendor documentation, and in news coverage of deployed systems. When a system is described as “95 percent accurate,” the first question is always: accurate compared to what, and how rare is the thing it is looking for?</p>
+<p>Week 6 develops this properly and introduces precision, recall, and the metrics that survive rare outcomes. For now the rule is simple and you should apply it from this week onward without being asked: <strong>always compute the baseline, and always report it next to the accuracy.</strong></p>
+</section>
+<section id="what-this-model-cannot-tell-you" class="level1">
+<h1>What this model cannot tell you</h1>
+<p>The classifier has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form “a one-unit increase in <span class="math inline">\(X\)</span> is associated with a change in <span class="math inline">\(Y\)</span>.” The model cannot be written down apart from the data it holds.</p>
+<p>More importantly, it has said nothing about why any country is in the OECD. It has found that member states resemble each other on these indicators and differ from non-members. That is a prediction, in exactly the sense we distinguished last week, and it does not become an explanation by performing well.</p>
+<p>There is one further observation worth making, because it is not a quirk of this example. Our model never saw the variable <code>group</code>. It was given income, urbanization, fertility, and life expectancy, and it recovered club membership from them anyway, because those features carry the information. Removing an attribute from a model does not remove it from the model’s reach if the remaining features encode it. This is the ordinary mechanism by which systems built to be neutral about some characteristic turn out not to be, and it will return in Week 7 when we look at how deployed systems are audited and defended.</p>
+</section>
+<section id="the-politics-of-similarity" class="level1">
+<h1>The politics of similarity</h1>
+<p>The rule at the center of this week is that cases similar to past cases receive what those past cases received.</p>
+<p>That is also a fair description of precedent in law, of case-based reasoning in administration, and of the Weberian bureaucratic ideal we discussed last week, in which similar cases are treated alike regardless of who happens to be at the desk. Consistency of this kind is not a defect. It is one of the oldest arguments for rule-bound government, and part of what makes an administration predictable enough to be held to account.</p>
+<p>What changes when the rule is a fitted model is who defines similarity, and how visibly. In <span class="math inline">\(K\)</span>-nearest neighbors that definition came from feature selection and rescaling, decisions made early, made quietly, and almost never revisited or documented once the system is running. Nobody writes them down as a policy, because they do not look like a policy.</p>
+<p>And a model of this kind can only reproduce the pattern in the cases it was given. If the treatment recorded in those cases was unjust, then similarity to past cases carries the injustice forward, and it does so with the appearance of perfect consistency. The system is not malfunctioning when this happens. It is doing precisely what it was built to do.</p>
+</section>
+<section id="reading" class="level1">
+<h1>Reading</h1>
+<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="../references.html#ref-james2021" role="doc-biblioref"><strong>james2021?</strong></a>)</span>.</p>
+<p>Read Section 2.2 for the figures rather than the derivations. The pictures of training error against test error, and of the bias-variance decomposition, are the same pictures you produced above, and seeing them drawn by someone else is a useful check on whether you understood what you made. Section 5.1 covers cross-validation and is short.</p>
+</section>
+<section id="before-the-workshop" class="level1">
+<h1>Before the workshop</h1>
+<p>Install <code>carData</code>, <code>kknn</code>, <code>caret</code>, and <code>scatterplot3d</code>, run every chunk in this handout once, and bring a charged laptop. The workshop begins from the assumption that the code above ran on your machine, and the first part of a three-hour session is not the place to discover an installation problem.</p>
+<p>If something failed, say so at the start rather than at the end.</p>
+</section>
+<section id="questions-for-the-session" class="level1">
+<h1>Questions for the session</h1>
+<p>Come with a view on at least two of these. They will structure the first part of the session.</p>
+<ol type="1">
+<li><p><span class="math inline">\(K\)</span>-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week’s reading is relevant here.</p></li>
+<li><p>The choice of <span class="math inline">\(k\)</span> has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?</p></li>
+<li><p>We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?</p></li>
+<li><p>Our classifier recovered OECD membership without ever being shown it. What follows for the common proposal that a system can be made fair by removing a sensitive attribute from its inputs?</p></li>
+<li><p>A model reports 95 percent accuracy on a task where the outcome occurs in 4 percent of cases. What do you now know, and what would you need to ask before believing anything about its usefulness?</p></li>
+<li><p>Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.</p></li>
+</ol>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -659,12 +1485,12 @@ ul.task-list li input[type="checkbox"] {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../handouts/w01-prediction-causation.html" class="pagination-link" aria-label="Prediction, Causation, and the Vocabulary of AI">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Prediction, Causation, and the Vocabulary of AI</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../handouts/w03-trees-forests.html" class="pagination-link" aria-label="Tree Models: Random Forest">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

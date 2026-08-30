@@ -144,12 +144,12 @@
   {
     "objectID": "handouts/w02-knn.html",
     "href": "handouts/w02-knn.html",
-    "title": "2  K-Nearest Neighbors",
+    "title": "Classification I: K-Nearest Neighbors",
     "section": "",
-    "text": "In preparation.",
+    "text": "Fitting a function without assuming its shape\nWeek 2, 9 September\nLast week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, \\(K\\)-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.\nThat is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.\nThere is code in this handout, and you should run it rather than read it. The workshop assumes you have.\nWe usually want to know how an outcome varies with something else: how \\(Y\\) behaves conditional on \\(X\\), written \\(P(Y=y \\mid X=x)\\).\nThe most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are parametric models, and the assumption is doing a great deal of work.\nAssuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.\nIt also costs something. If the true relationship is not the shape you assumed, the model is wrong in a way that more data will not fix. Collecting a thousand more observations does not rescue a straight line drawn through a curve.\nWhen the assumption looks doubtful, there are two responses. The first is to stay inside the parametric framework and repair the model: transform a variable, add an interaction, take logarithms. The second is to use a non-parametric method, which assumes much less about the shape and lets the data determine it.\n\\(K\\)-nearest neighbors is the simplest non-parametric method there is. Here is the entire algorithm:\nThere is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>K-Nearest Neighbors</span>"
+      "Classification I: K-Nearest Neighbors"
     ]
   },
   {
@@ -754,6 +754,94 @@
     "text": "Cranmer, Skyler J., and Bruce A. Desmarais. 2017. “What Can We\nLearn from Predictive Modeling?” Political Analysis 25\n(2): 145–66. https://doi.org/10.1017/pan.2017.3.\n\n\nHegre, Håvard et al. 2019.\n“ViEWS: A Political Violence Early-Warning\nSystem.” Journal of Peace Research 56 (2): 155–74. https://doi.org/10.1177/0022343319823860.\n\n\nHobbes, Thomas. 1651. Leviathan. Andrew Crooke.\n\n\nHofman, Jake M., Amit Sharma, and Duncan J. Watts. 2017.\n“Prediction and Explanation in Social Systems.”\nScience 355 (6324): 486–88. https://doi.org/10.1126/science.aal3856.\n\n\nLakatos, Imre. 1970. “Falsification and the Methodology of\nScientific Research Programmes.” In Criticism and the Growth\nof Knowledge, edited by Imre Lakatos and Alan Musgrave. Cambridge\nUniversity Press.\n\n\nShmueli, Galit. 2010. “To Explain or to Predict?”\nStatistical Science 25 (3): 289–310. https://doi.org/10.1214/10-STS330.\n\n\nSimon, Herbert A. 1947. Administrative Behavior: A Study of\nDecision-Making Processes in Administrative Organization.\nMacmillan.\n\n\nSimon, Herbert A. 1969. The Sciences of the Artificial. MIT\nPress.\n\n\nWeber, Max. 1978. Economy and Society: An Outline of Interpretive\nSociology. Edited by Guenther Roth and Claus Wittich. University of\nCalifornia Press.",
     "crumbs": [
       "References"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#what-the-algorithm-actually-did",
+    "href": "handouts/w02-knn.html#what-the-algorithm-actually-did",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "What the algorithm actually did",
+    "text": "What the algorithm actually did\nTake one point on that curve. To produce a prediction for a country with a per capita GDP of $2,000, the algorithm found the fifteen countries in the data closest to $2,000 on that axis and averaged their infant mortality. To produce the prediction at $3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.\nThe curve is the trace left behind by that moving neighborhood. It is not a formula, and it cannot be written as one. It is a record of what the neighbors did.\nThis is also why the curve wobbles where the data are sparse. On the right-hand side there are few countries, so the fifteen nearest neighbors of a rich country may be spread across a very wide range of incomes. The algorithm still returns an answer. It does not warn you that the answer came from a neighborhood stretching across $40,000.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#the-same-picture-drawn-the-conventional-way",
+    "href": "handouts/w02-knn.html#the-same-picture-drawn-the-conventional-way",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "The same picture, drawn the conventional way",
+    "text": "The same picture, drawn the conventional way\nThat plot has an awkward feature: its horizontal axis runs backwards. A large \\(k\\) is a simple model, so complexity increases as you move to the left, which is the opposite of how you will see this drawn everywhere else.\nThe usual fix is to plot against \\(\\log(1/k)\\), which increases as the model gets more flexible.\n\nplot(log(1 / kseq), err_test, type = \"l\", col = \"maroon\", lwd = 2.5,\n     ylim = range(c(err_test, err_train)),\n     xlab = \"Model complexity, log(1/k)\", ylab = \"RMSE\",\n     main = \"Complexity increases to the right\")\n\nlines(log(1 / kseq), err_train, col = \"navy\", lwd = 2.5)\n\ntext(log(1 / 60), err_test[length(kseq)], \"k = 60\", pos = 4, cex = 0.8, col = \"gray30\")\ntext(log(1 / 2),  err_test[1],            \"k = 2\",  pos = 2, cex = 0.8, col = \"gray30\")\n\nlegend(\"top\", legend = c(\"Test (unseen)\", \"Training (seen)\"),\n       col = c(\"maroon\", \"navy\"), lwd = 2.5, box.lty = 0, cex = 0.8)\n\n\n\n\n\n\n\n\nIdentical numbers, identical conclusion, drawn so that “further right” means “more flexible model.” Every version of this figure you meet from now on, in any textbook and for any method, has this orientation, and the two curves always behave this way: the training curve slides downward forever, and the test curve turns around.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#seeing-variance-directly",
+    "href": "handouts/w02-knn.html#seeing-variance-directly",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "Seeing variance directly",
+    "text": "Seeing variance directly\nBias and variance are hard to separate with real data, for a simple reason: you would need to know the true \\(f\\) in order to say how far the model sits from it, and if you knew \\(f\\) you would not be modeling.\nSo we simulate. We invent a function, add noise to it, draw many samples from it, and fit a model to each. Because we wrote down the truth ourselves, we can measure exactly how far off each fit lands.\n\nset.seed(1364)\n\nN &lt;- 1000\nx &lt;- rnorm(N, 2, 1)\nf_true &lt;- function(x) cospi(x)\ny &lt;- f_true(x) + rnorm(N, 0, 0.5)\n\nsim   &lt;- data.frame(x, y)\ngrid2 &lt;- data.frame(x = sort(x))\n\nkvec   &lt;- c(5, 40, 150)\nnsim   &lt;- 30\nntrain &lt;- 200\nspot   &lt;- 400                       # one x value we will watch closely\nx_spot &lt;- grid2$x[spot]\n\npar(mfrow = c(2, 3))\n\npreds &lt;- matrix(NA, nsim, length(kvec))\n\nfor (j in seq_along(kvec)) {\n\n  plot(x, y, col = \"gray70\", pch = 1, cex = 0.5,\n       main = paste(\"k =\", kvec[j]), font.main = 1)\n\n  for (i in 1:nsim) {\n    draw &lt;- sim[sample(1:N, ntrain), ]\n    f    &lt;- kknn(y ~ x, draw, grid2, k = kvec[j], kernel = \"rectangular\")\n    lines(grid2$x, f$fitted.values, col = \"royalblue2\", lwd = 0.4)\n    preds[i, j] &lt;- f$fitted.values[spot]\n  }\n\n  abline(v = x_spot, col = \"gray40\", lty = 2)\n}\n\nfor (j in seq_along(kvec)) {\n  boxplot(preds[, j], ylim = range(preds), col = \"gray90\",\n          main = paste(\"Predictions at one point, k =\", kvec[j]),\n          font.main = 1, cex.main = 0.9)\n  abline(h = f_true(x_spot), col = \"red\", lwd = 2)\n}\n\n\n\n\n\n\n\n\nThirty samples, three values of \\(k\\), and the same underlying truth throughout. The red line in the lower row marks the correct answer at the point we are watching.\nAt \\(k=5\\) the fitted curves scatter all over the plot. Each one is chasing its own two hundred observations. The predictions center roughly on the truth, so the bias is small, but any single one of them could be well off. That is variance.\nAt \\(k=150\\) the curves lie almost on top of one another. Run the study again and you would get essentially the same answer, which sounds like a virtue until you notice where that answer sits: the box is nowhere near the red line. The model is stable and consistently wrong. That is bias.\nAt \\(k=40\\) the box is both reasonably tight and reasonably close. That is the whole idea.\nNotice what this means for how you read a result. A model with high variance can be badly wrong without giving any sign of it, because the fit to the data in front of you looks excellent. Nothing in the output announces that a different sample would have said something else.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#leave-one-out",
+    "href": "handouts/w02-knn.html#leave-one-out",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "Leave-one-out",
+    "text": "Leave-one-out\nSet aside a single observation, train on the remaining \\(n-1\\), predict the one you left out, and record the error. Do it again with the next observation. Repeat \\(n\\) times and average.\n\\[\\text{RMSE}_{\\text{LOO}} = \\sqrt{\\frac{1}{n}\\sum_{i=1}^{n}\\left(y_i - \\hat{y}_i\\right)^2}\\]\nEvery case gets used for training almost every time and for testing exactly once. Nothing is wasted, and there is no arbitrary split to be at the mercy of. The cost is that you have to fit the model \\(n\\) times.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#k-fold",
+    "href": "handouts/w02-knn.html#k-fold",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "k-fold",
+    "text": "k-fold\nThe practical compromise is to hold out a group instead of a single case. Split the data at random into a number of roughly equal folds. Hold out the first fold, train on the rest, and record the error on the fold you held out. Then hold out the second fold, and so on, until every fold has served once as the test set. Average the results.\n\n\n\n\n\n\n\n\n\n\\[\\text{CV RMSE} = \\sqrt{\\frac{1}{\\text{nfold}}\\sum_{f=1}^{\\text{nfold}} \\text{MSE}_f}\\]\nOne warning about names before the code. The \\(k\\) in “\\(k\\)-fold” has nothing whatever to do with the \\(k\\) in “\\(K\\)-nearest neighbors.” They are two unrelated numbers that unfortunately share a letter, and we are about to choose one of them using the other. To keep them apart, the code below calls the number of folds nfold and never k.\n\ncv_knn &lt;- function(data, kvals, nfold = 10, seed = 7) {\n\n  set.seed(seed)\n  fold &lt;- sample(rep(1:nfold, length.out = nrow(data)))\n  out  &lt;- rep(NA, length(kvals))\n\n  for (j in seq_along(kvals)) {\n\n    fold_mse &lt;- rep(NA, nfold)\n\n    for (f in 1:nfold) {\n      tr  &lt;- data[fold != f, ]\n      te  &lt;- data[fold == f, ]\n      fit &lt;- kknn(infantMortality ~ ppgdp, tr, te,\n                  k = kvals[j], kernel = \"rectangular\")\n      fold_mse[f] &lt;- mean((te$infantMortality - fit$fitted.values)^2)\n    }\n\n    out[j] &lt;- sqrt(mean(fold_mse))\n  }\n\n  out\n}\n\nYou are not expected to be able to write that from scratch. You are expected to be able to read it and say in words what it does, which is the standard this course applies to code generally.\n\nkseq2  &lt;- 2:60\n\ncv_5  &lt;- cv_knn(countries, kseq2, nfold = 5)\ncv_10 &lt;- cv_knn(countries, kseq2, nfold = 10)\n\nplot(kseq2, cv_10, type = \"l\", col = \"maroon\", lwd = 2.5,\n     ylim = range(c(cv_5, cv_10)),\n     xlab = \"k\", ylab = \"Cross-validated RMSE\",\n     main = \"Choosing k by cross-validation\")\n\nlines(kseq2, cv_5, col = \"navyblue\", lwd = 2.5)\n\nabline(v = kseq2[which.min(cv_10)], lty = 2, col = \"maroon\")\n\nlegend(\"topleft\", legend = c(\"10-fold\", \"5-fold\"),\n       col = c(\"maroon\", \"navyblue\"), lwd = 2.5, box.lty = 0, cex = 0.8)\n\n\n\n\n\n\n\nkseq2[which.min(cv_5)]\n\n[1] 24\n\nkseq2[which.min(cv_10)]\n\n[1] 27\n\n\nCompare this curve with the single-split version. It is smoother, because each point averages several held-out sets rather than resting on one, and the two fold counts broadly agree with each other. That agreement is the reassurance we were missing before.\nIt does not make the choice of \\(k\\) objective. Cross-validation still leaves you with a range of values that perform about equally well, and picking the exact minimum of a flat curve is reading precision into noise. Report the range, say what you chose, and say why.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#the-same-thing-with-caret",
+    "href": "handouts/w02-knn.html#the-same-thing-with-caret",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "The same thing, with caret",
+    "text": "The same thing, with caret\nNobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.\ncaret is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because Week 6 uses it again for evaluation.\n\ninstall.packages(\"caret\")\n\n\nlibrary(caret)\n\nset.seed(7)\n\ncv_caret &lt;- train(\n  infantMortality ~ ppgdp,\n  data       = countries,\n  method     = \"knn\",\n  preProcess = c(\"range\"),\n  trControl  = trainControl(method = \"cv\", number = 10),\n  tuneGrid   = data.frame(k = kseq2)\n)\n\ncv_caret$bestTune\n\n    k\n26 27\n\nplot(cv_caret)\n\n\n\n\n\n\n\n\nFour arguments carry the work, and each corresponds to something we did by hand.\nmethod = \"knn\" picks the algorithm. caret supports well over a hundred, and swapping this one string is how you will fit a random forest next week.\ntrControl = trainControl(method = \"cv\", number = 10) is the cross-validation. number is the fold count, our nfold. Set method = \"LOOCV\" here and you get leave-one-out instead.\ntuneGrid = data.frame(k = kseq2) gives it the values of \\(k\\) to try, the same sequence we looped over. Leave this out and caret quietly tries three values of its own choosing, which is almost never what you want.\npreProcess = c(\"range\") rescales the features to lie between zero and one, which is the first of the two formulas from the previous section. This is not the default. Omit it and caret uses the raw units.\nOne honest caveat about that last point here. With a single predictor, rescaling makes no difference at all: stretching one axis cannot change which countries are nearest to which. It is in the argument above because it becomes essential the moment we add a second feature, and because a habit formed on the easy case is one you still have on the hard one.\nThe answer should land close to what the loop produced, though not necessarily identical, since caret draws its own folds. If the two disagree by more than a few units of \\(k\\) on a curve this flat, that is the flatness talking rather than a real disagreement.\nWeek 6 returns to evaluation and takes it further, into the metrics that matter when the outcome is rare and accuracy stops being informative.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#what-the-algorithm-now-sees",
+    "href": "handouts/w02-knn.html#what-the-algorithm-now-sees",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "What the algorithm now sees",
+    "text": "What the algorithm now sees\nWith two features rather than one, cases no longer sit along a line. They sit in a plane, and the outcome rises above it.\n\nlibrary(scatterplot3d)\n\nscatterplot3d(countries_s$ppgdp, countries_s$pctUrban, countries_s$infantMortality,\n              color = \"maroon\", pch = 1, cex.symbols = 0.7,\n              xlab = \"Per capita GDP (rescaled)\",\n              ylab = \"Percent urban (rescaled)\",\n              zlab = \"Infant mortality\")\n\n\n\n\n\n\n\n\nAdd a third feature and the picture cannot be drawn at all, which is the last point in this course at which you can see the space a model is working in. From Week 3 onward you will have to reason about it rather than look at it. The arithmetic does not care: the distance formula extends to any number of features without complaint, and it is only our eyes that stop at three.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
+    ]
+  },
+  {
+    "objectID": "handouts/w02-knn.html#what-the-neighborhood-looks-like",
+    "href": "handouts/w02-knn.html#what-the-neighborhood-looks-like",
+    "title": "Classification I: K-Nearest Neighbors",
+    "section": "What the neighborhood looks like",
+    "text": "What the neighborhood looks like\nNow the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.\n\ntarget_raw &lt;- c(median(countries$ppgdp),   median(countries$pctUrban))\ntarget_s   &lt;- c(median(countries_s$ppgdp), median(countries_s$pctUrban))\n\n# Euclidean distance, exactly the formula above, computed by hand\ndist_raw &lt;- sqrt((countries$ppgdp   - target_raw[1])^2 +\n                 (countries$pctUrban - target_raw[2])^2)\n\ndist_s   &lt;- sqrt((countries_s$ppgdp   - target_s[1])^2 +\n                 (countries_s$pctUrban - target_s[2])^2)\n\nnb_raw &lt;- order(dist_raw)[1:25]\nnb_s   &lt;- order(dist_s)[1:25]\n\npar(mfrow = c(1, 2))\n\nplot(countries$ppgdp, countries$pctUrban, col = \"gray55\", pch = 19, cex = 0.7,\n     xlab = \"Per capita GDP (US$)\", ylab = \"Percent urban\",\n     main = \"Raw units, k = 25\", font.main = 1)\npoints(countries$ppgdp[nb_raw], countries$pctUrban[nb_raw], col = \"red\", cex = 1.6)\npoints(target_raw[1], target_raw[2], col = \"red\", pch = 19, cex = 1.7)\nabline(v = target_raw[1], h = target_raw[2], col = \"darkgreen\", lty = 2)\n\nplot(countries_s$ppgdp, countries_s$pctUrban, col = \"gray55\", pch = 19, cex = 0.7,\n     xlab = \"Per capita GDP (rescaled)\", ylab = \"Percent urban (rescaled)\",\n     main = \"Rescaled, k = 25\", font.main = 1)\npoints(countries_s$ppgdp[nb_s], countries_s$pctUrban[nb_s], col = \"red\", cex = 1.6)\npoints(target_s[1], target_s[2], col = \"red\", pch = 19, cex = 1.7)\nabline(v = target_s[1], h = target_s[2], col = \"darkgreen\", lty = 2)\n\n\n\n\n\n\n\n\nThe filled red point is the country we are predicting for. The circled points are the twenty-five the algorithm chose as most similar to it.\nOn the right, with both features on a common scale, the neighborhood is roughly a disc around the target. Both features contributed to picking it, which is what we asked for.\nOn the left it is a narrow vertical band. The selected countries share almost exactly the target’s income and are spread across nearly the whole range of urbanization, from barely urban to almost entirely so. In raw units, per capita GDP runs into the tens of thousands and percent urban tops out at a hundred, so a difference of a few thousand dollars swamps the entire possible range of the second feature. The algorithm did not ignore urbanization because anybody decided it was unimportant. It ignored it because of the units it was measured in.\nNote also what the model would have reported. Both versions return predictions. Neither prints a warning. The left-hand model would have gone into a paper as a two-feature model, and the fact that it was a one-feature model in disguise would appear nowhere in the output.\nStay with that, because it is not a technical footnote. The algorithm’s entire operation rests on its definition of “similar,” and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.",
+    "crumbs": [
+      "Weekly Handouts",
+      "Classification I: K-Nearest Neighbors"
     ]
   }
 ]
