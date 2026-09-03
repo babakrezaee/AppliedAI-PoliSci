@@ -36,7 +36,7 @@
     "href": "bootcamp/01-four-ways-to-run-r.html#the-console-thinking-out-loud",
     "title": "Four Ways to Run R Code",
     "section": "",
-    "text": "2 + 2\n#&gt; [1] 4\n\n\ndim(fl)\nsummary(fl$gdpen)\n?mean",
+    "text": "2 + 2\n#&gt; [1] 4",
     "crumbs": [
       "R Bootcamp",
       "Four Ways to Run R Code"
@@ -47,7 +47,7 @@
     "href": "bootcamp/01-four-ways-to-run-r.html#the-script-a-record-of-instructions",
     "title": "Four Ways to Run R Code",
     "section": "The script: a record of instructions",
-    "text": "The script: a record of instructions\nAn R script, saved with the extension .R, is a plain text file containing lines of R code and nothing else. When you run a script, R executes each line in order, exactly as if you had typed them into the console yourself.\nThe difference is that the file survives. A script is a record of what you did, in the order you did it, and it can be run again tomorrow, or by someone else, or by you on a different machine. This is what makes it the first genuinely reproducible unit of work, and it is why the transition from console to script is the single most consequential habit shift in learning R.\n# analysis.R\nlibrary(tidyverse)\n\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\n\nfl_clean &lt;- fl %&gt;%\n  filter(!is.na(onset)) %&gt;%\n  mutate(log_pop = log(pop))\n\nmodel &lt;- glm(onset ~ log_pop + gdpen, data = fl_clean, family = \"binomial\")\nsummary(model)\nWhat a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.\nScripts remain the right choice for work whose product is an action rather than a document: downloading and cleaning a dataset, defining functions you will use elsewhere, or running a long job whose output is a saved file. In the repository for this course you will find several such scripts in the R/ folder.",
+    "text": "The script: a record of instructions\nAn R script, saved with the extension .R, is a plain text file containing lines of R code and nothing else. When you run a script, R executes each line in order, exactly as if you had typed them into the console yourself.\nThe difference is that the file survives. A script is a record of what you did, in the order you did it, and it can be run again tomorrow, or by someone else, or by you on a different machine. This is what makes it the first genuinely reproducible unit of work, and it is why the transition from console to script is the single most consequential habit shift in learning R.\n# analysis.R\nlibrary(tidyverse)\n\nfl &lt;- read.csv(\"https://raw.githubusercontent.com/babakrezaee/AppliedAI-PoliSci/main/data/FearonLaitin2003.csv\")\n\nfl_clean &lt;- fl %&gt;%\n  filter(!is.na(onset)) %&gt;%\n  mutate(log_pop = log(pop))\n\nmodel &lt;- glm(onset ~ log_pop + gdpen, data = fl_clean, family = \"binomial\")\nsummary(model)\nAs explained in the previous section, you can check the dimension of your datasets and summarize your variables as well:\ndim(fl)\nsummary(fl$gdpen)\n?mean\nWhat a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.\nScripts remain the right choice for work whose product is an action rather than a document: downloading and cleaning a dataset, defining functions you will use elsewhere, or running a long job whose output is a saved file. In the repository for this course you will find several such scripts in the R/ folder.",
     "crumbs": [
       "R Bootcamp",
       "Four Ways to Run R Code"
@@ -144,67 +144,67 @@
   {
     "objectID": "handouts/w02-knn.html",
     "href": "handouts/w02-knn.html",
-    "title": "2  K-Nearest Neighbors",
+    "title": "1  K-Nearest Neighbors",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>K-Nearest Neighbors</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>K-Nearest Neighbors</span>"
     ]
   },
   {
     "objectID": "handouts/w03-trees-forests.html",
     "href": "handouts/w03-trees-forests.html",
-    "title": "3  Tree Models: Random Forest",
+    "title": "2  Tree Models: Random Forest",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Tree Models: Random Forest</span>"
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Tree Models: Random Forest</span>"
     ]
   },
   {
     "objectID": "handouts/w04-text-as-data.html",
     "href": "handouts/w04-text-as-data.html",
-    "title": "4  Text as Data",
+    "title": "3  Text as Data",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Text as Data</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Text as Data</span>"
     ]
   },
   {
     "objectID": "handouts/w05-llm.html",
     "href": "handouts/w05-llm.html",
-    "title": "5  Large Language Models",
+    "title": "4  Large Language Models",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Large Language Models</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Large Language Models</span>"
     ]
   },
   {
     "objectID": "handouts/w06-evaluation.html",
     "href": "handouts/w06-evaluation.html",
-    "title": "6  Evaluating AI Systems",
+    "title": "5  Evaluating AI Systems",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Evaluating AI Systems</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Evaluating AI Systems</span>"
     ]
   },
   {
     "objectID": "handouts/w07-final-project.html",
     "href": "handouts/w07-final-project.html",
-    "title": "7  Final Project",
+    "title": "6  Final Project",
     "section": "",
     "text": "In preparation.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Final Project</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Final Project</span>"
     ]
   },
   {
