@@ -40,6 +40,9 @@ install.packages(c("carData", "kknn", "caret", "scatterplot3d"))
 library(carData)
 library(kknn)
 
+# Print numbers in full rather than as 1e+05. Affects plot axes too.
+options(scipen = 999)
+
 data(UN, package = "carData")
 
 countries <- na.omit(UN[, c("ppgdp", "infantMortality", "fertility",
@@ -49,7 +52,11 @@ nrow(countries)
 head(countries)
 ```
 
-`ppgdp` is per capita gross domestic product in US dollars, and `infantMortality` is deaths per thousand live births. Start by looking at them.
+`ppgdp` is per capita gross domestic product in US dollars, and `infantMortality` is deaths per thousand live births.
+
+The `options(scipen = 999)` line above is a small housekeeping habit worth adopting now. Per capita GDP runs into six figures, and R's default is to report large and small numbers in scientific notation, so an axis would be labeled `0e+00`, `2e+04`, `4e+04` rather than in dollars anyone can read. Setting `scipen` high tells R to prefer ordinary notation, in printed output and on plot axes alike. Put it at the top of any script whose numbers are meant for a reader rather than for you.
+
+Start by looking at the data.
 
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
@@ -634,7 +641,7 @@ Accuracy is the two correct cells over the total.
 
 ```{r}
 accuracy <- sum(diag(cm)) / sum(cm)
-accuracy
+round(accuracy, 3)
 ```
 
 # The baseline that is hard to beat
@@ -645,7 +652,7 @@ Before you can say whether that accuracy is good, you have to know what you woul
 
 ```{r}
 baseline <- mean(Test_s$oecd == "Not OECD")
-baseline
+round(baseline, 3)
 ```
 
 Compare the two numbers. Most countries are not OECD members, so the rule that ignores everything already scores very highly, and whatever the model achieved has to be read against that figure rather than against zero.

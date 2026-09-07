@@ -376,12 +376,15 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(carData)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(UN, <span class="at">package =</span> <span class="st">"carData"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print numbers in full rather than as 1e+05. Affects plot axes too.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(UN, <span class="at">package =</span> <span class="st">"carData"</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 193</code></pre>
 </div>
@@ -396,7 +399,9 @@ Argentina   9162.1          12.337     2.172       93    79.89  other
 Armenia     3030.7          24.272     1.735       64    77.33  other</code></pre>
 </div>
 </div>
-<p><code>ppgdp</code> is per capita gross domestic product in US dollars, and <code>infantMortality</code> is deaths per thousand live births. Start by looking at them.</p>
+<p><code>ppgdp</code> is per capita gross domestic product in US dollars, and <code>infantMortality</code> is deaths per thousand live births.</p>
+<p>The <code>options(scipen = 999)</code> line above is a small housekeeping habit worth adopting now. Per capita GDP runs into six figures, and R’s default is to report large and small numbers in scientific notation, so an axis would be labeled <code>0e+00</code>, <code>2e+04</code>, <code>4e+04</code> rather than in dollars anyone can read. Setting <code>scipen</code> high tells R to prefer ordinary notation, in printed output and on plot axes alike. Put it at the top of any script whose numbers are meant for a reader rather than for you.</p>
+<p>Start by looking at the data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
@@ -1017,9 +1022,9 @@ Predicted  Not OECD OECD
 <p>Accuracy is the two correct cells over the total.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(cm)) <span class="sc">/</span> <span class="fu">sum</span>(cm)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>accuracy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(accuracy, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.862069</code></pre>
+<pre><code>[1] 0.862</code></pre>
 </div>
 </div>
 </section>
@@ -1029,9 +1034,9 @@ Predicted  Not OECD OECD
 <p>Before you can say whether that accuracy is good, you have to know what you would have achieved with no model at all. The dumbest possible rule here is to predict “Not OECD” for every country in the world, without looking at any data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">mean</span>(Test_s<span class="sc">$</span>oecd <span class="sc">==</span> <span class="st">"Not OECD"</span>)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>baseline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(baseline, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8275862</code></pre>
+<pre><code>[1] 0.828</code></pre>
 </div>
 </div>
 <p>Compare the two numbers. Most countries are not OECD members, so the rule that ignores everything already scores very highly, and whatever the model achieved has to be read against that figure rather than against zero.</p>
