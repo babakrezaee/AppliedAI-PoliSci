@@ -376,36 +376,38 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(carData)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print numbers in full rather than as 1e+05. Affects plot axes too.</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(UN, <span class="at">package =</span> <span class="st">"carData"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)   <span class="co"># print numbers in full rather than as 1e+05</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(UN, <span class="at">package =</span> <span class="st">"carData"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Express per capita GDP in thousands of dollars</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>countries<span class="sc">$</span>ppgdp <span class="ot">&lt;-</span> countries<span class="sc">$</span>ppgdp <span class="sc">/</span> <span class="dv">1000</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 193</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             ppgdp infantMortality fertility pctUrban lifeExpF  group
-Afghanistan  499.0         124.535     5.968       23    49.49  other
-Albania     3677.2          16.561     1.525       53    80.40  other
-Algeria     4473.0          21.458     2.142       67    75.00 africa
-Angola      4321.9          96.191     5.135       59    53.17 africa
-Argentina   9162.1          12.337     2.172       93    79.89  other
-Armenia     3030.7          24.272     1.735       64    77.33  other</code></pre>
+Afghanistan 0.4990         124.535     5.968       23    49.49  other
+Albania     3.6772          16.561     1.525       53    80.40  other
+Algeria     4.4730          21.458     2.142       67    75.00 africa
+Angola      4.3219          96.191     5.135       59    53.17 africa
+Argentina   9.1621          12.337     2.172       93    79.89  other
+Armenia     3.0307          24.272     1.735       64    77.33  other</code></pre>
 </div>
 </div>
-<p><code>ppgdp</code> is per capita gross domestic product in US dollars, and <code>infantMortality</code> is deaths per thousand live births.</p>
-<p>The <code>options(scipen = 999)</code> line above is a small housekeeping habit worth adopting now. Per capita GDP runs into six figures, and R’s default is to report large and small numbers in scientific notation, so an axis would be labeled <code>0e+00</code>, <code>2e+04</code>, <code>4e+04</code> rather than in dollars anyone can read. Setting <code>scipen</code> high tells R to prefer ordinary notation, in printed output and on plot axes alike. Put it at the top of any script whose numbers are meant for a reader rather than for you.</p>
+<p><code>ppgdp</code> is per capita gross domestic product and <code>infantMortality</code> is deaths per thousand live births.</p>
+<p>Two small things in that chunk. <code>options(scipen = 999)</code> tells R to print numbers in full rather than in scientific notation, so that a hundred thousand appears as <code>100000</code> and not as <code>1e+05</code>. And we divide per capita GDP by a thousand, so it is measured in thousands of dollars. That second step is cosmetic as far as the model is concerned, since dividing every value by the same constant cannot change which countries are nearest to which, but it keeps every axis in this handout readable. Nobody reports per capita GDP to the nearest dollar anyway.</p>
 <p>Start by looking at the data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -420,7 +422,7 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>,</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fit_ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(infantMortality <span class="sc">~</span> ppgdp, <span class="at">data =</span> countries)</span>
@@ -445,7 +447,7 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>,</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>,</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"k = 15"</span>)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
@@ -472,7 +474,7 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray75"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Infant mortality (per 1,000 live births)"</span>,</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"The same data, four values of k"</span>)</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -818,20 +820,20 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <p>So far similarity has meant closeness on a single axis, which is easy. With several features we need a general definition of distance, and the usual one is Euclidean distance. For a case <span class="math inline">\(f\)</span> with features <span class="math inline">\((x_{f1}, \dots, x_{fp})\)</span> and a case <span class="math inline">\(i\)</span> in the training data,</p>
 <p><span class="math display">\[d_{if} = \sqrt{\sum_{j=1}^{p}\left(x_{fj} - x_{ij}\right)^2}.\]</span></p>
 <p>This is the straight-line distance you already know, extended to more than two dimensions. And it introduces a problem that is easy to miss and consequential when you do.</p>
-<p>Our features are measured in wildly different units. Per capita GDP runs into the tens of thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven.</p>
+<p>Our features are measured on very different scales. Per capita GDP runs from well under one up to about a hundred, in thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven, and female life expectancy from the high forties to the high eighties.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(countries[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"pctUrban"</span>, <span class="st">"fertility"</span>, <span class="st">"lifeExpF"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     ppgdp             pctUrban       fertility        lifeExpF    
- Min.   :   114.8   Min.   : 11.0   Min.   :1.134   Min.   :48.11  
- 1st Qu.:  1239.8   1st Qu.: 39.0   1st Qu.:1.750   1st Qu.:65.10  
- Median :  4495.8   Median : 59.0   Median :2.264   Median :75.57  
- Mean   : 12291.1   Mean   : 57.1   Mean   :2.780   Mean   :72.08  
- 3rd Qu.: 14497.3   3rd Qu.: 75.0   3rd Qu.:3.700   3rd Qu.:79.07  
- Max.   :105095.4   Max.   :100.0   Max.   :6.925   Max.   :87.12  </code></pre>
+ Min.   :  0.1148   Min.   : 11.0   Min.   :1.134   Min.   :48.11  
+ 1st Qu.:  1.2398   1st Qu.: 39.0   1st Qu.:1.750   1st Qu.:65.10  
+ Median :  4.4958   Median : 59.0   Median :2.264   Median :75.57  
+ Mean   : 12.2911   Mean   : 57.1   Mean   :2.780   Mean   :72.08  
+ 3rd Qu.: 14.4973   3rd Qu.: 75.0   3rd Qu.:3.700   3rd Qu.:79.07  
+ Max.   :105.0954   Max.   :100.0   Max.   :6.925   Max.   :87.12  </code></pre>
 </div>
 </div>
-<p>Put those into the distance formula unchanged and a difference of $10,000 in income contributes a hundred million to the sum under the square root, while the entire possible range of fertility contributes about thirty-six. Income does not merely dominate the calculation. It effectively is the calculation, and the other three features have no influence on which cases count as neighbors.</p>
+<p>Put those into the distance formula unchanged and the two wide-ranging features decide everything. A difference of fifty between two countries on per capita GDP contributes two and a half thousand to the sum under the square root. The entire possible range of fertility, from one child per woman to seven, contributes about thirty-five. Fertility is not being weighted lightly here. For practical purposes it is not in the model at all, and neither is anything else measured on a small scale.</p>
 <p>The standard fix is to put all features on a common scale first, either</p>
 <p><span class="math display">\[\tilde{x} = \frac{x - \min(x)}{\max(x) - \min(x)} \qquad \text{or} \qquad \tilde{x} = \frac{x - \bar{x}}{\sigma_x}.\]</span></p>
 <div class="cell">
@@ -858,20 +860,19 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>pctUrban, countries<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>pctUrban, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>pctUrban, countries<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>pctUrban, countries_s<span class="sc">$</span>infantMortality, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Percent urban (rescaled 0 to 1)"</span>, <span class="at">ylab =</span> <span class="st">"Infant mortality"</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -907,32 +908,32 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 <h2 class="anchored" data-anchor-id="what-the-neighborhood-looks-like">What the neighborhood looks like</h2>
 <p>Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>target_raw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries<span class="sc">$</span>ppgdp),   <span class="fu">median</span>(countries<span class="sc">$</span>pctUrban))</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>target_s   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries_s<span class="sc">$</span>ppgdp), <span class="fu">median</span>(countries_s<span class="sc">$</span>pctUrban))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>target_raw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries<span class="sc">$</span>ppgdp),   <span class="fu">median</span>(countries<span class="sc">$</span>fertility))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>target_s   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries_s<span class="sc">$</span>ppgdp), <span class="fu">median</span>(countries_s<span class="sc">$</span>fertility))</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Euclidean distance, exactly the formula above, computed by hand</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>dist_raw <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries<span class="sc">$</span>ppgdp   <span class="sc">-</span> target_raw[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                 (countries<span class="sc">$</span>pctUrban <span class="sc">-</span> target_raw[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>dist_raw <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries<span class="sc">$</span>ppgdp     <span class="sc">-</span> target_raw[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                 (countries<span class="sc">$</span>fertility <span class="sc">-</span> target_raw[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>dist_s   <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries_s<span class="sc">$</span>ppgdp   <span class="sc">-</span> target_s[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                 (countries_s<span class="sc">$</span>pctUrban <span class="sc">-</span> target_s[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>dist_s   <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries_s<span class="sc">$</span>ppgdp     <span class="sc">-</span> target_s[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>                 (countries_s<span class="sc">$</span>fertility <span class="sc">-</span> target_s[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>nb_raw <span class="ot">&lt;-</span> <span class="fu">order</span>(dist_raw)[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>]</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>nb_s   <span class="ot">&lt;-</span> <span class="fu">order</span>(dist_s)[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>]</span>
 <span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
 <span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>pctUrban, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (US$)"</span>, <span class="at">ylab =</span> <span class="st">"Percent urban"</span>,</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>fertility, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (thousands of US$)"</span>, <span class="at">ylab =</span> <span class="st">"Fertility (births per woman)"</span>,</span>
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Raw units, k = 25"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries<span class="sc">$</span>ppgdp[nb_raw], countries<span class="sc">$</span>pctUrban[nb_raw], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries<span class="sc">$</span>ppgdp[nb_raw], countries<span class="sc">$</span>fertility[nb_raw], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
 <span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(target_raw[<span class="dv">1</span>], target_raw[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.7</span>)</span>
 <span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> target_raw[<span class="dv">1</span>], <span class="at">h =</span> target_raw[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
 <span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>pctUrban, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled)"</span>, <span class="at">ylab =</span> <span class="st">"Percent urban (rescaled)"</span>,</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries_s<span class="sc">$</span>ppgdp, countries_s<span class="sc">$</span>fertility, <span class="at">col =</span> <span class="st">"gray55"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Per capita GDP (rescaled)"</span>, <span class="at">ylab =</span> <span class="st">"Fertility (rescaled)"</span>,</span>
 <span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Rescaled, k = 25"</span>, <span class="at">font.main =</span> <span class="dv">1</span>)</span>
-<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries_s<span class="sc">$</span>ppgdp[nb_s], countries_s<span class="sc">$</span>pctUrban[nb_s], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(countries_s<span class="sc">$</span>ppgdp[nb_s], countries_s<span class="sc">$</span>fertility[nb_s], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="fl">1.6</span>)</span>
 <span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(target_s[<span class="dv">1</span>], target_s[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.7</span>)</span>
 <span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> target_s[<span class="dv">1</span>], <span class="at">h =</span> target_s[<span class="dv">2</span>], <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -945,7 +946,7 @@ Armenia     3030.7          24.272     1.735       64    77.33  other</code></pr
 </div>
 <p>The filled red point is the country we are predicting for. The circled points are the twenty-five the algorithm chose as most similar to it.</p>
 <p>On the right, with both features on a common scale, the neighborhood is roughly a disc around the target. Both features contributed to picking it, which is what we asked for.</p>
-<p>On the left it is a narrow vertical band. The selected countries share almost exactly the target’s income and are spread across nearly the whole range of urbanization, from barely urban to almost entirely so. In raw units, per capita GDP runs into the tens of thousands and percent urban tops out at a hundred, so a difference of a few thousand dollars swamps the entire possible range of the second feature. The algorithm did not ignore urbanization because anybody decided it was unimportant. It ignored it because of the units it was measured in.</p>
+<p>On the left it is a narrow vertical band. The selected countries share almost exactly the target’s income and are spread across nearly the whole range of fertility, from around one child per woman to well above the average. Per capita GDP spans about a hundred units on this scale and fertility spans about six, so a difference of a few units of income outweighs the entire fertility axis. The algorithm did not ignore fertility because anybody judged it unimportant. It ignored it because of the units it happens to be measured in.</p>
 <p>Note also what the model would have reported. Both versions return predictions. Neither prints a warning. The left-hand model would have gone into a paper as a two-feature model, and the fact that it was a one-feature model in disguise would appear nowhere in the output.</p>
 <p>Stay with that, because it is not a technical footnote. The algorithm’s entire operation rests on its definition of “similar,” and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.</p>
 </section>

@@ -40,28 +40,30 @@ install.packages(c("carData", "kknn", "caret", "scatterplot3d"))
 library(carData)
 library(kknn)
 
-# Print numbers in full rather than as 1e+05. Affects plot axes too.
-options(scipen = 999)
+options(scipen = 999)   # print numbers in full rather than as 1e+05
 
 data(UN, package = "carData")
 
 countries <- na.omit(UN[, c("ppgdp", "infantMortality", "fertility",
                             "pctUrban", "lifeExpF", "group")])
 
+# Express per capita GDP in thousands of dollars
+countries$ppgdp <- countries$ppgdp / 1000
+
 nrow(countries)
 head(countries)
 ```
 
-`ppgdp` is per capita gross domestic product in US dollars, and `infantMortality` is deaths per thousand live births.
+`ppgdp` is per capita gross domestic product and `infantMortality` is deaths per thousand live births.
 
-The `options(scipen = 999)` line above is a small housekeeping habit worth adopting now. Per capita GDP runs into six figures, and R's default is to report large and small numbers in scientific notation, so an axis would be labeled `0e+00`, `2e+04`, `4e+04` rather than in dollars anyone can read. Setting `scipen` high tells R to prefer ordinary notation, in printed output and on plot axes alike. Put it at the top of any script whose numbers are meant for a reader rather than for you.
+Two small things in that chunk. `options(scipen = 999)` tells R to print numbers in full rather than in scientific notation, so that a hundred thousand appears as `100000` and not as `1e+05`. And we divide per capita GDP by a thousand, so it is measured in thousands of dollars. That second step is cosmetic as far as the model is concerned, since dividing every value by the same constant cannot change which countries are nearest to which, but it keeps every axis in this handout readable. Nobody reports per capita GDP to the nearest dollar anyway.
 
 Start by looking at the data.
 
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
      col = "gray45", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (US$)",
+     xlab = "Per capita GDP (thousands of US$)",
      ylab = "Infant mortality (per 1,000 live births)")
 ```
 
@@ -72,7 +74,7 @@ Now put a straight line through it.
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
      col = "gray45", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (US$)",
+     xlab = "Per capita GDP (thousands of US$)",
      ylab = "Infant mortality (per 1,000 live births)")
 
 fit_ols <- lm(infantMortality ~ ppgdp, data = countries)
@@ -94,7 +96,7 @@ fit_15 <- kknn(infantMortality ~ ppgdp,
 
 plot(countries$ppgdp, countries$infantMortality,
      col = "gray45", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (US$)",
+     xlab = "Per capita GDP (thousands of US$)",
      ylab = "Infant mortality (per 1,000 live births)",
      main = "k = 15")
 
@@ -118,7 +120,7 @@ Nothing so far told us to use fifteen. Try several values.
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
      col = "gray75", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (US$)",
+     xlab = "Per capita GDP (thousands of US$)",
      ylab = "Infant mortality (per 1,000 live births)",
      main = "The same data, four values of k")
 
@@ -476,13 +478,13 @@ $$d_{if} = \sqrt{\sum_{j=1}^{p}\left(x_{fj} - x_{ij}\right)^2}.$$
 
 This is the straight-line distance you already know, extended to more than two dimensions. And it introduces a problem that is easy to miss and consequential when you do.
 
-Our features are measured in wildly different units. Per capita GDP runs into the tens of thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven.
+Our features are measured on very different scales. Per capita GDP runs from well under one up to about a hundred, in thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven, and female life expectancy from the high forties to the high eighties.
 
 ```{r}
 summary(countries[, c("ppgdp", "pctUrban", "fertility", "lifeExpF")])
 ```
 
-Put those into the distance formula unchanged and a difference of \$10,000 in income contributes a hundred million to the sum under the square root, while the entire possible range of fertility contributes about thirty-six. Income does not merely dominate the calculation. It effectively is the calculation, and the other three features have no influence on which cases count as neighbors.
+Put those into the distance formula unchanged and the two wide-ranging features decide everything. A difference of fifty between two countries on per capita GDP contributes two and a half thousand to the sum under the square root. The entire possible range of fertility, from one child per woman to seven, contributes about thirty-five. Fertility is not being weighted lightly here. For practical purposes it is not in the model at all, and neither is anything else measured on a small scale.
 
 The standard fix is to put all features on a common scale first, either
 
@@ -505,9 +507,8 @@ The first thing to establish is that this is a harmless operation. Rescaling doe
 par(mfrow = c(2, 2))
 
 plot(countries$ppgdp, countries$infantMortality, col = "maroon", cex = 0.7,
-     xlab = "Per capita GDP (US$)", ylab = "Infant mortality",
+     xlab = "Per capita GDP (thousands of US$)", ylab = "Infant mortality",
      main = "Raw units", font.main = 1)
-
 plot(countries_s$ppgdp, countries_s$infantMortality, col = "maroon", cex = 0.7,
      xlab = "Per capita GDP (rescaled 0 to 1)", ylab = "Infant mortality",
      main = "Rescaled", font.main = 1)
@@ -546,32 +547,32 @@ Add a third feature and the picture cannot be drawn at all, which is the last po
 Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.
 
 ```{r, fig.height=6, fig.width=11}
-target_raw <- c(median(countries$ppgdp),   median(countries$pctUrban))
-target_s   <- c(median(countries_s$ppgdp), median(countries_s$pctUrban))
+target_raw <- c(median(countries$ppgdp),   median(countries$fertility))
+target_s   <- c(median(countries_s$ppgdp), median(countries_s$fertility))
 
 # Euclidean distance, exactly the formula above, computed by hand
-dist_raw <- sqrt((countries$ppgdp   - target_raw[1])^2 +
-                 (countries$pctUrban - target_raw[2])^2)
+dist_raw <- sqrt((countries$ppgdp     - target_raw[1])^2 +
+                 (countries$fertility - target_raw[2])^2)
 
-dist_s   <- sqrt((countries_s$ppgdp   - target_s[1])^2 +
-                 (countries_s$pctUrban - target_s[2])^2)
+dist_s   <- sqrt((countries_s$ppgdp     - target_s[1])^2 +
+                 (countries_s$fertility - target_s[2])^2)
 
 nb_raw <- order(dist_raw)[1:25]
 nb_s   <- order(dist_s)[1:25]
 
 par(mfrow = c(1, 2))
 
-plot(countries$ppgdp, countries$pctUrban, col = "gray55", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (US$)", ylab = "Percent urban",
+plot(countries$ppgdp, countries$fertility, col = "gray55", pch = 19, cex = 0.7,
+     xlab = "Per capita GDP (thousands of US$)", ylab = "Fertility (births per woman)",
      main = "Raw units, k = 25", font.main = 1)
-points(countries$ppgdp[nb_raw], countries$pctUrban[nb_raw], col = "red", cex = 1.6)
+points(countries$ppgdp[nb_raw], countries$fertility[nb_raw], col = "red", cex = 1.6)
 points(target_raw[1], target_raw[2], col = "red", pch = 19, cex = 1.7)
 abline(v = target_raw[1], h = target_raw[2], col = "darkgreen", lty = 2)
 
-plot(countries_s$ppgdp, countries_s$pctUrban, col = "gray55", pch = 19, cex = 0.7,
-     xlab = "Per capita GDP (rescaled)", ylab = "Percent urban (rescaled)",
+plot(countries_s$ppgdp, countries_s$fertility, col = "gray55", pch = 19, cex = 0.7,
+     xlab = "Per capita GDP (rescaled)", ylab = "Fertility (rescaled)",
      main = "Rescaled, k = 25", font.main = 1)
-points(countries_s$ppgdp[nb_s], countries_s$pctUrban[nb_s], col = "red", cex = 1.6)
+points(countries_s$ppgdp[nb_s], countries_s$fertility[nb_s], col = "red", cex = 1.6)
 points(target_s[1], target_s[2], col = "red", pch = 19, cex = 1.7)
 abline(v = target_s[1], h = target_s[2], col = "darkgreen", lty = 2)
 ```
@@ -580,7 +581,7 @@ The filled red point is the country we are predicting for. The circled points ar
 
 On the right, with both features on a common scale, the neighborhood is roughly a disc around the target. Both features contributed to picking it, which is what we asked for.
 
-On the left it is a narrow vertical band. The selected countries share almost exactly the target's income and are spread across nearly the whole range of urbanization, from barely urban to almost entirely so. In raw units, per capita GDP runs into the tens of thousands and percent urban tops out at a hundred, so a difference of a few thousand dollars swamps the entire possible range of the second feature. The algorithm did not ignore urbanization because anybody decided it was unimportant. It ignored it because of the units it was measured in.
+On the left it is a narrow vertical band. The selected countries share almost exactly the target's income and are spread across nearly the whole range of fertility, from around one child per woman to well above the average. Per capita GDP spans about a hundred units on this scale and fertility spans about six, so a difference of a few units of income outweighs the entire fertility axis. The algorithm did not ignore fertility because anybody judged it unimportant. It ignored it because of the units it happens to be measured in.
 
 Note also what the model would have reported. Both versions return predictions. Neither prints a warning. The left-hand model would have gone into a paper as a two-feature model, and the fact that it was a one-feature model in disguise would appear nowhere in the output.
 
