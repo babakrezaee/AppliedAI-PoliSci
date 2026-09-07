@@ -144,12 +144,12 @@
   {
     "objectID": "handouts/w02-knn.html",
     "href": "handouts/w02-knn.html",
-    "title": "1\u00A0 K-Nearest Neighbors",
+    "title": "Classification I: K-Nearest Neighbors",
     "section": "",
     "text": "Fitting a function without assuming its shape\nWeek 2, 9 September\nLast week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, \\(K\\)-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.\nThat is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.\nThere is code in this handout, and you should run it rather than read it. The workshop assumes you have.\nWe usually want to know how an outcome varies with something else: how \\(Y\\) behaves conditional on \\(X\\), written \\(P(Y=y \\mid X=x)\\).\nThe most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are parametric models, and the assumption is doing a great deal of work.\nAssuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.\nIt also costs something. If the true relationship is not the shape you assumed, the model is wrong in a way that more data will not fix. Collecting a thousand more observations does not rescue a straight line drawn through a curve.\nWhen the assumption looks doubtful, there are two responses. The first is to stay inside the parametric framework and repair the model: transform a variable, add an interaction, take logarithms. The second is to use a non-parametric method, which assumes much less about the shape and lets the data determine it.\n\\(K\\)-nearest neighbors is the simplest non-parametric method there is. Here is the entire algorithm:\nThere is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.",
     "crumbs": [
       "Weekly Handouts",
-      "<span class='chapter-number'>1</span>\u00A0 <span class='chapter-title'>K-Nearest Neighbors</span>"
+      "Classification I: K-Nearest Neighbors"
     ]
   },
   {
