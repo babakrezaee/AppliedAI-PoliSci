@@ -17,11 +17,6 @@ That last property is the important one. The console keeps a history you can scr
 
 The console is therefore the right tool for questions you are asking of yourself rather than of the world. Checking the dimensions of a dataset, inspecting a variable, reading a help file, and testing whether a line does what you expect are all console work. Use it constantly, and use it freely. Nothing you do there is precious, which is precisely what makes it useful.
 
-``` r
-dim(fl)
-summary(fl$gdpen)
-?mean
-```
 
 ## The script: a record of instructions
 
@@ -41,6 +36,13 @@ fl_clean <- fl %>%
 
 model <- glm(onset ~ log_pop + gdpen, data = fl_clean, family = "binomial")
 summary(model)
+```
+As explained in the previous section, you can check the dimension of your datasets and summarize your variables as well:
+
+``` r
+dim(fl)
+summary(fl$gdpen)
+?mean
 ```
 
 What a script preserves is the instructions. What it does not preserve is the output. Run the script and the results appear in the console, where they are as ephemeral as anything else typed there. Run it again in three months, after the data file has been updated or a package has changed, and you may get different numbers with no record of what the old ones were. Scripts are also, by design, hostile to prose. You can write comments, and you should, but a comment is a note to yourself, not an argument addressed to a reader.
