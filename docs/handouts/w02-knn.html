@@ -58,7 +58,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -245,31 +264,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w03-trees-forests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span></a>
+ <span class="menu-text">Trees and Random Forests</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w05-llm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
   </div>
 </li>
       </ul>
@@ -1183,7 +1202,7 @@ Predicted  Not OECD OECD
 </section>
 <section id="reading" class="level1">
 <h1>Reading</h1>
-<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="../references.html#ref-james2021" role="doc-biblioref"><strong>james2021?</strong></a>)</span>.</p>
+<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="../references.html#ref-james2021" role="doc-biblioref">James et al. 2021</a>)</span>.</p>
 <p>Read Section 2.2 for the figures rather than the derivations. The pictures of training error against test error, and of the bias-variance decomposition, are the same pictures you produced above, and seeing them drawn by someone else is a useful check on whether you understood what you made. Section 5.1 covers cross-validation and is short.</p>
 </section>
 <section id="before-the-workshop" class="level1">
@@ -1204,6 +1223,11 @@ Predicted  Not OECD OECD
 </ol>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-james2021" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: With Applications in <span>R</span></em>. 2nd ed. Springer.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -1619,8 +1643,8 @@ Predicted  Not OECD OECD
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../handouts/w03-trees-forests.html" class="pagination-link" aria-label="Tree Models: Random Forest">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Tree Models: Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../handouts/w03-trees-forests.html" class="pagination-link" aria-label="Trees and Random Forests">
+        <span class="nav-page-text">Trees and Random Forests</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

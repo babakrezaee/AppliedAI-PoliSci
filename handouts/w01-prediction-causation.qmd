@@ -23,7 +23,7 @@ Publishing research is therefore an invitation to other scholars to attack the a
 The four questions below organize the first part of the course.
 
 | Research goal | Main question | What the evidence can establish |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | Correlation | Do two or more variables vary together? | The presence, direction, and strength of an association |
 | Causation | Would changing $X$ change $Y$, all else being equal? | A causal effect, if the identification strategy is credible |
 | Prediction | How well can we estimate an outcome for cases the model has not seen? | Whether the available information generalizes to unseen cases |
