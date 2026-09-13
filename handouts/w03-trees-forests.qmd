@@ -201,7 +201,7 @@ C(T, y) = L(T, y) + \alpha |T|
 
 where $L(T, y)$ is the loss from fitting outcome $y$ with tree $T$, and $|T|$ is the number of nodes. Small loss is always preferred. Nevertheless, we do not want a tree so complex that it captures every fluctuation in the training data and consequently predicts poorly outside it, and the size of the tree is therefore penalized, with $\alpha$ determining how heavily that penalty is applied.
 
-A large $\alpha$ makes complexity expensive and returns a small tree, which may in consequence fit poorly, whereas a small $\alpha$ permits the tree to grow large. **Here $\alpha$ is analogous to $k$ in $K$-nearest neighbors**, and, as with $k$, no value is correct in advance.
+A large $\alpha$ makes complexity expensive and returns a small tree, which may in consequence fit poorly, whereas a small $\alpha$ permits the tree to grow large. **Here** $\alpha$ is analogous to $k$ in $K$-nearest neighbors, and, as with $k$, no value is correct in advance.
 
 The question of how to choose it has the same answer as last week, and as most weeks: cross-validation.
 
@@ -561,14 +561,14 @@ Install `rpart`, `rpart.plot`, `tree`, `randomForest`, and `caret`, and run ever
 
 Come with a view on at least two of these.
 
-1. Fearon and Laitin set out to explain civil war, whereas we used their variables to predict it. What did we learn that they did not, and what did they establish that our model cannot?
+1.  Fearon and Laitin set out to explain civil war, whereas we used their variables to predict it. What did we learn that they did not, and what did they establish that our model cannot?
 
-2. A single tree is readable and unreliable, while a forest is reliable and unreadable. For a political scientist, which of these failures is the more serious, and does the answer depend on the purpose the model is to serve?
+2.  A single tree is readable and unreliable, while a forest is reliable and unreadable. For a political scientist, which of these failures is the more serious, and does the answer depend on the purpose the model is to serve?
 
-3. The forest deliberately makes each tree worse, by withholding features from it, in order that the ensemble should be better. Is there anything analogous in the way political institutions aggregate judgments? Committees, juries, federal structures, and multiple veto players are all admissible.
+3.  The forest deliberately makes each tree worse, by withholding features from it, in order that the ensemble should be better. Is there anything analogous in the way political institutions aggregate judgments? Committees, juries, federal structures, and multiple veto players are all admissible.
 
-4. Our model achieved very high accuracy and predicted almost no wars, and every technical step was performed correctly. What does this suggest about the relationship between methodological correctness and usefulness?
+4.  Our model achieved very high accuracy and predicted almost no wars, and every technical step was performed correctly. What does this suggest about the relationship between methodological correctness and usefulness?
 
-5. Variable importance is regularly reported in policy documents as identifying the drivers of a problem. Write the one sentence you would add to such a document in order to make it honest, and state what would be lost in the process.
+5.  Variable importance is regularly reported in policy documents as identifying the drivers of a problem. Write the one sentence you would add to such a document in order to make it honest, and state what would be lost in the process.
 
-6. Who should select the threshold at which a forecast becomes a warning, and to whom should that selection be explained? Note that those bearing the cost of a false alarm and those bearing the cost of a missed war are generally not the same people.
+6.  Who should select the threshold at which a forecast becomes a warning, and to whom should that selection be explained? Note that those bearing the cost of a false alarm and those bearing the cost of a missed war are generally not the same people.
