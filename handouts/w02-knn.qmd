@@ -442,7 +442,7 @@ set.seed(7)
 
 cv_caret <- train(
   infantMortality ~ ppgdp,
-  data       = countries,
+  data       = Train,
   method     = "knn",
   preProcess = c("range"),
   trControl  = trainControl(method = "cv", number = 10),
@@ -452,6 +452,10 @@ cv_caret <- train(
 cv_caret$bestTune
 
 plot(cv_caret)
+
+
+yhat <- predict(cv_caret, newdata = Test)               # a held-out set
+rmse(Test$infantMortality, yhat)
 ```
 
 Four arguments carry the work, and each corresponds to something we did by hand.
