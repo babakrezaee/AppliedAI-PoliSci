@@ -1,4 +1,4 @@
-## K-Nearest Neighbors 
+# K-Nearest Neighbors
 
 *Week 2, 9 September*
 
@@ -8,7 +8,7 @@ That is worth more at this stage than a method with better performance. You are 
 
 There is code in this handout, and you should run it rather than read it. The workshop assumes you have.
 
-# Fitting a function without assuming its shape
+## Fitting a function without assuming its shape
 
 We usually want to know how an outcome varies with something else: how $Y$ behaves conditional on $X$, written $P(Y=y \mid X=x)$.
 
@@ -26,7 +26,7 @@ $K$-nearest neighbors is the simplest non-parametric method there is. Here is th
 
 There is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.
 
-# Drawing it: development and infant mortality
+## Drawing it: development and infant mortality
 
 Last week's running example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle it.
 
@@ -47,7 +47,7 @@ data(UN, package = "carData")
 countries <- na.omit(UN[, c("ppgdp", "infantMortality", "fertility",
                             "pctUrban", "lifeExpF", "group")])
 
-## Express per capita GDP in thousands of dollars
+# Express per capita GDP in thousands of dollars
 countries$ppgdp <- countries$ppgdp / 1000
 
 nrow(countries)
@@ -105,7 +105,7 @@ lines(grid$ppgdp, fit_15$fitted.values, col = "maroon", lwd = 3)
 
 The argument `kernel = "rectangular"` means that all $k$ neighbors count equally. Other choices give closer neighbors more weight. Rectangular is the plain version of the algorithm, and it is the one described above.
 
-## What the algorithm actually did
+### What the algorithm actually did
 
 Take one point on that curve. To produce a prediction for a country with a per capita GDP of \$2,000, the algorithm found the fifteen countries in the data closest to \$2,000 on that axis and averaged their infant mortality. To produce the prediction at \$3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.
 
@@ -113,7 +113,7 @@ The curve is the trace left behind by that moving neighborhood. It is not a form
 
 This is also why the curve wobbles where the data are sparse. On the right-hand side there are few countries, so the fifteen nearest neighbors of a rich country may be spread across a very wide range of incomes. The algorithm still returns an answer. It does not warn you that the answer came from a neighborhood stretching across \$40,000.
 
-# The choice of k
+## The choice of k
 
 Nothing so far told us to use fifteen. Try several values.
 
@@ -154,7 +154,7 @@ So here is the sentence to take away from this week. **A model that fits your da
 
 A large $k$ fails in the other direction. It averages across countries that are not comparable, and it produces a model too rigid to represent a relationship that genuinely exists.
 
-# Why a perfect fit should worry you
+## Why a perfect fit should worry you
 
 To choose between these we need to stop grading the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.
 
@@ -217,7 +217,7 @@ The test error does something different. It falls, reaches a minimum, and then r
 
 One caution before you go looking for the best $k$. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the problem. The precise minimum is a property of one arbitrary split. Do not report "the optimal $k$ is 11" as though you had discovered something about infant mortality. We will fix this properly in a moment.
 
-## The same picture, drawn the conventional way
+### The same picture, drawn the conventional way
 
 That plot has an awkward feature: its horizontal axis runs backwards. A large $k$ is a *simple* model, so complexity increases as you move to the *left*, which is the opposite of how you will see this drawn everywhere else.
 
@@ -240,7 +240,7 @@ legend("top", legend = c("Test (unseen)", "Training (seen)"),
 
 Identical numbers, identical conclusion, drawn so that "further right" means "more flexible model." Every version of this figure you meet from now on, in any textbook and for any method, has this orientation, and the two curves always behave this way: the training curve slides downward forever, and the test curve turns around.
 
-# Bias and variance
+## Bias and variance
 
 We now have the picture. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.
 
@@ -262,7 +262,7 @@ This is a schematic, not a fit to anything. It is the shape you just produced fr
 
 Read the two arrows at the top. Moving left, the model gets simpler: variance falls, bias rises, and eventually the model is too rigid to represent what is there. Moving right, the model gets more flexible: bias falls, variance rises, and eventually the model is chasing noise. The training curve slides downward the whole way and never turns, which is why it cannot be used to choose anything. The test curve has a minimum, and finding it is the entire problem.
 
-## Seeing variance directly
+### Seeing variance directly
 
 Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true $f$ in order to say how far the model sits from it, and if you knew $f$ you would not be modeling.
 
@@ -322,16 +322,16 @@ At $k=40$ the box is both reasonably tight and reasonably close. That is the who
 
 Notice what this means for how you read a result. A model with high variance can be badly wrong without giving any sign of it, because the fit to the data in front of you looks excellent. Nothing in the output announces that a different sample would have said something else.
 
-# Cross-validation
+## Cross-validation
 
 Now back to the problem we left hanging. We chose $k$ using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:
 
-1.  The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
-2.  We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.
+1. The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
+2. We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.
 
 **Cross-validation** addresses both by rotating the role of the held-out set.
 
-## Leave-one-out
+### Leave-one-out
 
 Set aside a single observation, train on the remaining $n-1$, predict the one you left out, and record the error. Do it again with the next observation. Repeat $n$ times and average.
 
@@ -339,7 +339,7 @@ $$\text{RMSE}_{\text{LOO}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i - \hat{y}_
 
 Every case gets used for training almost every time and for testing exactly once. Nothing is wasted, and there is no arbitrary split to be at the mercy of. The cost is that you have to fit the model $n$ times.
 
-## k-fold
+### k-fold
 
 The practical compromise is to hold out a group instead of a single case. Split the data at random into a number of roughly equal folds. Hold out the first fold, train on the rest, and record the error on the fold you held out. Then hold out the second fold, and so on, until every fold has served once as the test set. Average the results.
 
@@ -425,7 +425,7 @@ Compare this curve with the single-split version. It is smoother, because each p
 
 It does not make the choice of $k$ objective. Cross-validation still leaves you with a range of values that perform about equally well, and picking the exact minimum of a flat curve is reading precision into noise. Report the range, say what you chose, and say why.
 
-## The same thing, with caret
+### The same thing, with caret
 
 Nobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.
 
@@ -470,7 +470,7 @@ The answer should land close to what the loop produced, though not necessarily i
 
 Week 6 returns to evaluation and takes it further, into the metrics that matter when the outcome is rare and accuracy stops being informative.
 
-# More than one feature, and the problem of units
+## More than one feature, and the problem of units
 
 So far similarity has meant closeness on a single axis, which is easy. With several features we need a general definition of distance, and the usual one is Euclidean distance. For a case $f$ with features $(x_{f1}, \dots, x_{fp})$ and a case $i$ in the training data,
 
@@ -526,7 +526,7 @@ The clouds of points are identical in shape. Only the numbers on the horizontal 
 
 What has changed is invisible in these plots, because it is not about any single feature. It is about the space the features jointly define.
 
-## What the algorithm now sees
+### What the algorithm now sees
 
 With two features rather than one, cases no longer sit along a line. They sit in a plane, and the outcome rises above it.
 
@@ -542,7 +542,7 @@ scatterplot3d(countries_s$ppgdp, countries_s$pctUrban, countries_s$infantMortali
 
 Add a third feature and the picture cannot be drawn at all, which is the last point in this course at which you can see the space a model is working in. From Week 3 onward you will have to reason about it rather than look at it. The arithmetic does not care: the distance formula extends to any number of features without complaint, and it is only our eyes that stop at three.
 
-## What the neighborhood looks like
+### What the neighborhood looks like
 
 Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.
 
@@ -550,7 +550,7 @@ Now the thing worth seeing. Pick a country, and ask which twenty-five countries 
 target_raw <- c(median(countries$ppgdp),   median(countries$fertility))
 target_s   <- c(median(countries_s$ppgdp), median(countries_s$fertility))
 
-## Euclidean distance, exactly the formula above, computed by hand
+# Euclidean distance, exactly the formula above, computed by hand
 dist_raw <- sqrt((countries$ppgdp     - target_raw[1])^2 +
                  (countries$fertility - target_raw[2])^2)
 
@@ -587,7 +587,7 @@ Note also what the model would have reported. Both versions return predictions. 
 
 Stay with that, because it is not a technical footnote. The algorithm's entire operation rests on its definition of "similar," and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.
 
-# What this model cannot tell you
+## What this model cannot tell you
 
 The model has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form "a one-unit increase in $X$ is associated with a change in $Y$." The model cannot be written down apart from the data it holds.
 
@@ -595,7 +595,7 @@ More importantly, it has said nothing about *why* infant mortality is lower in r
 
 There is a second limit, and the neighborhood figures above showed it. A model of this kind answers every question put to it, at the same apparent level of confidence, whether the case sits in a crowded part of the data or alone at the edge of it. The richest country in this dataset gets a prediction assembled from neighbors spread across tens of thousands of dollars of income. That prediction is printed in the same format, to the same number of decimal places, as one built from twenty-five genuinely similar cases. Nothing in the output distinguishes them.
 
-# The politics of similarity
+## The politics of similarity
 
 The rule at the center of this week is that cases similar to past cases receive what those past cases received.
 
@@ -605,30 +605,30 @@ What changes when the rule is a fitted model is who defines similarity, and how 
 
 And a model of this kind can only reproduce the pattern in the cases it was given. If the treatment recorded in those cases was unjust, then similarity to past cases carries the injustice forward, and it does so with the appearance of perfect consistency. The system is not malfunctioning when this happens. It is doing precisely what it was built to do.
 
-# Reading
+## Reading
 
 James, G., Witten, D., Hastie, T., and Tibshirani, R. *An Introduction to Statistical Learning*. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at [statlearning.com](https://www.statlearning.com/) [@james2021].
 
 Read Section 2.2 for the figures rather than the derivations. The pictures of training error against test error, and of the bias-variance decomposition, are the same pictures you produced above, and seeing them drawn by someone else is a useful check on whether you understood what you made. Section 5.1 covers cross-validation and is short.
 
-# Before the workshop
+## Before the workshop
 
 Install `carData`, `kknn`, `caret`, and `scatterplot3d`, run every chunk in this handout once, and bring a charged laptop. The workshop begins from the assumption that the code above ran on your machine, and the first part of a three-hour session is not the place to discover an installation problem.
 
 If something failed, say so at the start rather than at the end.
 
-# Questions for the session
+## Questions for the session
 
 Come with a view on at least two of these. They will structure the first part of the session.
 
-1.  $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
+1. $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
 
-2.  The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
+2. The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
 
-3.  We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
+3. We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
 
-4.  In the neighborhood figures, the left-hand model was given two features and used essentially one. It returned predictions and printed no warning. What follows for how a system you did not build should be reviewed before anyone relies on its outputs?
+4. In the neighborhood figures, the left-hand model was given two features and used essentially one. It returned predictions and printed no warning. What follows for how a system you did not build should be reviewed before anyone relies on its outputs?
 
-5.  The model returns a prediction for the richest country in the data, assembled from neighbors that are nothing like it, and reports it exactly as it reports any other. Where in political or administrative use would that distinction matter most, and what would a responsible system do instead?
+5. The model returns a prediction for the richest country in the data, assembled from neighbors that are nothing like it, and reports it exactly as it reports any other. Where in political or administrative use would that distinction matter most, and what would a responsible system do instead?
 
-6.  Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
+6. Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
