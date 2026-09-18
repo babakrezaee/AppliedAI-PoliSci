@@ -1,4 +1,4 @@
-# Prediction, Causation, and the Vocabulary of AI {.unnumbered}
+## Prediction, Causation, and the Vocabulary of AI 
 
 *Week 1, 2 September*
 
@@ -8,7 +8,7 @@ There is no code in this handout. The work this week is conceptual. That may sou
 
 Developing a theoretical argument about a political phenomenon is work you do across the programme. This course adds three things to it. We ask how evidence can be used to evaluate an argument. We ask how statistical and machine-learning models can be used to anticipate outcomes. And we treat AI systems themselves as objects of political analysis, because they are increasingly part of how states, parties, platforms, and administrations act.
 
-# What kind of question are we asking?
+## What kind of question are we asking?
 
 Political scientists use qualitative, quantitative, and mixed-method research designs. All three can be empirical, and they share an underlying scientific principle: theoretical claims should be exposed to evidence that could count against them.
 
@@ -23,7 +23,7 @@ Publishing research is therefore an invitation to other scholars to attack the a
 The four questions below organize the first part of the course.
 
 | Research goal | Main question | What the evidence can establish |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Correlation | Do two or more variables vary together? | The presence, direction, and strength of an association |
 | Causation | Would changing $X$ change $Y$, all else being equal? | A causal effect, if the identification strategy is credible |
 | Prediction | How well can we estimate an outcome for cases the model has not seen? | Whether the available information generalizes to unseen cases |
@@ -31,7 +31,7 @@ The four questions below organize the first part of the course.
 
 Forecasting is a form of prediction in a technical sense, but we keep it as a separate category in this course. The temporal dimension creates additional problems that deserve separate attention.
 
-## Correlation
+### Correlation
 
 Sometimes our research is descriptive. We want to know whether two variables are associated and how strong that association is. Descriptive and correlational research has sometimes been downplayed following the causal-inference revolution in economics and political science. That is unfortunate. Description is often the first step in bringing a new political phenomenon into view, and a reliable pattern can be important even before its cause is established.
 
@@ -51,13 +51,13 @@ $$Economic~development \overset{+/-}{\longleftarrow} Political~development$$
 
 The correlation is a finding. The arrows are additional claims that require additional evidence.
 
-## Causation
+### Causation
 
 A causal study needs an identification strategy: an argument about why the estimated relationship can be interpreted as the effect of $X$ on $Y$, rather than as selection, reverse causation, measurement error, or the influence of an omitted factor. Calling $X$ an independent variable does not automatically make it exogenous. Exogeneity is an assumption that must be defended through the design.
 
 Bias is also worth defining carefully. In statistical terms, an estimator is biased when its expected value differs systematically from the parameter it is intended to estimate. This is not the same as finding that one estimate is statistically significant. Omitted variables, selection, and measurement problems are among the reasons an estimate may fail to recover the causal quantity we care about.
 
-### The experimental ideal
+#### The experimental ideal
 
 Randomized experiments provide a particularly clear identification strategy. In one of my research projects, I examined whether information about the principles of nonviolent resistance changes attitudes toward this form of political action. Participants were randomly assigned to two groups. One group watched a clip about International Relations. The other watched a clip about nonviolent resistance. I then compared their average attitudes after the intervention.
 
@@ -65,7 +65,7 @@ Random assignment means that treatment status is independent of participants' pr
 
 The comparison between the two groups gives us an estimate of the average effect of receiving the information in that study. Notice how much work the design is doing. The difference in outcomes becomes interpretable because the intervention was assigned, rather than selected by participants.
 
-### Observational data
+#### Observational data
 
 Political scientists often cannot conduct experiments. Think about conflict research. Can we randomly assign some countries to civil war and others to peace in order to study the economic consequences? Of course not.
 
@@ -73,7 +73,7 @@ We therefore rely on observational data produced by political and social process
 
 Adding observed confounders to a model may reduce some of these problems, but it does not automatically solve them. Matching, instrumental variables, regression discontinuity, panel designs, and other methods can support an identification strategy under particular assumptions. Developing those strategies is outside the scope of this course. Recognizing when a claim requires one is not.
 
-## Prediction
+### Prediction
 
 Prediction changes the question. Given what we know about a case, how accurately can we estimate its outcome?
 
@@ -87,7 +87,7 @@ Predictive performance can discipline an explanation. If an account repeatedly f
 
 The purpose of the model therefore matters. If the task is prediction, performance on unseen cases is central. Flexible functional forms may be useful even when no single coefficient provides a simple substantive interpretation. If the task is causal inference, good test-set accuracy does not rescue a weak identification strategy.
 
-## Forecasting
+### Forecasting
 
 Forecasting asks about outcomes that have not happened yet.
 
@@ -99,7 +99,7 @@ When forecasting is the goal, we normally divide training and test data by time 
 
 A temporal test set is still not a genuine forecast. It is a simulation of forecasting using outcomes that are already known to the researcher. It tells us how the model would have performed in a previous period. It cannot guarantee that relationships will remain stable when the model is used later. Early-warning systems such as ViEWS [@hegre2019] produce forecasts in real time and can be fully judged only after the forecast period has passed.
 
-# Why does confusing these goals produce bad research?
+## Why does confusing these goals produce bad research?
 
 There are several common mistakes.
 
@@ -111,7 +111,7 @@ There are several common mistakes.
 
 **Applying the wrong evaluation standard.** Predictive models are sometimes dismissed because they do not have easily interpretable coefficients. Causal estimates are sometimes dismissed because they have a low $R^2$. Neither criticism is automatically relevant. We first need to know what the model was built to do.
 
-# What is under the hood of AI?
+## What is under the hood of AI?
 
 For many contemporary AI systems, machine learning is the motor under the hood. Credit scoring, content moderation, fraud detection, political-text classification, recommendation systems, and large language models all rely heavily on models fitted to data.
 
@@ -121,7 +121,7 @@ Before moving to specific algorithms, we need several basic terms.
 
 **Features** are the inputs available to the model. **Labels** are known outcomes attached to cases in the training data. **Training** or **fitting** is the process of adjusting a model's internal quantities so that its outputs correspond more closely to the examples. A **test set** contains cases that were not used for fitting and allows us to examine whether the model generalizes.
 
-## Supervised, unsupervised, and self-supervised learning
+### Supervised, unsupervised, and self-supervised learning
 
 **Supervised learning** uses labeled examples. If country-years in the training data are labeled as war or peace, or parliamentary motions are labeled by topic, the model learns a mapping from the features to those known labels. The classifiers in Weeks 2 through 4 are supervised-learning methods.
 
@@ -133,7 +133,7 @@ Large language models are therefore commonly described as being pretrained throu
 
 Using an LLM to code or label political data is a separate matter. At that point, we are using an already trained generative model to perform a classification task. With examples in the prompt, it may act as a few-shot classifier; without examples, it may act as a zero-shot classifier. The task is classification, but that does not retroactively change how the underlying model was pretrained.
 
-## Generative, reasoning, and agentic systems
+### Generative, reasoning, and agentic systems
 
 **Generative models** produce new content rather than only assigning a predefined label. Large language models generate text by estimating plausible continuations given the preceding context. Their ability to produce fluent answers comes from large-scale pretraining and later post-training, not from looking up a single stored response.
 
@@ -141,7 +141,7 @@ Using an LLM to code or label political data is a separate matter. At that point
 
 **Agentic systems** place a model inside a process in which it can choose actions, use tools, inspect results, and continue working toward a goal. The model may search, run code, retrieve documents, or call other services. This expands what can be automated. It also makes verification harder: if a system searched, selected, summarized, and coded evidence for us, we must still decide what parts of that process we can defend as researchers.
 
-# Why is this vocabulary political?
+## Why is this vocabulary political?
 
 These distinctions are not only technical. They affect regulation, responsibility, and the distribution of power.
 
@@ -151,7 +151,7 @@ The source of a problem also affects who can address it. Unequal treatment may a
 
 The phrase "the algorithm decided" creates a related problem. An organization selected the system, defined the purpose, chose the data and threshold, and decided how the output would be used. Describing the final outcome as the algorithm's decision can make those organizational choices disappear.
 
-# An older analogy: artificial political entities
+## An older analogy: artificial political entities
 
 Political theory and public-administration scholarship give us older ways of thinking about artificial and collective decision-making. These were not theories of artificial intelligence in the modern technical sense. They are useful analogies because they direct our attention to rules, information, authority, and responsibility.
 
@@ -163,7 +163,7 @@ Herbert Simon provides the closest bridge [@simon1947; @simon1969]. He treated o
 
 These analogies help us ask political questions about contemporary systems. Who designed the procedure? What information can it use? What is invisible to it? Who has the authority to override it? And who answers for the result when it is wrong? The technology is new, but several of the institutional questions are not.
 
-# The plan for the block
+## The plan for the block
 
 There are seven teaching weeks, each organized around one main idea.
 
@@ -173,13 +173,13 @@ Basic evaluation begins in Week 2. From the first classifier onward, we will use
 
 The central thread is the distinction introduced in this handout. You will learn to build models, evaluate whether they work on unseen cases, and state honestly what their results do and do not establish. You will then use that technical understanding to examine political arguments about AI.
 
-# Reading
+## Reading
 
 Cranmer, S. J., and Desmarais, B. A. 2017. "What Can We Learn from Predictive Modeling?" *Political Analysis* 25(2): 145–166. [@cranmer2017]
 
 Read the article for its argument rather than its technique. The authors are responding to a discipline that has usually given explanation and causal inference priority over prediction. Pay attention to what they think predictive performance adds to political science, but also to what they do not claim it can replace.
 
-# Questions for the session
+## Questions for the session
 
 Come with a view on at least two of these questions. They will structure the first part of the session.
 

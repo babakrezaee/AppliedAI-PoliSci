@@ -1,5 +1,3 @@
----
-title: "Final Project"
----
+## Final Project 
 
 *In preparation.*

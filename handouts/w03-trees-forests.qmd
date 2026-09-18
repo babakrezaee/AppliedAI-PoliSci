@@ -1,4 +1,4 @@
-# Trees and Random Forests {.unnumbered}
+## Trees and Random Forests 
 
 *Week 3, 16 September*
 
@@ -6,7 +6,7 @@ Last week's method concealed nothing, in the sense that every prediction $K$-nea
 
 The session therefore stages a tension that runs through much of contemporary machine learning. On the one hand, a model whose reasoning can be inspected is easier to defend, to audit, and to explain to somebody who has to act on its output. On the other hand, the models that predict best are frequently the ones whose reasoning cannot be inspected at all. Trees and forests are unusually well suited to examining this tension, because the movement from the first situation to the second occurs within a single family of methods and can be observed at each step.
 
-# What trees are good at, and what they are not
+## What trees are good at, and what they are not
 
 Tree models in statistical learning bear an obvious kinship to decision trees as we ordinarily understand them, and they have been used widely for prediction. It is worth setting out at the start what they offer and what they cost.
 
@@ -23,7 +23,7 @@ The final point deserves a moment, since it undoes an entire section of last wee
 
 That tension is the shape of the week, in that everything after the first third is an attempt to retain the benefits while addressing the disadvantage, by growing a forest of trees and allowing them to vote.
 
-# Two datasets this week
+## Two datasets this week
 
 Part I returns to the country data from last week, on the grounds that the fastest way to see what is distinctive about a tree is to apply it to material you have already modeled by other means.
 
@@ -57,13 +57,13 @@ nrow(countries)
 
 One row per country, which is worth noting now, because Part II will not have that luxury.
 
-# Part I. A regression tree
+## Part I. A regression tree
 
 Last week we fitted a $K$-nearest neighbors curve to the relationship between per capita GDP and infant mortality, and gave some attention to the fact that the relationship bends: mortality falls very steeply across the poorest range and then flattens almost completely. A straight line was therefore a poor description of the relationship, and $K$-nearest neighbors accommodated the curvature instead by averaging over a moving window of neighbors.
 
 A tree accommodates it differently, and placing the two side by side is the most efficient way to establish what a tree is.
 
-## One feature
+### One feature
 
 ```{r, fig.height=5.5, fig.width=9}
 m_tree <- rpart(infantMortality ~ ppgdp, data = countries)
@@ -97,7 +97,7 @@ The set of leaves provides a partition of the predictor space into disjoint regi
 
 The placement of the boundaries is itself informative, in that they are tightly spaced at the left, where mortality changes rapidly, and widely spaced at the right, where it does not. Notably, nothing in the procedure instructed the algorithm to distribute them in this way.
 
-## The same data, two algorithms
+### The same data, two algorithms
 
 Last week's model can usefully be placed on the same figure, so that the two procedures may be compared directly.
 
@@ -128,7 +128,7 @@ $K$-nearest neighbors uses a window of fixed size that slides along the axis. Ev
 
 The tree, by contrast, uses regions of fixed content, having selected where to cut and therefore how wide each region should be, narrowly where the outcome changes quickly and broadly where it does not. The cost of proceeding this way is that the steps are coarse. The gain, however, is that the width of a neighborhood becomes a decision the algorithm reached about the data, rather than a number imposed upon it in advance.
 
-## What the algorithm is minimizing
+### What the algorithm is minimizing
 
 We are splitting the feature space $X = \{x_1, x_2, \dots, x_k\}$ into smaller rectangles, or boxes. If we can identify a pattern of splits with low prediction error on the training data, we can then predict for a new case by determining which box it belongs to.
 
@@ -147,7 +147,7 @@ The boxes $R_j$ are chosen so as to minimize the total squared deviation of obse
 
 This is a **greedy** approach, in that at each step it takes the split that appears best at that moment, without considering the consequences for the splits beneath it. The resulting tree is therefore a good tree arrived at through a sequence of locally sensible decisions. It is not the best one, and the best one is not known.
 
-## Two features, and the partition of the space
+### Two features, and the partition of the space
 
 Before fitting anything, it is worth looking at the two features together, with the outcome carried by the color of each point.
 
@@ -173,7 +173,7 @@ The `mindev` argument lets the tree grow a little further than it otherwise woul
 
 One feature of that figure deserves emphasis, given how much of last week was devoted to the opposite situation. Nothing in the partition required the two features to be placed on a common scale. Per capita GDP runs to roughly a hundred and percent urban to a hundred, and had income been left in dollars the boundaries would sit at different numbers on the axis while **the partition would be identical**. The difficulty that the rescaling section of last week was designed to address therefore does not arise here at all.
 
-## A categorical feature, with no dummy coding
+### A categorical feature, with no dummy coding
 
 The UN data include `group`, which sorts countries into OECD, African, and other categories. It is a factor rather than a number, and a tree accepts it as it stands.
 
@@ -189,7 +189,7 @@ Consider whether `group` appears at all, and, if it does, what happens to income
 
 Those are the first two items on the list at the head of this handout, and together they are the principal reason trees are worth knowing.
 
-## Cost complexity, and the parameter that plays the role of k
+### Cost complexity, and the parameter that plays the role of k
 
 Left to itself, the procedure continues splitting until every leaf is small and homogeneous, which fits the training data very well indeed. Last week, however, taught us to regard that result with suspicion rather than satisfaction.
 
@@ -205,7 +205,7 @@ A large $\alpha$ makes complexity expensive and returns a small tree, which may 
 
 The question of how to choose it has the same answer as last week, and as most weeks: cross-validation.
 
-## Pruning
+### Pruning
 
 The practical procedure is to allow the tree to grow first, without any concern for its size, and then to cut it back to the complexity that cross-validation prefers. Since `rpart` cross-validates as it proceeds, the relevant table is already available.
 
@@ -244,7 +244,7 @@ This figure carries four pieces of information at once, none of them labeled obv
 
 The figure should be read in the same way as last week's test-error curve. The error falls while additional splits are still recovering real structure, flattens, and then rises once the tree begins fitting individual countries rather than the pattern among them.
 
-### Choosing where to cut
+#### Choosing where to cut
 
 We take the tree with the lowest cross-validated error, which is the value the table reports directly.
 
@@ -266,7 +266,7 @@ rpart.plot(best_tree, box.palette = "GnBu", main = "After pruning")
 
 That is the whole of the method. Everything established so far, however, was established with a continuous outcome, one row per country, and a dataset already familiar from last week, and the second half of this handout changes all three of those conditions at once.
 
-# Part II. The same idea, on a rare binary outcome
+## Part II. The same idea, on a rare binary outcome
 
 We now turn to `onset`, and the algorithm itself barely changes: instead of averaging the outcome within each box we take the majority vote, and instead of squared error we use a measure of how mixed each box is. Everything concerning splitting, greediness, cost complexity, and pruning carries over unaltered.
 
@@ -323,7 +323,7 @@ Train <- cw[train_id, ]
 Test  <- cw[-train_id, ]
 ```
 
-## One tree on onset
+### One tree on onset
 
 ```{r, fig.height=6, fig.width=10}
 m_stump <- rpart(factor(onset) ~ gdpenl + lpopl1 + lmtnest + Oil +
@@ -340,7 +340,7 @@ The reason lies in the criterion. A split is retained only if it improves the tr
 
 We have thus encountered the central difficulty of this half of the handout before fitting anything of interest. The one-sentence model set out above has not merely proved difficult to beat. It has turned out to be the model that `rpart` selects when left to its own devices, and it arrived not through any failure of the software but through the faithful execution of the objective we gave it.
 
-### Telling the algorithm that the rare class matters
+#### Telling the algorithm that the rare class matters
 
 The standard remedy is to instruct the procedure to treat the two classes as equally important, notwithstanding that they are not equally common.
 
@@ -362,7 +362,7 @@ First, the reweighting is a decision rather than a correction. Nothing in the da
 
 Second, and more consequentially, **we have reweighted the tree and we have not reweighted the forest.** That asymmetry is deliberate, and its consequences appear shortly.
 
-## Why one tree is not enough
+### Why one tree is not enough
 
 We arrive here at the problem that motivates the remainder of the week. Fitting the same tree to slightly different data does not produce a slightly different tree; it frequently produces a different tree altogether.
 
@@ -390,7 +390,7 @@ The vocabulary for this was established last week, and the term is **variance**,
 
 A single tree is thus readable and unreliable at the same time, and the response, perhaps counterintuitively, is to stop reading it.
 
-## From bagging to random forests
+### From bagging to random forests
 
 **Bagging**, an abbreviation of bootstrap aggregating, is the first idea. The data are resampled with replacement a sufficient number of times that trees with good explanatory power are captured, a tree is fitted to each sample, and their predictions are averaged. The procedure is computationally intensive, and it works for the reason averaging generally works: individually noisy estimates, once averaged, are less noisy, provided their errors are not all the same error.
 
@@ -402,7 +402,7 @@ This is the proposition to carry out of the week. A forest is not an attempt to 
 
 Two parameters govern the procedure: $B$ is the number of bootstrapped trees, and $m$ is the number of variables sampled at each split. A common choice is $m = \sqrt{p}$, where $p$ is the number of features. Notably, when $m = p$ the random forest reduces to bagging.
 
-## Fitting the forest
+### Fitting the forest
 
 Last week's claim was that changing one string changes the algorithm, and this is that change.
 
@@ -431,7 +431,7 @@ Note as well what is **not** in that call. There is no `prior`, no class weighti
 
 This chunk takes a minute or two to run, which is worth knowing before you begin.
 
-### Predicting for cases the model has never seen
+#### Predicting for cases the model has never seen
 
 `train()` refits the model on the whole of the training data once tuning is complete, so that the object is a fitted model and prediction proceeds from it directly.
 
@@ -443,7 +443,7 @@ head(pred)
 
 Prediction should proceed from `rf` rather than from `rf$finalModel`, since the final model holds the fitted forest but retains no record of any preprocessing. Calling it directly may therefore supply it with data in the wrong form, and it will return an answer regardless.
 
-## The accuracy trap
+### The accuracy trap
 
 ```{r}
 cm <- table(Predicted = pred, Actual = Test$onset_f)
@@ -474,7 +474,7 @@ Nothing in the output announced this. The accuracy appeared excellent, the cross
 
 This is the argument of the second reading for this week [@muchlinski2016], and it is the reason that article exists. Week 6 takes up the repair in full, covering precision, recall, the F1 score, thresholds, and class weighting, together with the question of what to do when one error costs substantially more than the other. For the present, the diagnosis matters more than the cure.
 
-### The four cells
+#### The four cells
 
 The table printed above is a **confusion matrix**, and naming its cells requires first determining which class counts as **positive**, which is a decision made by the analyst rather than a property of the data. Here the positive class is war onset.
 
@@ -485,7 +485,7 @@ The table printed above is a **confusion matrix**, and naming its cells requires
 
 A **false positive** is a country flagged as heading toward civil war that does not in fact experience one, whereas a **false negative** is a civil war that nobody anticipated. These are not the same error, and no serious application treats them as equivalent. Which of them one would rather commit is a political and ethical judgment about consequences, and accuracy collapses the two into a single number precisely by declining to pose the question.
 
-## Variable importance, and what it does not mean
+### Variable importance, and what it does not mean
 
 We surrendered the readable tree, and variable importance is what is returned to us in its place.
 
@@ -511,7 +511,7 @@ The limits of the measure, however, matter more than the figure itself.
 
 The last point has a practical edge, in that variable importance is regularly presented, in policy briefs and in press coverage, as identifying the drivers of a problem. What it identifies is the set of predictors that a particular fitted model found useful on a particular dataset. These are different claims, and the distance between them is where a good deal of poor AI-informed policy analysis is located.
 
-# Prediction, forecasting, and early warning
+## Prediction, forecasting, and early warning
 
 Week 1 distinguished prediction from forecasting: prediction estimates an outcome for a case the model has not seen, whereas forecasting estimates one that has not yet occurred. Everything above is prediction, since our test set consists of country-years drawn at random from the same period as the training set.
 
@@ -521,7 +521,7 @@ As soon as the target is the future, a random split becomes indefensible. If the
 
 A subtler problem remains, which cross-validation does not address, in that cross-validation assumes cases to be interchangeable while country-years plainly are not. Sudan in 1996 is not independent of Sudan in 1995, and a fold that holds one while the other trains the model is leaking information. This is the structural difference flagged at the start of Part II, and it has a name: the observations are not independent, while the standard resampling procedures assume that they are. Week 6 returns to the problem and to the ways in which it can be mitigated.
 
-# The politics of early warning
+## The politics of early warning
 
 A forecast is not merely an analysis that happens to concern the future. It is, rather, an object produced in order to be acted upon, and that purpose changes what its errors mean.
 
@@ -533,7 +533,7 @@ Moreover, a forecast can act upon the world it describes. If a warning of instab
 
 The closing question last week concerned who defines similarity, and the closing question this week concerns who defines the threshold. Somewhere between the forest's vote share and a red mark on a map, a number is selected that determines which countries are flagged, and that number sets the ratio of false alarms to missed wars. It is among the most consequential decisions in the entire pipeline, it is rarely made by anybody who bears its consequences, and it almost never appears in the write-up.
 
-# Reading
+## Reading
 
 Fearon, J. D., and Laitin, D. D. 2003. "Ethnicity, Insurgency, and Civil War." *American Political Science Review* 97(1): 75–90. [@fearon2003]
 
@@ -553,11 +553,11 @@ Pinckney, J., and RezaeeDaryakenari, B. 2022. "When the Levee Breaks: A Forecast
 
 This article forecasts both armed and unarmed conflict at the country-year level, and it does so by training eight machine-learning algorithms and combining them into five forecasting ensembles. The relevance to this week is direct, in that the logic of the random forest reappears one level higher: where a forest averages many trees whose errors point in different directions, an ensemble forecast averages many algorithms on the same reasoning. It is also worth reading for the contrast with the cases above, since the outcome of interest includes nonviolent mobilization rather than civil war alone, and unarmed uprisings are neither as rare nor as well measured.
 
-# Before the workshop
+## Before the workshop
 
 Install `rpart`, `rpart.plot`, `tree`, `randomForest`, and `caret`, and run every chunk in this handout once. The forest takes a minute or two, which is better discovered at home than in the room.
 
-# Questions for the session
+## Questions for the session
 
 Come with a view on at least two of these.
 

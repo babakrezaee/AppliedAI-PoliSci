@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>K-Nearest Neighbors – Applied AI for Political Scientists</title>
+<title>2&nbsp; K-Nearest Neighbors – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -171,7 +171,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html">K-Nearest Neighbors</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -255,43 +255,43 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w01-prediction-causation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Prediction, Causation, and the Vocabulary of AI</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w02-knn.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">K-Nearest Neighbors</span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w03-trees-forests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Trees and Random Forests</span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w05-llm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
   </div>
 </li>
       </ul>
@@ -312,45 +312,45 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#fitting-a-function-without-assuming-its-shape" id="toc-fitting-a-function-without-assuming-its-shape" class="nav-link active" data-scroll-target="#fitting-a-function-without-assuming-its-shape">Fitting a function without assuming its shape</a></li>
-  <li><a href="#drawing-it-development-and-infant-mortality" id="toc-drawing-it-development-and-infant-mortality" class="nav-link" data-scroll-target="#drawing-it-development-and-infant-mortality">Drawing it: development and infant mortality</a>
+  <li><a href="#fitting-a-function-without-assuming-its-shape" id="toc-fitting-a-function-without-assuming-its-shape" class="nav-link active" data-scroll-target="#fitting-a-function-without-assuming-its-shape"><span class="header-section-number">3</span> Fitting a function without assuming its shape</a></li>
+  <li><a href="#drawing-it-development-and-infant-mortality" id="toc-drawing-it-development-and-infant-mortality" class="nav-link" data-scroll-target="#drawing-it-development-and-infant-mortality"><span class="header-section-number">4</span> Drawing it: development and infant mortality</a>
   <ul class="collapse">
-  <li><a href="#what-the-algorithm-actually-did" id="toc-what-the-algorithm-actually-did" class="nav-link" data-scroll-target="#what-the-algorithm-actually-did">What the algorithm actually did</a></li>
+  <li><a href="#what-the-algorithm-actually-did" id="toc-what-the-algorithm-actually-did" class="nav-link" data-scroll-target="#what-the-algorithm-actually-did"><span class="header-section-number">4.1</span> What the algorithm actually did</a></li>
   </ul></li>
-  <li><a href="#the-choice-of-k" id="toc-the-choice-of-k" class="nav-link" data-scroll-target="#the-choice-of-k">The choice of k</a></li>
-  <li><a href="#why-a-perfect-fit-should-worry-you" id="toc-why-a-perfect-fit-should-worry-you" class="nav-link" data-scroll-target="#why-a-perfect-fit-should-worry-you">Why a perfect fit should worry you</a>
+  <li><a href="#the-choice-of-k" id="toc-the-choice-of-k" class="nav-link" data-scroll-target="#the-choice-of-k"><span class="header-section-number">5</span> The choice of k</a></li>
+  <li><a href="#why-a-perfect-fit-should-worry-you" id="toc-why-a-perfect-fit-should-worry-you" class="nav-link" data-scroll-target="#why-a-perfect-fit-should-worry-you"><span class="header-section-number">6</span> Why a perfect fit should worry you</a>
   <ul class="collapse">
-  <li><a href="#the-same-picture-drawn-the-conventional-way" id="toc-the-same-picture-drawn-the-conventional-way" class="nav-link" data-scroll-target="#the-same-picture-drawn-the-conventional-way">The same picture, drawn the conventional way</a></li>
+  <li><a href="#the-same-picture-drawn-the-conventional-way" id="toc-the-same-picture-drawn-the-conventional-way" class="nav-link" data-scroll-target="#the-same-picture-drawn-the-conventional-way"><span class="header-section-number">6.1</span> The same picture, drawn the conventional way</a></li>
   </ul></li>
-  <li><a href="#bias-and-variance" id="toc-bias-and-variance" class="nav-link" data-scroll-target="#bias-and-variance">Bias and variance</a>
+  <li><a href="#bias-and-variance" id="toc-bias-and-variance" class="nav-link" data-scroll-target="#bias-and-variance"><span class="header-section-number">7</span> Bias and variance</a>
   <ul class="collapse">
-  <li><a href="#seeing-variance-directly" id="toc-seeing-variance-directly" class="nav-link" data-scroll-target="#seeing-variance-directly">Seeing variance directly</a></li>
+  <li><a href="#seeing-variance-directly" id="toc-seeing-variance-directly" class="nav-link" data-scroll-target="#seeing-variance-directly"><span class="header-section-number">7.1</span> Seeing variance directly</a></li>
   </ul></li>
-  <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-validation</a>
+  <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation"><span class="header-section-number">8</span> Cross-validation</a>
   <ul class="collapse">
-  <li><a href="#leave-one-out" id="toc-leave-one-out" class="nav-link" data-scroll-target="#leave-one-out">Leave-one-out</a></li>
-  <li><a href="#k-fold" id="toc-k-fold" class="nav-link" data-scroll-target="#k-fold">k-fold</a></li>
-  <li><a href="#the-same-thing-with-caret" id="toc-the-same-thing-with-caret" class="nav-link" data-scroll-target="#the-same-thing-with-caret">The same thing, with caret</a></li>
+  <li><a href="#leave-one-out" id="toc-leave-one-out" class="nav-link" data-scroll-target="#leave-one-out"><span class="header-section-number">8.1</span> Leave-one-out</a></li>
+  <li><a href="#k-fold" id="toc-k-fold" class="nav-link" data-scroll-target="#k-fold"><span class="header-section-number">8.2</span> k-fold</a></li>
+  <li><a href="#the-same-thing-with-caret" id="toc-the-same-thing-with-caret" class="nav-link" data-scroll-target="#the-same-thing-with-caret"><span class="header-section-number">8.3</span> The same thing, with caret</a></li>
   </ul></li>
-  <li><a href="#more-than-one-feature-and-the-problem-of-units" id="toc-more-than-one-feature-and-the-problem-of-units" class="nav-link" data-scroll-target="#more-than-one-feature-and-the-problem-of-units">More than one feature, and the problem of units</a>
+  <li><a href="#more-than-one-feature-and-the-problem-of-units" id="toc-more-than-one-feature-and-the-problem-of-units" class="nav-link" data-scroll-target="#more-than-one-feature-and-the-problem-of-units"><span class="header-section-number">9</span> More than one feature, and the problem of units</a>
   <ul class="collapse">
-  <li><a href="#what-the-algorithm-now-sees" id="toc-what-the-algorithm-now-sees" class="nav-link" data-scroll-target="#what-the-algorithm-now-sees">What the algorithm now sees</a></li>
-  <li><a href="#what-the-neighborhood-looks-like" id="toc-what-the-neighborhood-looks-like" class="nav-link" data-scroll-target="#what-the-neighborhood-looks-like">What the neighborhood looks like</a></li>
+  <li><a href="#what-the-algorithm-now-sees" id="toc-what-the-algorithm-now-sees" class="nav-link" data-scroll-target="#what-the-algorithm-now-sees"><span class="header-section-number">9.1</span> What the algorithm now sees</a></li>
+  <li><a href="#what-the-neighborhood-looks-like" id="toc-what-the-neighborhood-looks-like" class="nav-link" data-scroll-target="#what-the-neighborhood-looks-like"><span class="header-section-number">9.2</span> What the neighborhood looks like</a></li>
   </ul></li>
-  <li><a href="#what-this-model-cannot-tell-you" id="toc-what-this-model-cannot-tell-you" class="nav-link" data-scroll-target="#what-this-model-cannot-tell-you">What this model cannot tell you</a></li>
-  <li><a href="#the-politics-of-similarity" id="toc-the-politics-of-similarity" class="nav-link" data-scroll-target="#the-politics-of-similarity">The politics of similarity</a></li>
-  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading">Reading</a></li>
-  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop">Before the workshop</a></li>
-  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session">Questions for the session</a></li>
+  <li><a href="#what-this-model-cannot-tell-you" id="toc-what-this-model-cannot-tell-you" class="nav-link" data-scroll-target="#what-this-model-cannot-tell-you"><span class="header-section-number">10</span> What this model cannot tell you</a></li>
+  <li><a href="#the-politics-of-similarity" id="toc-the-politics-of-similarity" class="nav-link" data-scroll-target="#the-politics-of-similarity"><span class="header-section-number">11</span> The politics of similarity</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading"><span class="header-section-number">12</span> Reading</a></li>
+  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop"><span class="header-section-number">13</span> Before the workshop</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session"><span class="header-section-number">14</span> Questions for the session</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html">K-Nearest Neighbors</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w02-knn.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">K-Nearest Neighbors</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></h1>
 </div>
 
 
@@ -371,8 +371,8 @@ window.Quarto = {
 <p>Last week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, <span class="math inline">\(K\)</span>-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.</p>
 <p>That is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.</p>
 <p>There is code in this handout, and you should run it rather than read it. The workshop assumes you have.</p>
-<section id="fitting-a-function-without-assuming-its-shape" class="level1">
-<h1>Fitting a function without assuming its shape</h1>
+<section id="fitting-a-function-without-assuming-its-shape" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Fitting a function without assuming its shape</h1>
 <p>We usually want to know how an outcome varies with something else: how <span class="math inline">\(Y\)</span> behaves conditional on <span class="math inline">\(X\)</span>, written <span class="math inline">\(P(Y=y \mid X=x)\)</span>.</p>
 <p>The most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are <strong>parametric</strong> models, and the assumption is doing a great deal of work.</p>
 <p>Assuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.</p>
@@ -384,8 +384,8 @@ window.Quarto = {
 </blockquote>
 <p>There is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.</p>
 </section>
-<section id="drawing-it-development-and-infant-mortality" class="level1">
-<h1>Drawing it: development and infant mortality</h1>
+<section id="drawing-it-development-and-infant-mortality" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Drawing it: development and infant mortality</h1>
 <p>Last week’s running example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle it.</p>
 <p>We will use national development indicators for 199 countries, which ship with the <code>carData</code> package.</p>
 <div class="cell">
@@ -402,7 +402,7 @@ window.Quarto = {
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(UN[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"infantMortality"</span>, <span class="st">"fertility"</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"pctUrban"</span>, <span class="st">"lifeExpF"</span>, <span class="st">"group"</span>)])</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Express per capita GDP in thousands of dollars</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Express per capita GDP in thousands of dollars</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>countries<span class="sc">$</span>ppgdp <span class="ot">&lt;-</span> countries<span class="sc">$</span>ppgdp <span class="sc">/</span> <span class="dv">1000</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(countries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -480,15 +480,15 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 <p>The argument <code>kernel = "rectangular"</code> means that all <span class="math inline">\(k\)</span> neighbors count equally. Other choices give closer neighbors more weight. Rectangular is the plain version of the algorithm, and it is the one described above.</p>
-<section id="what-the-algorithm-actually-did" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-algorithm-actually-did">What the algorithm actually did</h2>
+<section id="what-the-algorithm-actually-did" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="what-the-algorithm-actually-did"><span class="header-section-number">4.1</span> What the algorithm actually did</h2>
 <p>Take one point on that curve. To produce a prediction for a country with a per capita GDP of $2,000, the algorithm found the fifteen countries in the data closest to $2,000 on that axis and averaged their infant mortality. To produce the prediction at $3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.</p>
 <p>The curve is the trace left behind by that moving neighborhood. It is not a formula, and it cannot be written as one. It is a record of what the neighbors did.</p>
 <p>This is also why the curve wobbles where the data are sparse. On the right-hand side there are few countries, so the fifteen nearest neighbors of a rich country may be spread across a very wide range of incomes. The algorithm still returns an answer. It does not warn you that the answer came from a neighborhood stretching across $40,000.</p>
 </section>
 </section>
-<section id="the-choice-of-k" class="level1">
-<h1>The choice of k</h1>
+<section id="the-choice-of-k" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> The choice of k</h1>
 <p>Nothing so far told us to use fifteen. Try several values.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
@@ -526,8 +526,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>So here is the sentence to take away from this week. <strong>A model that fits your data perfectly has told you nothing, because all it has done is recite back the data you already had.</strong> This is the opposite of the instinct most people arrive with, which is that a closer fit is a better model.</p>
 <p>A large <span class="math inline">\(k\)</span> fails in the other direction. It averages across countries that are not comparable, and it produces a model too rigid to represent a relationship that genuinely exists.</p>
 </section>
-<section id="why-a-perfect-fit-should-worry-you" class="level1">
-<h1>Why a perfect fit should worry you</h1>
+<section id="why-a-perfect-fit-should-worry-you" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Why a perfect fit should worry you</h1>
 <p>To choose between these we need to stop grading the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
@@ -593,8 +593,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>The training error keeps falling as <span class="math inline">\(k\)</span> gets smaller. It is lowest at the far left, where the model is most flexible. If you had only this curve, you would conclude that the best model is the most complicated one available, and you would conclude that every single time, on every dataset, regardless of the truth.</p>
 <p>The test error does something different. It falls, reaches a minimum, and then rises again. Past that minimum the model is no longer learning the relationship. It is learning the training countries.</p>
 <p>One caution before you go looking for the best <span class="math inline">\(k\)</span>. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the problem. The precise minimum is a property of one arbitrary split. Do not report “the optimal <span class="math inline">\(k\)</span> is 11” as though you had discovered something about infant mortality. We will fix this properly in a moment.</p>
-<section id="the-same-picture-drawn-the-conventional-way" class="level2">
-<h2 class="anchored" data-anchor-id="the-same-picture-drawn-the-conventional-way">The same picture, drawn the conventional way</h2>
+<section id="the-same-picture-drawn-the-conventional-way" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="the-same-picture-drawn-the-conventional-way"><span class="header-section-number">6.1</span> The same picture, drawn the conventional way</h2>
 <p>That plot has an awkward feature: its horizontal axis runs backwards. A large <span class="math inline">\(k\)</span> is a <em>simple</em> model, so complexity increases as you move to the <em>left</em>, which is the opposite of how you will see this drawn everywhere else.</p>
 <p>The usual fix is to plot against <span class="math inline">\(\log(1/k)\)</span>, which increases as the model gets more flexible.</p>
 <div class="cell">
@@ -621,8 +621,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>Identical numbers, identical conclusion, drawn so that “further right” means “more flexible model.” Every version of this figure you meet from now on, in any textbook and for any method, has this orientation, and the two curves always behave this way: the training curve slides downward forever, and the test curve turns around.</p>
 </section>
 </section>
-<section id="bias-and-variance" class="level1">
-<h1>Bias and variance</h1>
+<section id="bias-and-variance" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Bias and variance</h1>
 <p>We now have the picture. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.</p>
 <p>Return to the decomposition from earlier:</p>
 <p><span class="math display">\[Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}\]</span></p>
@@ -638,8 +638,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 <p>This is a schematic, not a fit to anything. It is the shape you just produced from real data, and the shape you will produce from almost any dataset with almost any flexible method.</p>
 <p>Read the two arrows at the top. Moving left, the model gets simpler: variance falls, bias rises, and eventually the model is too rigid to represent what is there. Moving right, the model gets more flexible: bias falls, variance rises, and eventually the model is chasing noise. The training curve slides downward the whole way and never turns, which is why it cannot be used to choose anything. The test curve has a minimum, and finding it is the entire problem.</p>
-<section id="seeing-variance-directly" class="level2">
-<h2 class="anchored" data-anchor-id="seeing-variance-directly">Seeing variance directly</h2>
+<section id="seeing-variance-directly" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="seeing-variance-directly"><span class="header-section-number">7.1</span> Seeing variance directly</h2>
 <p>Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true <span class="math inline">\(f\)</span> in order to say how far the model sits from it, and if you knew <span class="math inline">\(f\)</span> you would not be modeling.</p>
 <p>So we simulate. We invent a function, add noise to it, draw many samples from it, and fit a model to each. Because we wrote down the truth ourselves, we can measure exactly how far off each fit lands.</p>
 <div class="cell">
@@ -699,22 +699,22 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>Notice what this means for how you read a result. A model with high variance can be badly wrong without giving any sign of it, because the fit to the data in front of you looks excellent. Nothing in the output announces that a different sample would have said something else.</p>
 </section>
 </section>
-<section id="cross-validation" class="level1">
-<h1>Cross-validation</h1>
+<section id="cross-validation" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Cross-validation</h1>
 <p>Now back to the problem we left hanging. We chose <span class="math inline">\(k\)</span> using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:</p>
 <ol type="1">
 <li>The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.</li>
 <li>We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.</li>
 </ol>
 <p><strong>Cross-validation</strong> addresses both by rotating the role of the held-out set.</p>
-<section id="leave-one-out" class="level2">
-<h2 class="anchored" data-anchor-id="leave-one-out">Leave-one-out</h2>
+<section id="leave-one-out" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="leave-one-out"><span class="header-section-number">8.1</span> Leave-one-out</h2>
 <p>Set aside a single observation, train on the remaining <span class="math inline">\(n-1\)</span>, predict the one you left out, and record the error. Do it again with the next observation. Repeat <span class="math inline">\(n\)</span> times and average.</p>
 <p><span class="math display">\[\text{RMSE}_{\text{LOO}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i - \hat{y}_i\right)^2}\]</span></p>
 <p>Every case gets used for training almost every time and for testing exactly once. Nothing is wasted, and there is no arbitrary split to be at the mercy of. The cost is that you have to fit the model <span class="math inline">\(n\)</span> times.</p>
 </section>
-<section id="k-fold" class="level2">
-<h2 class="anchored" data-anchor-id="k-fold">k-fold</h2>
+<section id="k-fold" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="k-fold"><span class="header-section-number">8.2</span> k-fold</h2>
 <p>The practical compromise is to hold out a group instead of a single case. Split the data at random into a number of roughly equal folds. Hold out the first fold, train on the rest, and record the error on the fold you held out. Then hold out the second fold, and so on, until every fold has served once as the test set. Average the results.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -789,8 +789,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>Compare this curve with the single-split version. It is smoother, because each point averages several held-out sets rather than resting on one, and the two fold counts broadly agree with each other. That agreement is the reassurance we were missing before.</p>
 <p>It does not make the choice of <span class="math inline">\(k\)</span> objective. Cross-validation still leaves you with a range of values that perform about equally well, and picking the exact minimum of a flat curve is reading precision into noise. Report the range, say what you chose, and say why.</p>
 </section>
-<section id="the-same-thing-with-caret" class="level2">
-<h2 class="anchored" data-anchor-id="the-same-thing-with-caret">The same thing, with caret</h2>
+<section id="the-same-thing-with-caret" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="the-same-thing-with-caret"><span class="header-section-number">8.3</span> The same thing, with caret</h2>
 <p>Nobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.</p>
 <p><code>caret</code> is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because Week 6 uses it again for evaluation.</p>
 <div class="cell">
@@ -834,8 +834,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>Week 6 returns to evaluation and takes it further, into the metrics that matter when the outcome is rare and accuracy stops being informative.</p>
 </section>
 </section>
-<section id="more-than-one-feature-and-the-problem-of-units" class="level1">
-<h1>More than one feature, and the problem of units</h1>
+<section id="more-than-one-feature-and-the-problem-of-units" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> More than one feature, and the problem of units</h1>
 <p>So far similarity has meant closeness on a single axis, which is easy. With several features we need a general definition of distance, and the usual one is Euclidean distance. For a case <span class="math inline">\(f\)</span> with features <span class="math inline">\((x_{f1}, \dots, x_{fp})\)</span> and a case <span class="math inline">\(i\)</span> in the training data,</p>
 <p><span class="math display">\[d_{if} = \sqrt{\sum_{j=1}^{p}\left(x_{fj} - x_{ij}\right)^2}.\]</span></p>
 <p>This is the straight-line distance you already know, extended to more than two dimensions. And it introduces a problem that is easy to miss and consequential when you do.</p>
@@ -902,8 +902,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 <p>The clouds of points are identical in shape. Only the numbers on the horizontal axis have moved. Nothing about the association between any feature and the outcome has been altered.</p>
 <p>What has changed is invisible in these plots, because it is not about any single feature. It is about the space the features jointly define.</p>
-<section id="what-the-algorithm-now-sees" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-algorithm-now-sees">What the algorithm now sees</h2>
+<section id="what-the-algorithm-now-sees" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="what-the-algorithm-now-sees"><span class="header-section-number">9.1</span> What the algorithm now sees</h2>
 <p>With two features rather than one, cases no longer sit along a line. They sit in a plane, and the outcome rises above it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d)</span>
@@ -923,14 +923,14 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 <p>Add a third feature and the picture cannot be drawn at all, which is the last point in this course at which you can see the space a model is working in. From Week 3 onward you will have to reason about it rather than look at it. The arithmetic does not care: the distance formula extends to any number of features without complaint, and it is only our eyes that stop at three.</p>
 </section>
-<section id="what-the-neighborhood-looks-like" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-neighborhood-looks-like">What the neighborhood looks like</h2>
+<section id="what-the-neighborhood-looks-like" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="what-the-neighborhood-looks-like"><span class="header-section-number">9.2</span> What the neighborhood looks like</h2>
 <p>Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>target_raw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries<span class="sc">$</span>ppgdp),   <span class="fu">median</span>(countries<span class="sc">$</span>fertility))</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>target_s   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries_s<span class="sc">$</span>ppgdp), <span class="fu">median</span>(countries_s<span class="sc">$</span>fertility))</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Euclidean distance, exactly the formula above, computed by hand</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Euclidean distance, exactly the formula above, computed by hand</span></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>dist_raw <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((countries<span class="sc">$</span>ppgdp     <span class="sc">-</span> target_raw[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span></span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                 (countries<span class="sc">$</span>fertility <span class="sc">-</span> target_raw[<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -970,31 +970,31 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <p>Stay with that, because it is not a technical footnote. The algorithm’s entire operation rests on its definition of “similar,” and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.</p>
 </section>
 </section>
-<section id="what-this-model-cannot-tell-you" class="level1">
-<h1>What this model cannot tell you</h1>
+<section id="what-this-model-cannot-tell-you" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> What this model cannot tell you</h1>
 <p>The model has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form “a one-unit increase in <span class="math inline">\(X\)</span> is associated with a change in <span class="math inline">\(Y\)</span>.” The model cannot be written down apart from the data it holds.</p>
 <p>More importantly, it has said nothing about <em>why</em> infant mortality is lower in richer countries. It has found that countries with similar incomes tend to have similar infant mortality, and it can use that to predict. That is a prediction, in exactly the sense we distinguished last week, and it does not become an explanation by performing well.</p>
 <p>There is a second limit, and the neighborhood figures above showed it. A model of this kind answers every question put to it, at the same apparent level of confidence, whether the case sits in a crowded part of the data or alone at the edge of it. The richest country in this dataset gets a prediction assembled from neighbors spread across tens of thousands of dollars of income. That prediction is printed in the same format, to the same number of decimal places, as one built from twenty-five genuinely similar cases. Nothing in the output distinguishes them.</p>
 </section>
-<section id="the-politics-of-similarity" class="level1">
-<h1>The politics of similarity</h1>
+<section id="the-politics-of-similarity" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> The politics of similarity</h1>
 <p>The rule at the center of this week is that cases similar to past cases receive what those past cases received.</p>
 <p>That is also a fair description of precedent in law, of case-based reasoning in administration, and of the Weberian bureaucratic ideal we discussed last week, in which similar cases are treated alike regardless of who happens to be at the desk. Consistency of this kind is not a defect. It is one of the oldest arguments for rule-bound government, and part of what makes an administration predictable enough to be held to account.</p>
 <p>What changes when the rule is a fitted model is who defines similarity, and how visibly. In <span class="math inline">\(K\)</span>-nearest neighbors that definition came from feature selection and rescaling, decisions made early, made quietly, and almost never revisited or documented once the system is running. Nobody writes them down as a policy, because they do not look like a policy.</p>
 <p>And a model of this kind can only reproduce the pattern in the cases it was given. If the treatment recorded in those cases was unjust, then similarity to past cases carries the injustice forward, and it does so with the appearance of perfect consistency. The system is not malfunctioning when this happens. It is doing precisely what it was built to do.</p>
 </section>
-<section id="reading" class="level1">
-<h1>Reading</h1>
-<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="../references.html#ref-james2021" role="doc-biblioref">James et al. 2021</a>)</span>.</p>
+<section id="reading" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Reading</h1>
+<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="#ref-james2021" role="doc-biblioref">James et al. 2021</a>)</span>.</p>
 <p>Read Section 2.2 for the figures rather than the derivations. The pictures of training error against test error, and of the bias-variance decomposition, are the same pictures you produced above, and seeing them drawn by someone else is a useful check on whether you understood what you made. Section 5.1 covers cross-validation and is short.</p>
 </section>
-<section id="before-the-workshop" class="level1">
-<h1>Before the workshop</h1>
+<section id="before-the-workshop" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Before the workshop</h1>
 <p>Install <code>carData</code>, <code>kknn</code>, <code>caret</code>, and <code>scatterplot3d</code>, run every chunk in this handout once, and bring a charged laptop. The workshop begins from the assumption that the code above ran on your machine, and the first part of a three-hour session is not the place to discover an installation problem.</p>
 <p>If something failed, say so at the start rather than at the end.</p>
 </section>
-<section id="questions-for-the-session" class="level1">
-<h1>Questions for the session</h1>
+<section id="questions-for-the-session" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Questions for the session</h1>
 <p>Come with a view on at least two of these. They will structure the first part of the session.</p>
 <ol type="1">
 <li><p><span class="math inline">\(K\)</span>-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week’s reading is relevant here.</p></li>
@@ -1006,7 +1006,7 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-james2021" class="csl-entry" role="listitem">
 James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: With Applications in <span>R</span></em>. 2nd ed. Springer.
 </div>
@@ -1422,12 +1422,12 @@ James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2021. <em>A
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../handouts/w01-prediction-causation.html" class="pagination-link" aria-label="Prediction, Causation, and the Vocabulary of AI">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Prediction, Causation, and the Vocabulary of AI</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../handouts/w03-trees-forests.html" class="pagination-link" aria-label="Trees and Random Forests">
-        <span class="nav-page-text">Trees and Random Forests</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

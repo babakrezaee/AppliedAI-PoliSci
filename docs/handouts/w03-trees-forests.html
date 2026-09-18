@@ -2,20 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Trees and Random Forests – Applied AI for Political Scientists</title>
+<title>3&nbsp; Trees and Random Forests – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-95edd58b3b27b9774827898c46d4f452.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-18a86156fa881a144d2995565f3cba36.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -128,7 +131,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -168,7 +171,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w03-trees-forests.html">Trees and Random Forests</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w03-trees-forests.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -252,43 +255,43 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w01-prediction-causation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Prediction, Causation, and the Vocabulary of AI</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prediction, Causation, and the Vocabulary of AI</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w02-knn.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Classification I: K-Nearest Neighbors</span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w03-trees-forests.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Trees and Random Forests</span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w05-llm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Large Language Models</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Evaluating AI Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
   </div>
 </li>
       </ul>
@@ -309,53 +312,41 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-trees-are-good-at-and-what-they-are-not" id="toc-what-trees-are-good-at-and-what-they-are-not" class="nav-link active" data-scroll-target="#what-trees-are-good-at-and-what-they-are-not">What trees are good at, and what they are not</a></li>
-  <li><a href="#two-datasets-this-week" id="toc-two-datasets-this-week" class="nav-link" data-scroll-target="#two-datasets-this-week">Two datasets this week</a></li>
-  <li><a href="#part-i.-a-regression-tree" id="toc-part-i.-a-regression-tree" class="nav-link" data-scroll-target="#part-i.-a-regression-tree">Part I. A regression tree</a>
+  <li><a href="#what-trees-are-good-at-and-what-they-are-not" id="toc-what-trees-are-good-at-and-what-they-are-not" class="nav-link active" data-scroll-target="#what-trees-are-good-at-and-what-they-are-not"><span class="header-section-number">3.1</span> What trees are good at, and what they are not</a></li>
+  <li><a href="#two-datasets-this-week" id="toc-two-datasets-this-week" class="nav-link" data-scroll-target="#two-datasets-this-week"><span class="header-section-number">3.2</span> Two datasets this week</a></li>
+  <li><a href="#part-i.-a-regression-tree" id="toc-part-i.-a-regression-tree" class="nav-link" data-scroll-target="#part-i.-a-regression-tree"><span class="header-section-number">3.3</span> Part I. A regression tree</a>
   <ul class="collapse">
-  <li><a href="#one-feature" id="toc-one-feature" class="nav-link" data-scroll-target="#one-feature">One feature</a></li>
-  <li><a href="#the-same-data-two-algorithms" id="toc-the-same-data-two-algorithms" class="nav-link" data-scroll-target="#the-same-data-two-algorithms">The same data, two algorithms</a></li>
-  <li><a href="#what-the-algorithm-is-minimizing" id="toc-what-the-algorithm-is-minimizing" class="nav-link" data-scroll-target="#what-the-algorithm-is-minimizing">What the algorithm is minimizing</a></li>
-  <li><a href="#two-features-and-the-partition-of-the-space" id="toc-two-features-and-the-partition-of-the-space" class="nav-link" data-scroll-target="#two-features-and-the-partition-of-the-space">Two features, and the partition of the space</a></li>
-  <li><a href="#a-categorical-feature-with-no-dummy-coding" id="toc-a-categorical-feature-with-no-dummy-coding" class="nav-link" data-scroll-target="#a-categorical-feature-with-no-dummy-coding">A categorical feature, with no dummy coding</a></li>
-  <li><a href="#cost-complexity-and-the-parameter-that-plays-the-role-of-k" id="toc-cost-complexity-and-the-parameter-that-plays-the-role-of-k" class="nav-link" data-scroll-target="#cost-complexity-and-the-parameter-that-plays-the-role-of-k">Cost complexity, and the parameter that plays the role of k</a></li>
-  <li><a href="#pruning" id="toc-pruning" class="nav-link" data-scroll-target="#pruning">Pruning</a>
+  <li><a href="#one-feature" id="toc-one-feature" class="nav-link" data-scroll-target="#one-feature"><span class="header-section-number">3.3.1</span> One feature</a></li>
+  <li><a href="#the-same-data-two-algorithms" id="toc-the-same-data-two-algorithms" class="nav-link" data-scroll-target="#the-same-data-two-algorithms"><span class="header-section-number">3.3.2</span> The same data, two algorithms</a></li>
+  <li><a href="#what-the-algorithm-is-minimizing" id="toc-what-the-algorithm-is-minimizing" class="nav-link" data-scroll-target="#what-the-algorithm-is-minimizing"><span class="header-section-number">3.3.3</span> What the algorithm is minimizing</a></li>
+  <li><a href="#two-features-and-the-partition-of-the-space" id="toc-two-features-and-the-partition-of-the-space" class="nav-link" data-scroll-target="#two-features-and-the-partition-of-the-space"><span class="header-section-number">3.3.4</span> Two features, and the partition of the space</a></li>
+  <li><a href="#a-categorical-feature-with-no-dummy-coding" id="toc-a-categorical-feature-with-no-dummy-coding" class="nav-link" data-scroll-target="#a-categorical-feature-with-no-dummy-coding"><span class="header-section-number">3.3.5</span> A categorical feature, with no dummy coding</a></li>
+  <li><a href="#cost-complexity-and-the-parameter-that-plays-the-role-of-k" id="toc-cost-complexity-and-the-parameter-that-plays-the-role-of-k" class="nav-link" data-scroll-target="#cost-complexity-and-the-parameter-that-plays-the-role-of-k"><span class="header-section-number">3.3.6</span> Cost complexity, and the parameter that plays the role of k</a></li>
+  <li><a href="#pruning" id="toc-pruning" class="nav-link" data-scroll-target="#pruning"><span class="header-section-number">3.3.7</span> Pruning</a></li>
+  </ul></li>
+  <li><a href="#part-ii.-the-same-idea-on-a-rare-binary-outcome" id="toc-part-ii.-the-same-idea-on-a-rare-binary-outcome" class="nav-link" data-scroll-target="#part-ii.-the-same-idea-on-a-rare-binary-outcome"><span class="header-section-number">3.4</span> Part II. The same idea, on a rare binary outcome</a>
   <ul class="collapse">
-  <li><a href="#choosing-where-to-cut" id="toc-choosing-where-to-cut" class="nav-link" data-scroll-target="#choosing-where-to-cut">Choosing where to cut</a></li>
+  <li><a href="#one-tree-on-onset" id="toc-one-tree-on-onset" class="nav-link" data-scroll-target="#one-tree-on-onset"><span class="header-section-number">3.4.1</span> One tree on onset</a></li>
+  <li><a href="#why-one-tree-is-not-enough" id="toc-why-one-tree-is-not-enough" class="nav-link" data-scroll-target="#why-one-tree-is-not-enough"><span class="header-section-number">3.4.2</span> Why one tree is not enough</a></li>
+  <li><a href="#from-bagging-to-random-forests" id="toc-from-bagging-to-random-forests" class="nav-link" data-scroll-target="#from-bagging-to-random-forests"><span class="header-section-number">3.4.3</span> From bagging to random forests</a></li>
+  <li><a href="#fitting-the-forest" id="toc-fitting-the-forest" class="nav-link" data-scroll-target="#fitting-the-forest"><span class="header-section-number">3.4.4</span> Fitting the forest</a></li>
+  <li><a href="#the-accuracy-trap" id="toc-the-accuracy-trap" class="nav-link" data-scroll-target="#the-accuracy-trap"><span class="header-section-number">3.4.5</span> The accuracy trap</a></li>
+  <li><a href="#variable-importance-and-what-it-does-not-mean" id="toc-variable-importance-and-what-it-does-not-mean" class="nav-link" data-scroll-target="#variable-importance-and-what-it-does-not-mean"><span class="header-section-number">3.4.6</span> Variable importance, and what it does not mean</a></li>
   </ul></li>
-  </ul></li>
-  <li><a href="#part-ii.-the-same-idea-on-a-rare-binary-outcome" id="toc-part-ii.-the-same-idea-on-a-rare-binary-outcome" class="nav-link" data-scroll-target="#part-ii.-the-same-idea-on-a-rare-binary-outcome">Part II. The same idea, on a rare binary outcome</a>
-  <ul class="collapse">
-  <li><a href="#one-tree-on-onset" id="toc-one-tree-on-onset" class="nav-link" data-scroll-target="#one-tree-on-onset">One tree on onset</a>
-  <ul class="collapse">
-  <li><a href="#telling-the-algorithm-that-the-rare-class-matters" id="toc-telling-the-algorithm-that-the-rare-class-matters" class="nav-link" data-scroll-target="#telling-the-algorithm-that-the-rare-class-matters">Telling the algorithm that the rare class matters</a></li>
-  </ul></li>
-  <li><a href="#why-one-tree-is-not-enough" id="toc-why-one-tree-is-not-enough" class="nav-link" data-scroll-target="#why-one-tree-is-not-enough">Why one tree is not enough</a></li>
-  <li><a href="#from-bagging-to-random-forests" id="toc-from-bagging-to-random-forests" class="nav-link" data-scroll-target="#from-bagging-to-random-forests">From bagging to random forests</a></li>
-  <li><a href="#fitting-the-forest" id="toc-fitting-the-forest" class="nav-link" data-scroll-target="#fitting-the-forest">Fitting the forest</a>
-  <ul class="collapse">
-  <li><a href="#predicting-for-cases-the-model-has-never-seen" id="toc-predicting-for-cases-the-model-has-never-seen" class="nav-link" data-scroll-target="#predicting-for-cases-the-model-has-never-seen">Predicting for cases the model has never seen</a></li>
-  </ul></li>
-  <li><a href="#the-accuracy-trap" id="toc-the-accuracy-trap" class="nav-link" data-scroll-target="#the-accuracy-trap">The accuracy trap</a>
-  <ul class="collapse">
-  <li><a href="#the-four-cells" id="toc-the-four-cells" class="nav-link" data-scroll-target="#the-four-cells">The four cells</a></li>
-  </ul></li>
-  <li><a href="#variable-importance-and-what-it-does-not-mean" id="toc-variable-importance-and-what-it-does-not-mean" class="nav-link" data-scroll-target="#variable-importance-and-what-it-does-not-mean">Variable importance, and what it does not mean</a></li>
-  </ul></li>
-  <li><a href="#prediction-forecasting-and-early-warning" id="toc-prediction-forecasting-and-early-warning" class="nav-link" data-scroll-target="#prediction-forecasting-and-early-warning">Prediction, forecasting, and early warning</a></li>
-  <li><a href="#the-politics-of-early-warning" id="toc-the-politics-of-early-warning" class="nav-link" data-scroll-target="#the-politics-of-early-warning">The politics of early warning</a></li>
-  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading">Reading</a></li>
-  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop">Before the workshop</a></li>
-  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session">Questions for the session</a></li>
+  <li><a href="#prediction-forecasting-and-early-warning" id="toc-prediction-forecasting-and-early-warning" class="nav-link" data-scroll-target="#prediction-forecasting-and-early-warning"><span class="header-section-number">3.5</span> Prediction, forecasting, and early warning</a></li>
+  <li><a href="#the-politics-of-early-warning" id="toc-the-politics-of-early-warning" class="nav-link" data-scroll-target="#the-politics-of-early-warning"><span class="header-section-number">3.6</span> The politics of early warning</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading"><span class="header-section-number">3.7</span> Reading</a></li>
+  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop"><span class="header-section-number">3.8</span> Before the workshop</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session"><span class="header-section-number">3.9</span> Questions for the session</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w03-trees-forests.html">Trees and Random Forests</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w03-trees-forests.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Trees and Random Forests</h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Trees and Random Forests</span></h1>
 </div>
 
 
@@ -375,8 +366,8 @@ window.Quarto = {
 <p><em>Week 3, 16 September</em></p>
 <p>Last week’s method concealed nothing, in the sense that every prediction <span class="math inline">\(K\)</span>-nearest neighbors produced could be traced back to a small set of countries that could be located on a scatterplot. This week begins from the same premise, with a model that can be drawn on a whiteboard and read aloud as a sequence of rules, and then abandons that transparency deliberately, in exchange for a considerably better model.</p>
 <p>The session therefore stages a tension that runs through much of contemporary machine learning. On the one hand, a model whose reasoning can be inspected is easier to defend, to audit, and to explain to somebody who has to act on its output. On the other hand, the models that predict best are frequently the ones whose reasoning cannot be inspected at all. Trees and forests are unusually well suited to examining this tension, because the movement from the first situation to the second occurs within a single family of methods and can be observed at each step.</p>
-<section id="what-trees-are-good-at-and-what-they-are-not" class="level1">
-<h1>What trees are good at, and what they are not</h1>
+<section id="what-trees-are-good-at-and-what-they-are-not" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="what-trees-are-good-at-and-what-they-are-not"><span class="header-section-number">3.1</span> What trees are good at, and what they are not</h2>
 <p>Tree models in statistical learning bear an obvious kinship to decision trees as we ordinarily understand them, and they have been used widely for prediction. It is worth setting out at the start what they offer and what they cost.</p>
 <p><strong>Benefits.</strong></p>
 <ul>
@@ -389,10 +380,10 @@ window.Quarto = {
 <p><strong>The disadvantage,</strong> and it is a serious one, is that a single tree does not predict well out of sample.</p>
 <p>That tension is the shape of the week, in that everything after the first third is an attempt to retain the benefits while addressing the disadvantage, by growing a forest of trees and allowing them to vote.</p>
 </section>
-<section id="two-datasets-this-week" class="level1">
-<h1>Two datasets this week</h1>
+<section id="two-datasets-this-week" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="two-datasets-this-week"><span class="header-section-number">3.2</span> Two datasets this week</h2>
 <p>Part I returns to the country data from last week, on the grounds that the fastest way to see what is distinctive about a tree is to apply it to material you have already modeled by other means.</p>
-<p>Part II moves to Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>, where the outcome is binary and rare, and where the more difficult problems arise.</p>
+<p>Part II moves to Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>, where the outcome is binary and rare, and where the more difficult problems arise.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"carData"</span>, <span class="st">"rpart"</span>, <span class="st">"rpart.plot"</span>, <span class="st">"tree"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"randomForest"</span>, <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -422,12 +413,12 @@ window.Quarto = {
 </div>
 <p>One row per country, which is worth noting now, because Part II will not have that luxury.</p>
 </section>
-<section id="part-i.-a-regression-tree" class="level1">
-<h1>Part I. A regression tree</h1>
+<section id="part-i.-a-regression-tree" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="part-i.-a-regression-tree"><span class="header-section-number">3.3</span> Part I. A regression tree</h2>
 <p>Last week we fitted a <span class="math inline">\(K\)</span>-nearest neighbors curve to the relationship between per capita GDP and infant mortality, and gave some attention to the fact that the relationship bends: mortality falls very steeply across the poorest range and then flattens almost completely. A straight line was therefore a poor description of the relationship, and <span class="math inline">\(K\)</span>-nearest neighbors accommodated the curvature instead by averaging over a moving window of neighbors.</p>
 <p>A tree accommodates it differently, and placing the two side by side is the most efficient way to establish what a tree is.</p>
-<section id="one-feature" class="level2">
-<h2 class="anchored" data-anchor-id="one-feature">One feature</h2>
+<section id="one-feature" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="one-feature"><span class="header-section-number">3.3.1</span> One feature</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>m_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(infantMortality <span class="sc">~</span> ppgdp, <span class="at">data =</span> countries)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -468,8 +459,8 @@ window.Quarto = {
 <p>The set of leaves provides a partition of the predictor space into disjoint regions. With a single feature that partition is simply a set of intervals, marked by the dashed vertical lines. Within each interval we take the average outcome of the countries that fall there, which produces the step function drawn in red. That step function is <span class="math inline">\(\hat{f}\)</span>, and to predict for a new country we locate its interval and read off the corresponding step.</p>
 <p>The placement of the boundaries is itself informative, in that they are tightly spaced at the left, where mortality changes rapidly, and widely spaced at the right, where it does not. Notably, nothing in the procedure instructed the algorithm to distribute them in this way.</p>
 </section>
-<section id="the-same-data-two-algorithms" class="level2">
-<h2 class="anchored" data-anchor-id="the-same-data-two-algorithms">The same data, two algorithms</h2>
+<section id="the-same-data-two-algorithms" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="the-same-data-two-algorithms"><span class="header-section-number">3.3.2</span> The same data, two algorithms</h3>
 <p>Last week’s model can usefully be placed on the same figure, so that the two procedures may be compared directly.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
@@ -502,8 +493,8 @@ window.Quarto = {
 <p><span class="math inline">\(K\)</span>-nearest neighbors uses a window of fixed size that slides along the axis. Every prediction averages exactly ten countries, whether those ten lie within a few hundred dollars of one another or are distributed across forty thousand. This is why the curve becomes unstable on the right, where the data thin out: the window preserves its count while losing its substantive meaning.</p>
 <p>The tree, by contrast, uses regions of fixed content, having selected where to cut and therefore how wide each region should be, narrowly where the outcome changes quickly and broadly where it does not. The cost of proceeding this way is that the steps are coarse. The gain, however, is that the width of a neighborhood becomes a decision the algorithm reached about the data, rather than a number imposed upon it in advance.</p>
 </section>
-<section id="what-the-algorithm-is-minimizing" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-algorithm-is-minimizing">What the algorithm is minimizing</h2>
+<section id="what-the-algorithm-is-minimizing" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="what-the-algorithm-is-minimizing"><span class="header-section-number">3.3.3</span> What the algorithm is minimizing</h3>
 <p>We are splitting the feature space <span class="math inline">\(X = \{x_1, x_2, \dots, x_k\}\)</span> into smaller rectangles, or boxes. If we can identify a pattern of splits with low prediction error on the training data, we can then predict for a new case by determining which box it belongs to.</p>
 <p>Roughly, a tree may be thought of as a <span class="math inline">\(K\)</span>-nearest neighbors algorithm in which <span class="math inline">\(k\)</span> is dynamic: the neighborhood is a box rather than a window, and the boxes are wide where the data are sparse and narrow where they are dense, rather than fixed in advance. The figure above is that proposition drawn, and it is worth returning to whenever the relationship between the two methods becomes unclear.</p>
 <p>Formally, for a continuous outcome:</p>
@@ -517,8 +508,8 @@ window.Quarto = {
 </ul>
 <p>This is a <strong>greedy</strong> approach, in that at each step it takes the split that appears best at that moment, without considering the consequences for the splits beneath it. The resulting tree is therefore a good tree arrived at through a sequence of locally sensible decisions. It is not the best one, and the best one is not known.</p>
 </section>
-<section id="two-features-and-the-partition-of-the-space" class="level2">
-<h2 class="anchored" data-anchor-id="two-features-and-the-partition-of-the-space">Two features, and the partition of the space</h2>
+<section id="two-features-and-the-partition-of-the-space" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="two-features-and-the-partition-of-the-space"><span class="header-section-number">3.3.4</span> Two features, and the partition of the space</h3>
 <p>Before fitting anything, it is worth looking at the two features together, with the outcome carried by the color of each point.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(countries, <span class="fu">aes</span>(ppgdp, pctUrban, <span class="at">colour =</span> infantMortality)) <span class="sc">+</span></span>
@@ -550,8 +541,8 @@ window.Quarto = {
 <p>The <code>mindev</code> argument lets the tree grow a little further than it otherwise would, since <code>tree()</code> stops splitting quite early by default and income alone accounts for most of the variation in infant mortality.</p>
 <p>One feature of that figure deserves emphasis, given how much of last week was devoted to the opposite situation. Nothing in the partition required the two features to be placed on a common scale. Per capita GDP runs to roughly a hundred and percent urban to a hundred, and had income been left in dollars the boundaries would sit at different numbers on the axis while <strong>the partition would be identical</strong>. The difficulty that the rescaling section of last week was designed to address therefore does not arise here at all.</p>
 </section>
-<section id="a-categorical-feature-with-no-dummy-coding" class="level2">
-<h2 class="anchored" data-anchor-id="a-categorical-feature-with-no-dummy-coding">A categorical feature, with no dummy coding</h2>
+<section id="a-categorical-feature-with-no-dummy-coding" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="a-categorical-feature-with-no-dummy-coding"><span class="header-section-number">3.3.5</span> A categorical feature, with no dummy coding</h3>
 <p>The UN data include <code>group</code>, which sorts countries into OECD, African, and other categories. It is a factor rather than a number, and a tree accepts it as it stands.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m_tree3 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(infantMortality <span class="sc">~</span> ppgdp <span class="sc">+</span> pctUrban <span class="sc">+</span> group, <span class="at">data =</span> countries)</span>
@@ -569,8 +560,8 @@ window.Quarto = {
 <p>Consider whether <code>group</code> appears at all, and, if it does, what happens to income on either side of it. If the tree asks about income at a different threshold within one group than within another, it has identified an interaction, which is to say that the relationship between wealth and child mortality is not the same everywhere. Nothing in the specification requested this, whereas a linear model recovers such an interaction only if the researcher thinks in advance to look for it.</p>
 <p>Those are the first two items on the list at the head of this handout, and together they are the principal reason trees are worth knowing.</p>
 </section>
-<section id="cost-complexity-and-the-parameter-that-plays-the-role-of-k" class="level2">
-<h2 class="anchored" data-anchor-id="cost-complexity-and-the-parameter-that-plays-the-role-of-k">Cost complexity, and the parameter that plays the role of k</h2>
+<section id="cost-complexity-and-the-parameter-that-plays-the-role-of-k" class="level3" data-number="3.3.6">
+<h3 data-number="3.3.6" class="anchored" data-anchor-id="cost-complexity-and-the-parameter-that-plays-the-role-of-k"><span class="header-section-number">3.3.6</span> Cost complexity, and the parameter that plays the role of k</h3>
 <p>Left to itself, the procedure continues splitting until every leaf is small and homogeneous, which fits the training data very well indeed. Last week, however, taught us to regard that result with suspicion rather than satisfaction.</p>
 <p>The standard remedy rewrites the problem as</p>
 <p><span class="math display">\[\begin{align}
@@ -580,8 +571,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <p>A large <span class="math inline">\(\alpha\)</span> makes complexity expensive and returns a small tree, which may in consequence fit poorly, whereas a small <span class="math inline">\(\alpha\)</span> permits the tree to grow large. <strong>Here</strong> <span class="math inline">\(\alpha\)</span> is analogous to <span class="math inline">\(k\)</span> in <span class="math inline">\(K\)</span>-nearest neighbors, and, as with <span class="math inline">\(k\)</span>, no value is correct in advance.</p>
 <p>The question of how to choose it has the same answer as last week, and as most weeks: cross-validation.</p>
 </section>
-<section id="pruning" class="level2">
-<h2 class="anchored" data-anchor-id="pruning">Pruning</h2>
+<section id="pruning" class="level3" data-number="3.3.7">
+<h3 data-number="3.3.7" class="anchored" data-anchor-id="pruning"><span class="header-section-number">3.3.7</span> Pruning</h3>
 <p>The practical procedure is to allow the tree to grow first, without any concern for its size, and then to cut it back to the complexity that cross-validation prefers. Since <code>rpart</code> cross-validates as it proceeds, the relevant table is already available.</p>
 <p>The operative word is <strong>grow</strong>, since a tree that is stopped early never becomes sufficiently complex to overfit, and in that case there is no trade-off to observe at all. We therefore set <code>cp</code> to essentially zero and allow the procedure to run until the leaves contain a handful of countries each.</p>
 <div class="cell">
@@ -617,8 +608,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <p><strong>The vertical axis is cross-validated error,</strong> scaled so that a tree with no splits at all sits at 1. A value of 0.3 indicates that the tree has removed seventy per cent of the error that would result from predicting the same number for every country.</p>
 <p><strong>The vertical bars are one standard error</strong> on either side of each estimate, and the dotted horizontal line sits one standard error above the lowest point on the curve. That line supports an alternative rule for choosing a tree, which we set aside here in favor of the simpler one below.</p>
 <p>The figure should be read in the same way as last week’s test-error curve. The error falls while additional splits are still recovering real structure, flattens, and then rises once the tree begins fitting individual countries rather than the pattern among them.</p>
-<section id="choosing-where-to-cut" class="level3">
-<h3 class="anchored" data-anchor-id="choosing-where-to-cut">Choosing where to cut</h3>
+<section id="choosing-where-to-cut" class="level4" data-number="3.3.7.1">
+<h4 data-number="3.3.7.1" class="anchored" data-anchor-id="choosing-where-to-cut"><span class="header-section-number">3.3.7.1</span> Choosing where to cut</h4>
 <p>We take the tree with the lowest cross-validated error, which is the value the table reports directly.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>i_min   <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cpt[, <span class="st">"xerror"</span>])</span>
@@ -647,8 +638,8 @@ C(T, y) = L(T, y) + \alpha |T|
 </section>
 </section>
 </section>
-<section id="part-ii.-the-same-idea-on-a-rare-binary-outcome" class="level1">
-<h1>Part II. The same idea, on a rare binary outcome</h1>
+<section id="part-ii.-the-same-idea-on-a-rare-binary-outcome" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="part-ii.-the-same-idea-on-a-rare-binary-outcome"><span class="header-section-number">3.4</span> Part II. The same idea, on a rare binary outcome</h2>
 <p>We now turn to <code>onset</code>, and the algorithm itself barely changes: instead of averaging the outcome within each box we take the majority vote, and instead of squared error we use a measure of how mixed each box is. Everything concerning splitting, greediness, cost complexity, and pruning carries over unaltered.</p>
 <p>Three things do change, however: the data are new, the outcome is binary, and the outcome is very rare. The third of these occupies most of what follows, and it shapes nearly every judgment we go on to make about the model.</p>
 <div class="cell">
@@ -701,8 +692,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>Train <span class="ot">&lt;-</span> cw[train_id, ]</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>Test  <span class="ot">&lt;-</span> cw[<span class="sc">-</span>train_id, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="one-tree-on-onset" class="level2">
-<h2 class="anchored" data-anchor-id="one-tree-on-onset">One tree on onset</h2>
+<section id="one-tree-on-onset" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="one-tree-on-onset"><span class="header-section-number">3.4.1</span> One tree on onset</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m_stump <span class="ot">&lt;-</span> <span class="fu">rpart</span>(<span class="fu">factor</span>(onset) <span class="sc">~</span> gdpenl <span class="sc">+</span> lpopl1 <span class="sc">+</span> lmtnest <span class="sc">+</span> Oil <span class="sc">+</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                   nwstate <span class="sc">+</span> polity2l <span class="sc">+</span> ethfrac <span class="sc">+</span> relfrac,</span>
@@ -721,8 +712,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <p>That figure is not an error, and it is worth pausing over rather than correcting immediately. The tree has declined to split at all. It reports a single node containing every case, predicts no onset for all of them, and attaches a probability of 0.02, which is simply the base rate we computed a moment ago.</p>
 <p>The reason lies in the criterion. A split is retained only if it improves the tree’s classification sufficiently to justify its cost, and on an outcome occurring in two per cent of cases no split improves classification whatever. Predicting no war everywhere is already correct ninety-eight per cent of the time, and no partition of the feature space available to <code>rpart</code> does better than that. The algorithm therefore concluded, entirely correctly on its own terms, that the best available tree is the one that asks no questions at all.</p>
 <p>We have thus encountered the central difficulty of this half of the handout before fitting anything of interest. The one-sentence model set out above has not merely proved difficult to beat. It has turned out to be the model that <code>rpart</code> selects when left to its own devices, and it arrived not through any failure of the software but through the faithful execution of the objective we gave it.</p>
-<section id="telling-the-algorithm-that-the-rare-class-matters" class="level3">
-<h3 class="anchored" data-anchor-id="telling-the-algorithm-that-the-rare-class-matters">Telling the algorithm that the rare class matters</h3>
+<section id="telling-the-algorithm-that-the-rare-class-matters" class="level4" data-number="3.4.1.1">
+<h4 data-number="3.4.1.1" class="anchored" data-anchor-id="telling-the-algorithm-that-the-rare-class-matters"><span class="header-section-number">3.4.1.1</span> Telling the algorithm that the rare class matters</h4>
 <p>The standard remedy is to instruct the procedure to treat the two classes as equally important, notwithstanding that they are not equally common.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m_class <span class="ot">&lt;-</span> <span class="fu">rpart</span>(<span class="fu">factor</span>(onset) <span class="sc">~</span> gdpenl <span class="sc">+</span> lpopl1 <span class="sc">+</span> lmtnest <span class="sc">+</span> Oil <span class="sc">+</span></span>
@@ -746,8 +737,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <p>Second, and more consequentially, <strong>we have reweighted the tree and we have not reweighted the forest.</strong> That asymmetry is deliberate, and its consequences appear shortly.</p>
 </section>
 </section>
-<section id="why-one-tree-is-not-enough" class="level2">
-<h2 class="anchored" data-anchor-id="why-one-tree-is-not-enough">Why one tree is not enough</h2>
+<section id="why-one-tree-is-not-enough" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="why-one-tree-is-not-enough"><span class="header-section-number">3.4.2</span> Why one tree is not enough</h3>
 <p>We arrive here at the problem that motivates the remainder of the week. Fitting the same tree to slightly different data does not produce a slightly different tree; it frequently produces a different tree altogether.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
@@ -777,16 +768,16 @@ C(T, y) = L(T, y) + \alpha |T|
 <p>The vocabulary for this was established last week, and the term is <strong>variance</strong>, in the sense that the model responds to the particular cases placed before it rather than to the structure underlying them. A single tree has low bias, since given sufficient depth it can represent almost any shape, and high variance, since which shape it represents depends heavily on the sample. The greedy procedure aggravates the problem, because a single early decision taken on a narrow margin propagates through everything below it.</p>
 <p>A single tree is thus readable and unreliable at the same time, and the response, perhaps counterintuitively, is to stop reading it.</p>
 </section>
-<section id="from-bagging-to-random-forests" class="level2">
-<h2 class="anchored" data-anchor-id="from-bagging-to-random-forests">From bagging to random forests</h2>
+<section id="from-bagging-to-random-forests" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="from-bagging-to-random-forests"><span class="header-section-number">3.4.3</span> From bagging to random forests</h3>
 <p><strong>Bagging</strong>, an abbreviation of bootstrap aggregating, is the first idea. The data are resampled with replacement a sufficient number of times that trees with good explanatory power are captured, a tree is fitted to each sample, and their predictions are averaged. The procedure is computationally intensive, and it works for the reason averaging generally works: individually noisy estimates, once averaged, are less noisy, provided their errors are not all the same error.</p>
 <p>That proviso, as it happens, is precisely where the method acquires its name. <strong>Random forests begin from bagging and add a second randomization.</strong> Rather than scanning all the features at each split, the algorithm samples a subset of <span class="math inline">\(m\)</span> variables and must then select its split from among those alone.</p>
 <p>The rationale is precise. If income is the strongest predictor, for instance, then every bagged tree splits on income first, and the trees therefore resemble one another closely and err in the same places. Requiring most trees to proceed without it at any given split breaks that correlation. The individual trees thereby become <strong>worse</strong>, and yet their average becomes <strong>better</strong>.</p>
 <p>This is the proposition to carry out of the week. A forest is not an attempt to build one excellent model. It is an attempt to build many mediocre models whose errors point in different directions, and then to let them vote.</p>
 <p>Two parameters govern the procedure: <span class="math inline">\(B\)</span> is the number of bootstrapped trees, and <span class="math inline">\(m\)</span> is the number of variables sampled at each split. A common choice is <span class="math inline">\(m = \sqrt{p}\)</span>, where <span class="math inline">\(p\)</span> is the number of features. Notably, when <span class="math inline">\(m = p\)</span> the random forest reduces to bagging.</p>
 </section>
-<section id="fitting-the-forest" class="level2">
-<h2 class="anchored" data-anchor-id="fitting-the-forest">Fitting the forest</h2>
+<section id="fitting-the-forest" class="level3" data-number="3.4.4">
+<h3 data-number="3.4.4" class="anchored" data-anchor-id="fitting-the-forest"><span class="header-section-number">3.4.4</span> Fitting the forest</h3>
 <p>Last week’s claim was that changing one string changes the algorithm, and this is that change.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Train<span class="sc">$</span>onset_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(Train<span class="sc">$</span>onset <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"war"</span>, <span class="st">"no_war"</span>),</span>
@@ -829,8 +820,8 @@ The final value used for the model was mtry = 2.</code></pre>
 <p>Everything apart from <code>method = "rf"</code> and the grid over <code>mtry</code> is the structure established last week: a formula, training data, a resampling scheme, and a set of values to try. The outcome had to be converted to a factor, since that is how <code>caret</code> is informed that the problem is one of classification rather than regression. Note also that nothing was rescaled, and that nothing needed to be.</p>
 <p>Note as well what is <strong>not</strong> in that call. There is no <code>prior</code>, no class weighting, and no instruction of any kind that an onset matters more than a non-onset. We supplied precisely such an instruction to the single tree a few pages ago, and we have deliberately withheld it here. What follows is the consequence.</p>
 <p>This chunk takes a minute or two to run, which is worth knowing before you begin.</p>
-<section id="predicting-for-cases-the-model-has-never-seen" class="level3">
-<h3 class="anchored" data-anchor-id="predicting-for-cases-the-model-has-never-seen">Predicting for cases the model has never seen</h3>
+<section id="predicting-for-cases-the-model-has-never-seen" class="level4" data-number="3.4.4.1">
+<h4 data-number="3.4.4.1" class="anchored" data-anchor-id="predicting-for-cases-the-model-has-never-seen"><span class="header-section-number">3.4.4.1</span> Predicting for cases the model has never seen</h4>
 <p><code>train()</code> refits the model on the whole of the training data once tuning is complete, so that the object is a fitted model and prediction proceeds from it directly.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, <span class="at">newdata =</span> Test)</span>
@@ -844,8 +835,8 @@ Levels: no_war war</code></pre>
 <p>Prediction should proceed from <code>rf</code> rather than from <code>rf$finalModel</code>, since the final model holds the fitted forest but retains no record of any preprocessing. Calling it directly may therefore supply it with data in the wrong form, and it will return an answer regardless.</p>
 </section>
 </section>
-<section id="the-accuracy-trap" class="level2">
-<h2 class="anchored" data-anchor-id="the-accuracy-trap">The accuracy trap</h2>
+<section id="the-accuracy-trap" class="level3" data-number="3.4.5">
+<h3 data-number="3.4.5" class="anchored" data-anchor-id="the-accuracy-trap"><span class="header-section-number">3.4.5</span> The accuracy trap</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> pred, <span class="at">Actual =</span> Test<span class="sc">$</span>onset_f)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -875,9 +866,9 @@ Predicted no_war  war
 <p>The forest is not malfunctioning. However, we requested accuracy, and accuracy on a two per cent outcome is maximized by predicting zero indefinitely, so that the model did precisely as it was instructed.</p>
 <p>This is the stump from the beginning of Part II, returning in a more elaborate form. The single tree refused to split because no split improved accuracy; the forest grew nine hundred trees and then predicted almost nothing, for the same reason. We repaired the tree by telling it that the rare class mattered, and we declined to repair the forest, and the two figures should be read together. The disease is identical in both cases, and it lies in the objective rather than in the algorithm. <strong><code>caret</code> tuned <code>mtry</code> so as to maximize accuracy, which is to say that it tuned toward the useless model, and reported success in doing so.</strong></p>
 <p>Nothing in the output announced this. The accuracy appeared excellent, the cross-validation was correctly specified, and the test set was genuinely held out. Every methodological requirement was satisfied, and the result is a model that has not once predicted the outcome it was built to predict.</p>
-<p>This is the argument of the second reading for this week <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>, and it is the reason that article exists. Week 6 takes up the repair in full, covering precision, recall, the F1 score, thresholds, and class weighting, together with the question of what to do when one error costs substantially more than the other. For the present, the diagnosis matters more than the cure.</p>
-<section id="the-four-cells" class="level3">
-<h3 class="anchored" data-anchor-id="the-four-cells">The four cells</h3>
+<p>This is the argument of the second reading for this week <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>, and it is the reason that article exists. Week 6 takes up the repair in full, covering precision, recall, the F1 score, thresholds, and class weighting, together with the question of what to do when one error costs substantially more than the other. For the present, the diagnosis matters more than the cure.</p>
+<section id="the-four-cells" class="level4" data-number="3.4.5.1">
+<h4 data-number="3.4.5.1" class="anchored" data-anchor-id="the-four-cells"><span class="header-section-number">3.4.5.1</span> The four cells</h4>
 <p>The table printed above is a <strong>confusion matrix</strong>, and naming its cells requires first determining which class counts as <strong>positive</strong>, which is a decision made by the analyst rather than a property of the data. Here the positive class is war onset.</p>
 <table class="caption-top table">
 <thead>
@@ -903,8 +894,8 @@ Predicted no_war  war
 <p>A <strong>false positive</strong> is a country flagged as heading toward civil war that does not in fact experience one, whereas a <strong>false negative</strong> is a civil war that nobody anticipated. These are not the same error, and no serious application treats them as equivalent. Which of them one would rather commit is a political and ethical judgment about consequences, and accuracy collapses the two into a single number precisely by declining to pose the question.</p>
 </section>
 </section>
-<section id="variable-importance-and-what-it-does-not-mean" class="level2">
-<h2 class="anchored" data-anchor-id="variable-importance-and-what-it-does-not-mean">Variable importance, and what it does not mean</h2>
+<section id="variable-importance-and-what-it-does-not-mean" class="level3" data-number="3.4.6">
+<h3 data-number="3.4.6" class="anchored" data-anchor-id="variable-importance-and-what-it-does-not-mean"><span class="header-section-number">3.4.6</span> Variable importance, and what it does not mean</h3>
 <p>We surrendered the readable tree, and variable importance is what is returned to us in its place.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">varImpPlot</span>(rf<span class="sc">$</span>finalModel, <span class="at">main =</span> <span class="st">"Variable importance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -927,39 +918,39 @@ Predicted no_war  war
 <p>The last point has a practical edge, in that variable importance is regularly presented, in policy briefs and in press coverage, as identifying the drivers of a problem. What it identifies is the set of predictors that a particular fitted model found useful on a particular dataset. These are different claims, and the distance between them is where a good deal of poor AI-informed policy analysis is located.</p>
 </section>
 </section>
-<section id="prediction-forecasting-and-early-warning" class="level1">
-<h1>Prediction, forecasting, and early warning</h1>
+<section id="prediction-forecasting-and-early-warning" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="prediction-forecasting-and-early-warning"><span class="header-section-number">3.5</span> Prediction, forecasting, and early warning</h2>
 <p>Week 1 distinguished prediction from forecasting: prediction estimates an outcome for a case the model has not seen, whereas forecasting estimates one that has not yet occurred. Everything above is prediction, since our test set consists of country-years drawn at random from the same period as the training set.</p>
-<p>The third reading for this week concerns the other activity <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>. ViEWS is an operating early-warning system that publishes monthly forecasts of political violence for months that have not yet occurred, and the difference is not merely presentational.</p>
+<p>The third reading for this week concerns the other activity <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>. ViEWS is an operating early-warning system that publishes monthly forecasts of political violence for months that have not yet occurred, and the difference is not merely presentational.</p>
 <p>As soon as the target is the future, a random split becomes indefensible. If the model trains on 1995 and 1999 and is tested on 1997, it has observed the years on either side of the case it is predicting, and it will make use of them. Forecasting therefore requires splitting on time: training up to a date, forecasting beyond it, and accepting that one cannot look ahead. Nearly every published forecasting model that appeared too good to be true was too good on account of some version of this.</p>
 <p>A subtler problem remains, which cross-validation does not address, in that cross-validation assumes cases to be interchangeable while country-years plainly are not. Sudan in 1996 is not independent of Sudan in 1995, and a fold that holds one while the other trains the model is leaking information. This is the structural difference flagged at the start of Part II, and it has a name: the observations are not independent, while the standard resampling procedures assume that they are. Week 6 returns to the problem and to the ways in which it can be mitigated.</p>
 </section>
-<section id="the-politics-of-early-warning" class="level1">
-<h1>The politics of early warning</h1>
+<section id="the-politics-of-early-warning" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="the-politics-of-early-warning"><span class="header-section-number">3.6</span> The politics of early warning</h2>
 <p>A forecast is not merely an analysis that happens to concern the future. It is, rather, an object produced in order to be acted upon, and that purpose changes what its errors mean.</p>
 <p>Suppose a system of this kind flags a country as being at elevated risk. Consequences follow, in investment decisions, aid allocations, insurance premiums, travel advisories, diplomatic posture, and on occasion in the argument for intervention. The forecast thereby enters the politics of the country it describes.</p>
 <p>That observation should be combined with the base rate. Thus, where the outcome occurs in two per cent of cases, even a model with genuinely good discrimination will produce considerably more false alarms than true warnings, simply because there are so many more non-events available to be wrong about. A country may therefore be flagged, bear the consequences of having been flagged, and have been a false positive throughout. It will not be informed of this, and the system has no means of establishing it either, until the year passes without incident and the case leaves the window.</p>
 <p>Moreover, a forecast can act upon the world it describes. If a warning of instability withdraws investment, and withdrawn investment raises the likelihood of instability, then the model has participated in the outcome it predicted and will appear more accurate for having done so. This is not a defect in the statistics. It is, instead, what occurs whenever a prediction about people is published to people who have the power to respond to it.</p>
 <p>The closing question last week concerned who defines similarity, and the closing question this week concerns who defines the threshold. Somewhere between the forest’s vote share and a red mark on a map, a number is selected that determines which countries are flagged, and that number sets the ratio of false alarms to missed wars. It is among the most consequential decisions in the entire pipeline, it is rarely made by anybody who bears its consequences, and it almost never appears in the write-up.</p>
 </section>
-<section id="reading" class="level1">
-<h1>Reading</h1>
-<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
+<section id="reading" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="reading"><span class="header-section-number">3.7</span> Reading</h2>
+<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
 <p>These are the data used above and the specification fitted above. The article should be read for its argument about the causes of civil war, and it is worth noting throughout that it is an explanatory article. Its authors are not attempting to predict onset; they are attempting to explain it, and the difference between those two objectives is the thread running through this week.</p>
-<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
+<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
 <p>This one should be read for its argument about rare outcomes rather than for its implementation, and, if time permits, alongside the critical exchange it provoked, since the disagreement is instructive about what a performance comparison can and cannot settle.</p>
-<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
+<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
 <p>This should be read as a description of a system that is actually in use, rather than as a methods article. Particular attention is worth giving to what its authors say about how the forecasts are intended to be interpreted, and by whom.</p>
 <p><strong>Recommended, not required.</strong></p>
-<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="../references.html#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
+<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
 <p>This article forecasts both armed and unarmed conflict at the country-year level, and it does so by training eight machine-learning algorithms and combining them into five forecasting ensembles. The relevance to this week is direct, in that the logic of the random forest reappears one level higher: where a forest averages many trees whose errors point in different directions, an ensemble forecast averages many algorithms on the same reasoning. It is also worth reading for the contrast with the cases above, since the outcome of interest includes nonviolent mobilization rather than civil war alone, and unarmed uprisings are neither as rare nor as well measured.</p>
 </section>
-<section id="before-the-workshop" class="level1">
-<h1>Before the workshop</h1>
+<section id="before-the-workshop" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">3.8</span> Before the workshop</h2>
 <p>Install <code>rpart</code>, <code>rpart.plot</code>, <code>tree</code>, <code>randomForest</code>, and <code>caret</code>, and run every chunk in this handout once. The forest takes a minute or two, which is better discovered at home than in the room.</p>
 </section>
-<section id="questions-for-the-session" class="level1">
-<h1>Questions for the session</h1>
+<section id="questions-for-the-session" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="questions-for-the-session"><span class="header-section-number">3.9</span> Questions for the session</h2>
 <p>Come with a view on at least two of these.</p>
 <ol type="1">
 <li><p>Fearon and Laitin set out to explain civil war, whereas we used their variables to predict it. What did we learn that they did not, and what did they establish that our model cannot?</p></li>
@@ -971,7 +962,7 @@ Predicted no_war  war
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-fearon2003" class="csl-entry" role="listitem">
 Fearon, James D., and David D. Laitin. 2003. <span>“Ethnicity, Insurgency, and Civil War.”</span> <em>American Political Science Review</em> 97 (1): 75–90. <a href="https://doi.org/10.1017/S0003055403000534">https://doi.org/10.1017/S0003055403000534</a>.
 </div>
@@ -1395,13 +1386,13 @@ Pinckney, Jonathan, and Babak RezaeeDaryakenari. 2022. <span>“When the Levee B
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../handouts/w02-knn.html" class="pagination-link" aria-label="Classification I: K-Nearest Neighbors">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Classification I: K-Nearest Neighbors</span>
+      <a href="../handouts/w02-knn.html" class="pagination-link" aria-label="K-Nearest Neighbors">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../handouts/w04-text-as-data.html" class="pagination-link" aria-label="Text as Data">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Text as Data</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

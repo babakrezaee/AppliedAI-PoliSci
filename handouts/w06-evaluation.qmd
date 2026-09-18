@@ -1,5 +1,3 @@
----
-title: "Evaluating AI Systems"
----
+## Evaluating AI Systems 
 
 *In preparation.*

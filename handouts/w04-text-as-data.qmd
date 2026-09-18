@@ -1,5 +1,3 @@
----
-title: "Text as Data"
----
+## Text as Data 
 
 *In preparation.*

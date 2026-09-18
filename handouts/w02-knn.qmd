@@ -1,4 +1,4 @@
-# K-Nearest Neighbors {.unnumbered}
+## K-Nearest Neighbors 
 
 *Week 2, 9 September*
 
@@ -47,7 +47,7 @@ data(UN, package = "carData")
 countries <- na.omit(UN[, c("ppgdp", "infantMortality", "fertility",
                             "pctUrban", "lifeExpF", "group")])
 
-# Express per capita GDP in thousands of dollars
+## Express per capita GDP in thousands of dollars
 countries$ppgdp <- countries$ppgdp / 1000
 
 nrow(countries)
@@ -326,8 +326,8 @@ Notice what this means for how you read a result. A model with high variance can
 
 Now back to the problem we left hanging. We chose $k$ using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:
 
-1. The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
-2. We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.
+1.  The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
+2.  We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.
 
 **Cross-validation** addresses both by rotating the role of the held-out set.
 
@@ -550,7 +550,7 @@ Now the thing worth seeing. Pick a country, and ask which twenty-five countries 
 target_raw <- c(median(countries$ppgdp),   median(countries$fertility))
 target_s   <- c(median(countries_s$ppgdp), median(countries_s$fertility))
 
-# Euclidean distance, exactly the formula above, computed by hand
+## Euclidean distance, exactly the formula above, computed by hand
 dist_raw <- sqrt((countries$ppgdp     - target_raw[1])^2 +
                  (countries$fertility - target_raw[2])^2)
 
@@ -621,14 +621,14 @@ If something failed, say so at the start rather than at the end.
 
 Come with a view on at least two of these. They will structure the first part of the session.
 
-1. $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
+1.  $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
 
-2. The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
+2.  The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
 
-3. We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
+3.  We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
 
-4. In the neighborhood figures, the left-hand model was given two features and used essentially one. It returned predictions and printed no warning. What follows for how a system you did not build should be reviewed before anyone relies on its outputs?
+4.  In the neighborhood figures, the left-hand model was given two features and used essentially one. It returned predictions and printed no warning. What follows for how a system you did not build should be reviewed before anyone relies on its outputs?
 
-5. The model returns a prediction for the richest country in the data, assembled from neighbors that are nothing like it, and reports it exactly as it reports any other. Where in political or administrative use would that distinction matter most, and what would a responsible system do instead?
+5.  The model returns a prediction for the richest country in the data, assembled from neighbors that are nothing like it, and reports it exactly as it reports any other. Where in political or administrative use would that distinction matter most, and what would a responsible system do instead?
 
-6. Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
+6.  Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
