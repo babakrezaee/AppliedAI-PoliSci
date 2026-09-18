@@ -1,4 +1,4 @@
-## Trees and Random Forests 
+## Trees and Random Forests
 
 *Week 3, 16 September*
 
