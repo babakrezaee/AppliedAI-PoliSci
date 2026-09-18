@@ -1,20 +1,20 @@
-# Classification I: K-Nearest Neighbors {.unnumbered}
+# K-Nearest Neighbors {.unnumbered}
 
 *Week 2, 9 September*
 
-Last week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, $K$-nearest neighbors, was chosen for one reason above all others: it simple and straightforward. There is no probability theory to follow, no optimization procedure, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.
+Last week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, $K$-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.
 
 That is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.
 
-There is code in this handout, and you should run it rather than read it. The workshop part of the class is dedicated to this.
+There is code in this handout, and you should run it rather than read it. The workshop assumes you have.
 
 # Fitting a function without assuming its shape
 
 We usually want to know how an outcome varies with something else: how $Y$ behaves conditional on $X$, written $P(Y=y \mid X=x)$.
 
-The most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are **parametric** models, and the assumption about the form of the function is doing a great deal of work.
+The most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are **parametric** models, and the assumption is doing a great deal of work.
 
-Assuming a shape provides several benefits. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your quantitative methods courses in the past relies on this.
+Assuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.
 
 It also costs something. If the true relationship is not the shape you assumed, the model is wrong in a way that more data will not fix. Collecting a thousand more observations does not rescue a straight line drawn through a curve.
 
@@ -28,9 +28,9 @@ There is nothing else. No estimation step, no parameters, no fitting in the usua
 
 # Drawing it: development and infant mortality
 
-Last week's main example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle the direction of association.
+Last week's running example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle it.
 
-We will use national development indicators for 199 countries, which comes with the `carData` package.
+We will use national development indicators for 199 countries, which ship with the `carData` package.
 
 ```{r, eval=FALSE}
 install.packages(c("carData", "kknn", "caret", "scatterplot3d"))
@@ -40,7 +40,7 @@ install.packages(c("carData", "kknn", "caret", "scatterplot3d"))
 library(carData)
 library(kknn)
 
-options(scipen = 999)   # print numbers in full rather than as scientific format of 1e+05
+options(scipen = 999)   # print numbers in full rather than as 1e+05
 
 data(UN, package = "carData")
 
@@ -54,9 +54,9 @@ nrow(countries)
 head(countries)
 ```
 
-`ppgdp` is *per capita* gross domestic product and `infantMortality` is deaths per thousand live births.
+`ppgdp` is per capita gross domestic product and `infantMortality` is deaths per thousand live births.
 
-Two small things in that chunk. `options(scipen = 999)` tells R to print numbers in full rather than in scientific notation, so that a hundred thousand appears as `100000` and not as `1e+05`. And we divide per capita GDP by a thousand, so it is measured in thousands of dollars. That second step is cosmetic, since dividing every value by the same constant cannot change which countries are nearest to which, but it keeps every axis in this handout readable.
+Two small things in that chunk. `options(scipen = 999)` tells R to print numbers in full rather than in scientific notation, so that a hundred thousand appears as `100000` and not as `1e+05`. And we divide per capita GDP by a thousand, so it is measured in thousands of dollars. That second step is cosmetic as far as the model is concerned, since dividing every value by the same constant cannot change which countries are nearest to which, but it keeps every axis in this handout readable. Nobody reports per capita GDP to the nearest dollar anyway.
 
 Start by looking at the data.
 
@@ -67,9 +67,9 @@ plot(countries$ppgdp, countries$infantMortality,
      ylab = "Infant mortality (per 1,000 live births)")
 ```
 
-The shape of the association between these two variables is the main point here. Infant mortality falls very steeply across the poorest range and then flattens out almost completely. The difference between a country at \$500 and a country at \$2,000 is enormous. The difference between \$30,000 and \$40,000 is close to nothing.
+The shape is the point. Infant mortality falls very steeply across the poorest range and then flattens out almost completely. The difference between a country at \$500 and a country at \$2,000 is enormous. The difference between \$30,000 and \$40,000 is close to nothing.
 
-Now put a straight line, via a linear regression, through it.
+Now put a straight line through it.
 
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
@@ -81,9 +81,9 @@ fit_ols <- lm(infantMortality ~ ppgdp, data = countries)
 abline(fit_ols, col = "navy", lwd = 2.5)
 ```
 
-The line is not a small approximation to the true association here. It is systematically wrong in a patterned way: too low for the poorest countries, too high through the middle, and it eventually predicts negative infant mortality, which is not a quantity that exists.
+The line is not a small approximation to the truth here. It is systematically wrong in a patterned way: too low for the poorest countries, too high through the middle, and it eventually predicts negative infant mortality, which is not a quantity that exists.
 
-You could repair this without leaving the parametric framework, and you probably did it before. Taking the logarithm of per capita GDP would straighten most of the curve, and that transformation has a defensible substantive reading: what matters for infant mortality is proportional differences in income, not absolute ones. That is a real modeling decision and a good one. Of course, this is not always the solution.
+You could repair this without leaving the parametric framework, and in a paper you probably would. Taking the logarithm of per capita GDP would straighten most of the curve, and that transformation has a defensible substantive reading: what matters for infant mortality is proportional differences in income, not absolute ones. That is a real modeling decision and a good one.
 
 The point of this week is that $K$-nearest neighbors requires no such decision. It does not need to be told the shape.
 
@@ -92,13 +92,13 @@ grid <- data.frame(ppgdp = sort(countries$ppgdp))
 
 fit_15 <- kknn(infantMortality ~ ppgdp,
                train = countries, test = grid,
-               k = 10, kernel = "rectangular")
+               k = 15, kernel = "rectangular")
 
 plot(countries$ppgdp, countries$infantMortality,
      col = "gray45", pch = 19, cex = 0.7,
      xlab = "Per capita GDP (thousands of US$)",
      ylab = "Infant mortality (per 1,000 live births)",
-     main = "k = 10")
+     main = "k = 15")
 
 lines(grid$ppgdp, fit_15$fitted.values, col = "maroon", lwd = 3)
 ```
@@ -107,7 +107,7 @@ The argument `kernel = "rectangular"` means that all $k$ neighbors count equally
 
 ## What the algorithm actually did
 
-Take one point on that curve. To produce a prediction for a country with a per capita GDP of \$2,000, the algorithm found the ten countries in the data closest to \$2,000 on that axis and averaged their infant mortality. To produce the prediction at \$3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.
+Take one point on that curve. To produce a prediction for a country with a per capita GDP of \$2,000, the algorithm found the fifteen countries in the data closest to \$2,000 on that axis and averaged their infant mortality. To produce the prediction at \$3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.
 
 The curve is the trace left behind by that moving neighborhood. It is not a formula, and it cannot be written as one. It is a record of what the neighbors did.
 
@@ -115,7 +115,7 @@ This is also why the curve wobbles where the data are sparse. On the right-hand 
 
 # The choice of k
 
-Nothing so far told us to use ten for $k$ . Try several values.
+Nothing so far told us to use fifteen. Try several values.
 
 ```{r}
 plot(countries$ppgdp, countries$infantMortality,
@@ -124,8 +124,8 @@ plot(countries$ppgdp, countries$infantMortality,
      ylab = "Infant mortality (per 1,000 live births)",
      main = "The same data, four values of k")
 
-kvals  <- c(3, 10, 50, 150, 193)
-kcols  <- c("darkgreen", "maroon", "navy", "cyan", "pink")
+kvals  <- c(3, 15, 50, 150)
+kcols  <- c("darkred", "maroon", "navy", "darkgreen")
 
 for (i in seq_along(kvals)) {
   f <- kknn(infantMortality ~ ppgdp,
@@ -138,9 +138,9 @@ legend("topright", legend = paste("k =", kvals),
        col = kcols, lwd = 2.5, box.lty = 0, cex = 0.8)
 ```
 
-At $k=3$ the curve is jagged. It follows every local fluctuation, including fluctuations produced by the fact that we happen to have these 199 countries rather than some other set. At $k=150$ the curve is nearly flat, close to the overall average, and it has erased a difference between rich and poor countries that is obviously real. At $k=193$, it is completely flat. Why?
+At $k=3$ the curve is jagged. It follows every local fluctuation, including fluctuations produced by the fact that we happen to have these 199 countries rather than some other set. At $k=150$ the curve is nearly flat, close to the overall average, and it has erased a difference between rich and poor countries that is obviously real.
 
-Both extreme levels of $k$ are informative, and they are opposite failures.
+Both failures are informative, and they are opposite failures.
 
 A small $k$ takes every wiggle in the data seriously. Some of those wiggles are the relationship we want. Others are noise. A model flexible enough to reproduce the training data exactly has reproduced the noise along with the signal, and the noise will not be there next time.
 
@@ -148,7 +148,7 @@ We can state this in one line. Write the outcome as
 
 $$Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}$$
 
-What we want is $f(.)$. The term $\varepsilon$ is whatever is left over: measurement error, idiosyncrasy, the particular history of the particular countries, COVID, and so forth in this dataset. It is not a stable feature of the world, and a model that has learned it has learned something that will not recur.
+What we want is $f$. The term $\varepsilon$ is whatever is left over: measurement error, idiosyncrasy, the particular history of the particular countries in this dataset. It is not a stable feature of the world, and a model that has learned it has learned something that will not recur.
 
 So here is the sentence to take away from this week. **A model that fits your data perfectly has told you nothing, because all it has done is recite back the data you already had.** This is the opposite of the instinct most people arrive with, which is that a closer fit is a better model.
 
@@ -156,7 +156,7 @@ A large $k$ fails in the other direction. It averages across countries that are 
 
 # Why a perfect fit should worry you
 
-To choose between these we need to stop evaluating the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.
+To choose between these we need to stop grading the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.
 
 ```{r}
 set.seed(7)
@@ -171,7 +171,7 @@ nrow(Train)
 nrow(Test)
 ```
 
-`set.seed()` fixes the random draw so that you and I get the same split. Use it every time you do randomization. Without it your results change on every run and neither you nor anyone else can reproduce them.
+`set.seed()` fixes the random draw so that you and I get the same split. Use it every time you do anything random. Without it your results change on every run and neither you nor anyone else can reproduce them.
 
 Now measure the error. For a continuous outcome the usual summary is the root mean squared error,
 
@@ -187,11 +187,11 @@ err_test <- rep(NA, length(kseq))
 err_train <- rep(NA, length(kseq))
 
 for (i in seq_along(kseq)) {
-  f_test <- kknn(infantMortality ~ ppgdp, train=Train, test=Test,
+  f_test <- kknn(infantMortality ~ ppgdp, Train, Test,
                  k = kseq[i], kernel = "rectangular")
   err_test[i] <- rmse(Test$infantMortality, f_test$fitted.values)
 
-  f_train <- kknn(infantMortality ~ ppgdp, train=Train, test=Test,
+  f_train <- kknn(infantMortality ~ ppgdp, Train, Train,
                   k = kseq[i], kernel = "rectangular")
   err_train[i] <- rmse(Train$infantMortality, f_train$fitted.values)
 }
@@ -209,13 +209,13 @@ legend("bottomright", legend = c("Test (unseen)", "Training (seen)"),
 kseq[which.min(err_test)]
 ```
 
-Read the two curves against each other, because the comparison is a fundamental lesson in Machine Learning.
+Read the two curves against each other, because the comparison is the lesson.
 
 The training error keeps falling as $k$ gets smaller. It is lowest at the far left, where the model is most flexible. If you had only this curve, you would conclude that the best model is the most complicated one available, and you would conclude that every single time, on every dataset, regardless of the truth.
 
 The test error does something different. It falls, reaches a minimum, and then rises again. Past that minimum the model is no longer learning the relationship. It is learning the training countries.
 
-One caution before you go looking for the best $k$. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the trade off. The precise minimum is a property of one arbitrary split. Do not report "the optimal $k$ is 11" as though you had discovered something about infant mortality. It is not a globally optimal $k$. We will fix this properly in a moment.
+One caution before you go looking for the best $k$. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the problem. The precise minimum is a property of one arbitrary split. Do not report "the optimal $k$ is 11" as though you had discovered something about infant mortality. We will fix this properly in a moment.
 
 ## The same picture, drawn the conventional way
 
@@ -242,13 +242,13 @@ Identical numbers, identical conclusion, drawn so that "further right" means "mo
 
 # Bias and variance
 
-We now have the picture of a well-known trade-off in Machine Learning literature. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.
+We now have the picture. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.
 
 Return to the decomposition from earlier:
 
 $$Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}$$
 
-A model can be wrong about $f(.)$ in two ways.
+A model can be wrong about $f$ in two ways.
 
 **Bias** is systematic error. The model is too rigid to represent the shape of $f$, so it is wrong in the same direction every time, and it would still be wrong if you handed it a million more countries. The straight line we drew through the infant mortality data has high bias. So does $K$-nearest neighbors at $k=150$, which flattens a real curve into something close to a horizontal line.
 
@@ -264,12 +264,12 @@ Read the two arrows at the top. Moving left, the model gets simpler: variance fa
 
 ## Seeing variance directly
 
-Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true $f(.)$ in order to say how far the model sits from it, and if you knew $f(.)$ you would not be modeling.
+Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true $f$ in order to say how far the model sits from it, and if you knew $f$ you would not be modeling.
 
 So we simulate. We invent a function, add noise to it, draw many samples from it, and fit a model to each. Because we wrote down the truth ourselves, we can measure exactly how far off each fit lands.
 
 ```{r, fig.height=7, fig.width=10}
-set.seed(7)
+set.seed(1364)
 
 N <- 1000
 x <- rnorm(N, 2, 1)
@@ -324,10 +324,10 @@ Notice what this means for how you read a result. A model with high variance can
 
 # Cross-validation
 
-Now back to the problem we identified. We need to pick the 'best' $k$, and we know that there is a trade-off that needs to be handled. We chose $k$ using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:
+Now back to the problem we left hanging. We chose $k$ using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:
 
-1.  The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
-2.  We set aside thirty percent of the countries in our sample and never trained on them. With 199 cases that is a real loss of information.
+1. The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.
+2. We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.
 
 **Cross-validation** addresses both by rotating the role of the held-out set.
 
@@ -429,7 +429,7 @@ It does not make the choice of $k$ objective. Cross-validation still leaves you 
 
 Nobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.
 
-`caret` is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because we use it again in this course.
+`caret` is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because Week 6 uses it again for evaluation.
 
 ```{r, eval=FALSE}
 install.packages("caret")
@@ -442,7 +442,7 @@ set.seed(7)
 
 cv_caret <- train(
   infantMortality ~ ppgdp,
-  data       = Train,
+  data       = countries,
   method     = "knn",
   preProcess = c("range"),
   trControl  = trainControl(method = "cv", number = 10),
@@ -452,10 +452,6 @@ cv_caret <- train(
 cv_caret$bestTune
 
 plot(cv_caret)
-
-
-yhat <- predict(cv_caret, newdata = Test)               # a held-out set
-rmse(Test$infantMortality, yhat)
 ```
 
 Four arguments carry the work, and each corresponds to something we did by hand.
@@ -591,88 +587,13 @@ Note also what the model would have reported. Both versions return predictions. 
 
 Stay with that, because it is not a technical footnote. The algorithm's entire operation rests on its definition of "similar," and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.
 
-# From averaging to voting
-
-Everything so far predicted a number. Now predict a category, which is the same algorithm with the average replaced by a vote.
-
-Our outcome is whether a country belongs to the OECD, which the data record in `group`.
-
-```{r}
-countries_s$oecd <- factor(ifelse(countries_s$group == "oecd", "OECD", "Not OECD"),
-                    levels = c("Not OECD", "OECD"))
-
-table(countries_s$oecd)
-```
-
-This is a genuinely political outcome and not a manufactured one. OECD membership is a fact about which states belong to a particular club of wealthy democracies, arrived at through a real accession process. The question we are asking is whether a country's development indicators are enough to tell you whether it is in that club.
-
-```{r}
-set.seed(7)
-
-n_s      <- nrow(countries_s)
-train_id <- sample(1:n_s, floor(0.7 * n_s))
-
-Train_s <- countries_s[train_id, ]
-Test_s  <- countries_s[-train_id, ]
-
-fit_class <- kknn(oecd ~ ppgdp + pctUrban + fertility + lifeExpF,
-                  train = Train_s, test = Test_s,
-                  k = 7, kernel = "rectangular")
-
-pred <- fitted(fit_class)
-```
-
-Among the seven nearest neighbors of each test country, the algorithm counted how many were OECD members and assigned whichever label won.
-
-# Reading a confusion matrix
-
-Do not go straight to a single accuracy number. Look at the table first.
-
-```{r}
-cm <- table(Predicted = pred, Actual = Test_s$oecd)
-cm
-```
-
-Four cells, and they are not interchangeable. Naming them requires first choosing which class counts as **positive**, which is a decision you make and not a property of the data. Here we will call OECD membership positive.
-
-|                        | Actually OECD  | Actually not OECD |
-|------------------------|----------------|-------------------|
-| **Predicted OECD**     | True positive  | False positive    |
-| **Predicted not OECD** | False negative | True negative     |
-
-A **false positive** is a country the model puts in the club that is not in it. A **false negative** is a member the model fails to recognize. These are different mistakes, and in almost every real application one of them costs more than the other. A screening test that misses a disease and a screening test that raises a false alarm fail in ways that are not remotely comparable, even when they are wrong equally often.
-
-Accuracy is the two correct cells over the total.
-
-```{r}
-accuracy <- sum(diag(cm)) / sum(cm)
-round(accuracy, 3)
-```
-
-# The baseline that is hard to beat
-
-Now the part that matters most this week, and the part most often skipped.
-
-Before you can say whether that accuracy is good, you have to know what you would have achieved with no model at all. The dumbest possible rule here is to predict "Not OECD" for every country in the world, without looking at any data.
-
-```{r}
-baseline <- mean(Test_s$oecd == "Not OECD")
-round(baseline, 3)
-```
-
-Compare the two numbers. Most countries are not OECD members, so the rule that ignores everything already scores very highly, and whatever the model achieved has to be read against that figure rather than against zero.
-
-This is why an accuracy figure reported on its own tells you almost nothing. It is not a small technical caveat. It is the single most common way that a model with no useful content gets presented as a success, and you will encounter it in published research, in vendor documentation, and in news coverage of deployed systems. When a system is described as "95 percent accurate," the first question is always: accurate compared to what, and how rare is the thing it is looking for?
-
-Week 6 develops this properly and introduces precision, recall, and the metrics that survive rare outcomes. For now the rule is simple and you should apply it from this week onward without being asked: **always compute the baseline, and always report it next to the accuracy.**
-
 # What this model cannot tell you
 
-The classifier has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form "a one-unit increase in $X$ is associated with a change in $Y$." The model cannot be written down apart from the data it holds.
+The model has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form "a one-unit increase in $X$ is associated with a change in $Y$." The model cannot be written down apart from the data it holds.
 
-More importantly, it has said nothing about why any country is in the OECD. It has found that member states resemble each other on these indicators and differ from non-members. That is a prediction, in exactly the sense we distinguished last week, and it does not become an explanation by performing well.
+More importantly, it has said nothing about *why* infant mortality is lower in richer countries. It has found that countries with similar incomes tend to have similar infant mortality, and it can use that to predict. That is a prediction, in exactly the sense we distinguished last week, and it does not become an explanation by performing well.
 
-There is one further observation worth making, because it is not a quirk of this example. Our model never saw the variable `group`. It was given income, urbanization, fertility, and life expectancy, and it recovered club membership from them anyway, because those features carry the information. Removing an attribute from a model does not remove it from the model's reach if the remaining features encode it. This is the ordinary mechanism by which systems built to be neutral about some characteristic turn out not to be, and it will return in Week 7 when we look at how deployed systems are audited and defended.
+There is a second limit, and the neighborhood figures above showed it. A model of this kind answers every question put to it, at the same apparent level of confidence, whether the case sits in a crowded part of the data or alone at the edge of it. The richest country in this dataset gets a prediction assembled from neighbors spread across tens of thousands of dollars of income. That prediction is printed in the same format, to the same number of decimal places, as one built from twenty-five genuinely similar cases. Nothing in the output distinguishes them.
 
 # The politics of similarity
 
@@ -700,14 +621,14 @@ If something failed, say so at the start rather than at the end.
 
 Come with a view on at least two of these. They will structure the first part of the session.
 
-1.  $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
+1. $K$-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week's reading is relevant here.
 
-2.  The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
+2. The choice of $k$ has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?
 
-3.  We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
+3. We rescaled the features so that income would not dominate the distance calculation. Suppose someone had not. Would you describe the resulting model as wrong, or as encoding a particular view of what makes two countries similar? Does the distinction matter for how such a system should be reviewed?
 
-4.  Our classifier recovered OECD membership without ever being shown it. What follows for the common proposal that a system can be made fair by removing a sensitive attribute from its inputs?
+4. In the neighborhood figures, the left-hand model was given two features and used essentially one. It returned predictions and printed no warning. What follows for how a system you did not build should be reviewed before anyone relies on its outputs?
 
-5.  A model reports 95 percent accuracy on a task where the outcome occurs in 4 percent of cases. What do you now know, and what would you need to ask before believing anything about its usefulness?
+5. The model returns a prediction for the richest country in the data, assembled from neighbors that are nothing like it, and reports it exactly as it reports any other. Where in political or administrative use would that distinction matter most, and what would a responsible system do instead?
 
-6.  Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
+6. Bureaucratic rule-following and nearest-neighbor prediction both treat like cases alike. Identify one political difference between them that is not simply that the model is more complicated.
