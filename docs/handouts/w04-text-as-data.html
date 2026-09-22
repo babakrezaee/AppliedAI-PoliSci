@@ -749,10 +749,8 @@ want            9.61  3.44</code></pre>
 [21] "stay"        </code></pre>
 </div>
 </div>
-<p>Twenty-one words are used in immigration tweets and never once in an <code>other</code> tweet. Several are the terms one would expect — <code>caravan</code>, <code>deport</code>, <code>daca</code>, <code>migrant</code>, <code>alien</code>, <code>apprehend</code> — and several are not: <code>stay</code>, <code>progress</code>, <code>solv</code>, <code>expens</code> have nothing to do with immigration and are absent from the other class by accident, having been used five or six times in the whole training set and happened to land on one side.</p>
-<p>The estimated rate for such a word in the <code>other</code> class is zero out of 6,395, and because the model multiplies the per-word rates together, a single zero drives the entire product to zero. One occurrence of <code>caravan</code> would then rule out the <code>other</code> label absolutely, no matter what the remaining thirty words in the tweet said.</p>
-<p>That is too strong a conclusion to draw from six thousand words of training text. The absence of a word is evidence that it is rare in that class, not proof that it is impossible.</p>
-<p>The standard repair, <strong>Laplace smoothing</strong>, adds one pretend occurrence of every word to every class before the rates are computed, so that no rate is exactly zero and no single word can veto a class outright.</p>
+<p>Twenty-one words are used in immigration tweets and never once in an <code>other</code> tweet. Some are the terms one would expect — <code>caravan</code>, <code>deport</code>, <code>daca</code>, <code>migrant</code> — and some, <code>stay</code> and <code>progress</code> among them, are absent from the other class by accident rather than for any reason.</p>
+<p>For any such word the estimated rate in the <code>other</code> class is zero, and since the model multiplies the per-word rates together, a single zero drives the whole product to zero: one mention of <code>caravan</code> would rule out the <code>other</code> label absolutely, whatever the remaining thirty words said. That is too strong a conclusion to draw from six thousand words of training text, and the standard repair, <strong>Laplace smoothing</strong>, adds one pretend occurrence of every word to every class before the rates are computed, so that no rate is exactly zero and no single word can veto a class outright.</p>
 </section>
 <section id="fitting" class="level3" data-number="4.4.4">
 <h3 data-number="4.4.4" class="anchored" data-anchor-id="fitting"><span class="header-section-number">4.4.4</span> Fitting</h3>
@@ -922,7 +920,7 @@ Prediction    other immigration
 </section>
 <section id="reading-the-errors" class="level3" data-number="4.4.8">
 <h3 data-number="4.4.8" class="anchored" data-anchor-id="reading-the-errors"><span class="header-section-number">4.4.8</span> Reading the errors</h3>
-<p>Fewer than twenty test tweets were misclassified, and reading all of them is more informative than any summary statistic.</p>
+<p>Fewer than twenty test tweets were misclassified, and reading them is more informative than any summary statistic.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>test_text <span class="ot">&lt;-</span> tweets<span class="sc">$</span>text[<span class="sc">-</span>train_id]</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -932,7 +930,7 @@ Prediction    other immigration
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 17</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> wrong) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">head</span>(wrong, <span class="dv">6</span>)) {</span>
 <span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"actual:"</span>, <span class="fu">as.character</span>(y_test[i]),</span>
 <span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">"| predicted:"</span>, <span class="fu">as.character</span>(pred[i]), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
 <span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">substr</span>(test_text[i], <span class="dv">1</span>, <span class="dv">180</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
@@ -954,46 +952,13 @@ actual: immigration | predicted: other
  Our Border Control Agents have done an incredible job under very adverse conditions. I am very proud to have increased their salaries because of the great job they do. Nobody deser 
 
 actual: other | predicted: immigration 
- As Corey Lewandowski stated very clearly yesterday in front of the House Judiciary Committee, President Trump didn’t do anything wrong or illegal. But they all know that. The Democ 
-
-actual: other | predicted: immigration 
- “Poll shows Dems losing interest in Impeachment inquiry all across the board. These Polls are actually devastating to the Democrats. But the writing was on the wall. He’s done so m 
-
-actual: other | predicted: immigration 
- Been fully briefed on earthquake in Southern California. All seems to be very much under control! 
-
-actual: other | predicted: immigration 
- Senator Cindy Hyde-Smith is doing a GREAT JOB for the people of Mississippi and fully supports our #MAGA Agenda. Cindy is tough on Crime, Strong on the Border and Illegal Immigrati 
-
-actual: other | predicted: immigration 
- I will be signing our 738 Billion Dollar Defense Spending Bill today. It will include 12 weeks  Paid Parental Leave, gives our troops a raise, importantly creates the SPACE FORCE,  
-
-actual: immigration | predicted: other 
- Looking forward to soon being in North Carolina to hold a big rally for wonderful Dan Bishop, who is running for Congress. His opponent wants Open Borders, Sanctuary Cities, and So 
-
-actual: other | predicted: immigration 
- I will be there in two weeks, The Southern White House!https://twitter.com/Trump/status/1204520225607225344 … 
-
-actual: immigration | predicted: other 
- THANK YOU @DHSgov, @CBP, and @ICEgov! https://t.co/BzNwKoUJlg 
-
-actual: other | predicted: immigration 
- It was a very bad week for the Democrats, with the GREAT economic numbers, The Virginia disaster and the State of the Union address. Now, with the terrible offers being made by the 
-
-actual: immigration | predicted: other 
- The Fake News Media, in particular the Failing @nytimes, is writing phony and exaggerated accounts of the Border Detention Centers. First of all, people should not be entering our  
-
-actual: other | predicted: immigration 
- Just talked to Governor Roy Cooper of North Carolina as Hurricane Dorian ominously comes up the East Coast. We are monitoring it at the @WhiteHouse, ready to assist via our great t 
-
-actual: other | predicted: immigration 
- I will be interviewed by Jeanine Pirro at 9:00 P.M. on @FoxNews. Watch @JesseBWatters before and @greggutfeld after. All terrific people. I am in the White House waiting for Cryin’ </code></pre>
+ As Corey Lewandowski stated very clearly yesterday in front of the House Judiciary Committee, President Trump didn’t do anything wrong or illegal. But they all know that. The Democ </code></pre>
 </div>
 </div>
 <p>The failures fall into recognizable families, and none of them is random.</p>
-<p>There are two tweets about the <strong>Wall Street</strong> Journal and one in which the writing was on the <strong>wall</strong>, and in each the model saw <em>wall</em>. There is an earthquake in <strong>Southern</strong> California and a reference to the <strong>Southern</strong> White House, in which it saw <em>southern</em>. There is a tweet insisting that the president did nothing <strong>illegal</strong>, in which it saw <em>illeg</em>. These are the near misses the corpus was built to contain, and they are precisely the errors the bag of words guarantees, since <em>Wall Street</em> is a phrase and a bag has no phrases in it.</p>
-<p>There is an endorsement of Senator Cindy Hyde-Smith, who is described as tough on crime and strong on the border and illegal immigration. The coding scheme says that endorsement boilerplate is <code>other</code>, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world. It is failing to reproduce a coding rule, and the rule was a defensible decision that could have gone the other way.</p>
-<p>And there is a tweet thanking <code>@DHSgov</code>, <code>@CBP</code>, and <code>@ICEgov</code>, labeled <code>immigration</code>, that the model called <code>other</code> because after the third line of our cleaning pipeline there was almost nothing left of it but the words <em>thank you</em>.</p>
+<p>Two of the six are about the <strong>Wall Street</strong> Journal, in which the model saw <em>wall</em>, and one insists that the president did nothing <strong>illegal</strong>, in which it saw <em>illeg</em>. These are the near misses the corpus was built to contain, and they are precisely the errors the bag of words guarantees, since <em>Wall Street</em> is a phrase and a bag has no phrases in it.</p>
+<p>Two others fail in the opposite direction, and they are subtler. A tweet complaining about false reporting on the Border Immigration Agreement with Mexico really is about immigration, but it is written in the vocabulary of media attacks. A tweet praising Border Control agents for doing a <em>great</em> job carries one of the strongest <code>other</code> words in the model. In both cases the label is right and the words point the other way.</p>
+<p>Dropping the <code>head()</code> prints the remaining eleven, and two of them are worth the look. One is an endorsement of Senator Cindy Hyde-Smith, described as strong on the border and illegal immigration. The coding scheme says endorsement boilerplate is <code>other</code>, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world; it is failing to reproduce a coding rule that could defensibly have gone the other way. The second is a tweet thanking <code>@DHSgov</code>, <code>@CBP</code>, and <code>@ICEgov</code>, labeled <code>immigration</code>, that the model called <code>other</code> because after the third line of our cleaning pipeline there was almost nothing left of it but the words <em>thank you</em>.</p>
 <p>Each family points to a different repair: word pairs rather than single words for <em>Wall Street</em>, keeping handles for the CBP tweet, and, for the endorsement boilerplate, nothing that a bag of words can do at all.</p>
 </section>
 </section>
@@ -1029,9 +994,7 @@ actual: other | predicted: immigration
 <ol type="1">
 <li><p>The independence assumption is false of language and the classifier works anyway. What does that suggest about the relationship between the realism of a model’s assumptions and its usefulness? Is your answer the same for a predictive model as for an explanatory one?</p></li>
 <li><p>Our cleaning pipeline deleted <code>@ThomasHomanICE</code>, the handle of the acting director of ICE, whose presence is close to decisive evidence about a tweet’s topic. Defend the deletion. Then defend the opposite choice. Which argument would you actually make in a paper, and what would you have to report either way?</p></li>
-<li><p>The model learned that <code>impeach</code>, <code>mueller</code>, and <code>collus</code> are evidence against the immigration label. That is correct on this corpus and would transfer to nothing. How would you detect this kind of learning in a model of your own, given that every diagnostic in this handout reports it as success?</p></li>
 <li><p>The coding scheme decides that immigration mentioned as the seventh item in a list of accomplishments is <code>other</code>. A different coder could decide otherwise. Trace what would change: the labels, the model, the accuracy, and the substantive claim you would end up making about how much of Trump’s 2019 output concerned immigration.</p></li>
-<li><p>Our classifier over-flags, calling borderline tweets <code>immigration</code> rather than missing them. Name a research use where that is the right error to make, and one where it would invalidate the result.</p></li>
 <li><p>This corpus was assembled so that the two classes would be roughly balanced, which is why an accuracy figure is interpretable at all. It is therefore no longer a sample of anything. What would you have to do differently if the question were not “is this tweet about immigration” but “what share of Trump’s 2019 tweets were about immigration”?</p></li>
 <li><p>This handout built a machine that reads political speech and decides what it is about, using roughly forty lines of R and 724 labeled examples. Given how little that took, what follows about who is able to build such systems, and about what a political scientist’s distinctive contribution to them should be?</p></li>
 </ol>

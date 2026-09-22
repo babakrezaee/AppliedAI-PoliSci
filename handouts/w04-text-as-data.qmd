@@ -27,7 +27,7 @@ The second is subtler and matters more for political science. A text classifier 
 
 The corpus consists of tweets posted by `@realDonaldTrump` in 2019, filtered and hand-labeled for whether immigration is a main subject of the tweet. It contains 905 tweets.
 
-Before everything else, make sure the necessary packages are installed: 
+Before everything else, make sure the necessary packages are installed:
 
 ```{r, eval=FALSE}
 install.packages(c("tm", "SnowballC", "wordcloud", "e1071",
@@ -341,13 +341,9 @@ length(never_in_other)
 never_in_other
 ```
 
-Twenty-one words are used in immigration tweets and never once in an `other` tweet. Several are the terms one would expect — `caravan`, `deport`, `daca`, `migrant`, `alien`, `apprehend` — and several are not: `stay`, `progress`, `solv`, `expens` have nothing to do with immigration and are absent from the other class by accident, having been used five or six times in the whole training set and happened to land on one side.
+Twenty-one words are used in immigration tweets and never once in an `other` tweet. Some are the terms one would expect — `caravan`, `deport`, `daca`, `migrant` — and some, `stay` and `progress` among them, are absent from the other class by accident rather than for any reason.
 
-The estimated rate for such a word in the `other` class is zero out of 6,395, and because the model multiplies the per-word rates together, a single zero drives the entire product to zero. One occurrence of `caravan` would then rule out the `other` label absolutely, no matter what the remaining thirty words in the tweet said.
-
-That is too strong a conclusion to draw from six thousand words of training text. The absence of a word is evidence that it is rare in that class, not proof that it is impossible.
-
-The standard repair, **Laplace smoothing**, adds one pretend occurrence of every word to every class before the rates are computed, so that no rate is exactly zero and no single word can veto a class outright.
+For any such word the estimated rate in the `other` class is zero, and since the model multiplies the per-word rates together, a single zero drives the whole product to zero: one mention of `caravan` would rule out the `other` label absolutely, whatever the remaining thirty words said. That is too strong a conclusion to draw from six thousand words of training text, and the standard repair, **Laplace smoothing**, adds one pretend occurrence of every word to every class before the rates are computed, so that no rate is exactly zero and no single word can veto a class outright.
 
 ### Fitting
 
@@ -384,7 +380,7 @@ round(1000 * c(immigration = p_immigration[["caravan"]],
 
 The first word points strongly toward `immigration` and the second, `great`, points the other way. The third is one of the twenty-one: its rate in the `other` class is no longer zero, but it is very small, and a tweet mentioning caravans can still be classified as `other` if everything else about it says so.
 
-::: callout-note
+::: {.callout-note}
 You may be expecting a call to a modeling function here, and `e1071` does provide `naiveBayes()`. Given a matrix of numbers, however, that function assumes each feature is normally distributed within each class, which is badly wrong for word counts that are zero in nine cases out of ten; fed this matrix it classifies almost every tweet as `immigration`. The arithmetic above is the version the literature means by naive Bayes for text, and it is short enough to write out.
 :::
 
@@ -466,7 +462,7 @@ The orange side is worth a moment, because it shows the classifier learning some
 
 ### Reading the errors
 
-Fewer than twenty test tweets were misclassified, and reading all of them is more informative than any summary statistic.
+Fewer than twenty test tweets were misclassified, and reading them is more informative than any summary statistic.
 
 ```{r}
 test_text <- tweets$text[-train_id]
@@ -475,7 +471,7 @@ wrong <- which(pred != y_test)
 
 length(wrong)
 
-for (i in wrong) {
+for (i in head(wrong, 6)) {
   cat("actual:", as.character(y_test[i]),
       "| predicted:", as.character(pred[i]), "\n",
       substr(test_text[i], 1, 180), "\n\n")
@@ -484,11 +480,11 @@ for (i in wrong) {
 
 The failures fall into recognizable families, and none of them is random.
 
-There are two tweets about the **Wall Street** Journal and one in which the writing was on the **wall**, and in each the model saw *wall*. There is an earthquake in **Southern** California and a reference to the **Southern** White House, in which it saw *southern*. There is a tweet insisting that the president did nothing **illegal**, in which it saw *illeg*. These are the near misses the corpus was built to contain, and they are precisely the errors the bag of words guarantees, since *Wall Street* is a phrase and a bag has no phrases in it.
+Two of the six are about the **Wall Street** Journal, in which the model saw *wall*, and one insists that the president did nothing **illegal**, in which it saw *illeg*. These are the near misses the corpus was built to contain, and they are precisely the errors the bag of words guarantees, since *Wall Street* is a phrase and a bag has no phrases in it.
 
-There is an endorsement of Senator Cindy Hyde-Smith, who is described as tough on crime and strong on the border and illegal immigration. The coding scheme says that endorsement boilerplate is `other`, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world. It is failing to reproduce a coding rule, and the rule was a defensible decision that could have gone the other way.
+Two others fail in the opposite direction, and they are subtler. A tweet complaining about false reporting on the Border Immigration Agreement with Mexico really is about immigration, but it is written in the vocabulary of media attacks. A tweet praising Border Control agents for doing a *great* job carries one of the strongest `other` words in the model. In both cases the label is right and the words point the other way.
 
-And there is a tweet thanking `@DHSgov`, `@CBP`, and `@ICEgov`, labeled `immigration`, that the model called `other` because after the third line of our cleaning pipeline there was almost nothing left of it but the words *thank you*.
+Dropping the `head()` prints the remaining eleven, and two of them are worth the look. One is an endorsement of Senator Cindy Hyde-Smith, described as strong on the border and illegal immigration. The coding scheme says endorsement boilerplate is `other`, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world; it is failing to reproduce a coding rule that could defensibly have gone the other way. The second is a tweet thanking `@DHSgov`, `@CBP`, and `@ICEgov`, labeled `immigration`, that the model called `other` because after the third line of our cleaning pipeline there was almost nothing left of it but the words *thank you*.
 
 Each family points to a different repair: word pairs rather than single words for *Wall Street*, keeping handles for the CBP tweet, and, for the endorsement boilerplate, nothing that a bag of words can do at all.
 
@@ -540,12 +536,8 @@ Come with a view on at least two of these.
 
 2.  Our cleaning pipeline deleted `@ThomasHomanICE`, the handle of the acting director of ICE, whose presence is close to decisive evidence about a tweet's topic. Defend the deletion. Then defend the opposite choice. Which argument would you actually make in a paper, and what would you have to report either way?
 
-3.  The model learned that `impeach`, `mueller`, and `collus` are evidence against the immigration label. That is correct on this corpus and would transfer to nothing. How would you detect this kind of learning in a model of your own, given that every diagnostic in this handout reports it as success?
+3.  The coding scheme decides that immigration mentioned as the seventh item in a list of accomplishments is `other`. A different coder could decide otherwise. Trace what would change: the labels, the model, the accuracy, and the substantive claim you would end up making about how much of Trump's 2019 output concerned immigration.
 
-4.  The coding scheme decides that immigration mentioned as the seventh item in a list of accomplishments is `other`. A different coder could decide otherwise. Trace what would change: the labels, the model, the accuracy, and the substantive claim you would end up making about how much of Trump's 2019 output concerned immigration.
+4.  This corpus was assembled so that the two classes would be roughly balanced, which is why an accuracy figure is interpretable at all. It is therefore no longer a sample of anything. What would you have to do differently if the question were not "is this tweet about immigration" but "what share of Trump's 2019 tweets were about immigration"?
 
-5.  Our classifier over-flags, calling borderline tweets `immigration` rather than missing them. Name a research use where that is the right error to make, and one where it would invalidate the result.
-
-6.  This corpus was assembled so that the two classes would be roughly balanced, which is why an accuracy figure is interpretable at all. It is therefore no longer a sample of anything. What would you have to do differently if the question were not "is this tweet about immigration" but "what share of Trump's 2019 tweets were about immigration"?
-
-7.  This handout built a machine that reads political speech and decides what it is about, using roughly forty lines of R and 724 labeled examples. Given how little that took, what follows about who is able to build such systems, and about what a political scientist's distinctive contribution to them should be?
+5.  This handout built a machine that reads political speech and decides what it is about, using roughly forty lines of R and 724 labeled examples. Given how little that took, what follows about who is able to build such systems, and about what a political scientist's distinctive contribution to them should be?
