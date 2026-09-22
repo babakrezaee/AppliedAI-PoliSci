@@ -27,7 +27,7 @@ The second is subtler and matters more for political science. A text classifier 
 
 The corpus consists of tweets posted by `@realDonaldTrump` in 2019, filtered and hand-labeled for whether immigration is a main subject of the tweet. It contains 905 tweets.
 
-Before everything else, make sure the necessary packages are installed:
+Before everything else, make sure the necessary packages are installed: 
 
 ```{r, eval=FALSE}
 install.packages(c("tm", "SnowballC", "wordcloud", "e1071",
