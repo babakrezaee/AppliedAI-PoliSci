@@ -61,7 +61,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -488,7 +507,7 @@ immigration | Democrats had to quickly take down a tweet called “Kids In Cages
 <p><strong>Stopwords</strong> are the words carrying little topical content: <em>the</em>, <em>and</em>, <em>of</em>, <em>is</em>. <code>stopwords("english")</code> is a list somebody else compiled, and you should look at it (<code>head(stopwords("english"), 50)</code>) rather than trust it. It contains <em>not</em>, which reverses meaning, and it contains <em>against</em>, which is doing real work in a corpus about policy disputes.</p>
 <p><strong>Stemming</strong> reduces inflected forms to a common root, so <em>immigration</em>, <em>immigrants</em>, and <em>immigrate</em> all become <code>immigr</code>. This is why the output above is not quite English. The gain is that three sparse features become one dense one; the cost is that the stems are occasionally wrong and always ugly.</p>
 <p><strong>Whitespace</strong> is cosmetic, and is the one line here that is genuinely housekeeping.</p>
-<p>The order matters, and not always in obvious ways. We strip punctuation <em>before</em> removing stopwords, which means <code>don't</code> has already become <code>dont</code> and no longer matches the stopword <code>don't</code>. Reversing those two lines changes the vocabulary. This is the argument of Denny and Spirling <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref"><strong>denny2018?</strong></a>)</span>, one of this week’s readings, and their finding is worth carrying into any project of your own: preprocessing choices that are reported in a single sentence of an appendix, if at all, can change the substantive results.</p>
+<p>The order matters, and not always in obvious ways. We strip punctuation <em>before</em> removing stopwords, which means <code>don't</code> has already become <code>dont</code> and no longer matches the stopword <code>don't</code>. Reversing those two lines changes the vocabulary. This is the argument of Denny and Spirling <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref">Denny and Spirling 2018</a>)</span>, one of this week’s readings, and their finding is worth carrying into any project of your own: preprocessing choices that are reported in a single sentence of an appendix, if at all, can change the substantive results.</p>
 </section>
 <section id="the-document-term-matrix" class="level3" data-number="4.3.4">
 <h3 data-number="4.3.4" class="anchored" data-anchor-id="the-document-term-matrix"><span class="header-section-number">4.3.4</span> The document-term matrix</h3>
@@ -973,14 +992,14 @@ actual: other | predicted: immigration
 </section>
 <section id="reading" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="reading"><span class="header-section-number">4.6</span> Reading</h2>
-<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="../references.html#ref-grimmer2013" role="doc-biblioref"><strong>grimmer2013?</strong></a>)</span></p>
+<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="../references.html#ref-grimmer2013" role="doc-biblioref">Grimmer and Stewart 2013</a>)</span></p>
 <p>The standard orientation to the field, and the source of the principles this handout has been quietly applying throughout: that all language models are wrong but some are useful, that there is no globally best method, and above all that validation is not optional. Read their discussion of supervised methods alongside Part II, and note how much of the article is about what can go wrong rather than about what to run.</p>
-<p>Denny, M. J., and Spirling, A. 2018. “Text Preprocessing For Unsupervised Learning: Why It Matters, When It Misleads, and What To Do About It.” <em>Political Analysis</em> 26(2): 168–189. <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref"><strong>denny2018?</strong></a>)</span></p>
+<p>Denny, M. J., and Spirling, A. 2018. “Text Preprocessing For Unsupervised Learning: Why It Matters, When It Misleads, and What To Do About It.” <em>Political Analysis</em> 26(2): 168–189. <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref">Denny and Spirling 2018</a>)</span></p>
 <p>This is the article behind the cleaning section. Their demonstration is that decisions reported in a sentence of an appendix — stemming, stopwords, whether to lowercase — can change substantive conclusions, and that the ordering of those decisions is itself consequential. Their setting is unsupervised, and the reason to read it here is that supervised work hides the same problem behind an accuracy figure that looks like validation and is not.</p>
-<p>Barberá, P., Boydstun, A. E., Linn, S., McMahon, R., and Nagler, J. 2021. “Automated Text Classification of News Articles: A Practical Guide to Using Supervised Machine Learning Methods.” <em>Political Analysis</em> 29(1): 19–42. <span class="citation" data-cites="barbera2021">(<a href="../references.html#ref-barbera2021" role="doc-biblioref"><strong>barbera2021?</strong></a>)</span></p>
+<p>Barberá, P., Boydstun, A. E., Linn, S., McMahon, R., and Nagler, J. 2021. “Automated Text Classification of News Articles: A Practical Guide to Using Supervised Machine Learning Methods.” <em>Political Analysis</em> 29(1): 19–42. <span class="citation" data-cites="barbera2021">(<a href="../references.html#ref-barbera2021" role="doc-biblioref">Barberá et al. 2021</a>)</span></p>
 <p>The closest article to what we did above, and the one to read for the parts this handout compressed. Give particular attention to their treatment of the human coding stage, including how many coders are needed and how disagreement between them should be handled, since that is the stage our corpus has exactly one of.</p>
 <p><strong>Recommended, not required.</strong></p>
-<p>Hopkins, D. J., and King, G. 2010. “A Method of Automated Nonparametric Content Analysis for Social Science.” <em>American Journal of Political Science</em> 54(1): 229–247. <span class="citation" data-cites="hopkins2010">(<a href="../references.html#ref-hopkins2010" role="doc-biblioref"><strong>hopkins2010?</strong></a>)</span></p>
+<p>Hopkins, D. J., and King, G. 2010. “A Method of Automated Nonparametric Content Analysis for Social Science.” <em>American Journal of Political Science</em> 54(1): 229–247. <span class="citation" data-cites="hopkins2010">(<a href="../references.html#ref-hopkins2010" role="doc-biblioref">Hopkins and King 2010</a>)</span></p>
 <p>Worth reading for one argument that cuts against the whole framing of this week. Most political science questions about text are questions about <em>proportions</em> — what share of tweets concerned immigration — rather than about individual documents, and the authors show that a classifier optimized for per-document accuracy can produce biased estimates of exactly those proportions, because its errors need not cancel. If you intend to count categories rather than retrieve documents, this is the article to have read first.</p>
 </section>
 <section id="before-the-workshop" class="level2" data-number="4.7">
@@ -1000,6 +1019,20 @@ actual: other | predicted: immigration
 </ol>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-barbera2021" class="csl-entry" role="listitem">
+Barberá, Pablo, Amber E. Boydstun, Suzanna Linn, Ryan McMahon, and Jonathan Nagler. 2021. <span>“Automated Text Classification of News Articles: A Practical Guide.”</span> <em>Political Analysis</em> 29 (1): 19–42. <a href="https://doi.org/10.1017/pan.2020.8">https://doi.org/10.1017/pan.2020.8</a>.
+</div>
+<div id="ref-denny2018" class="csl-entry" role="listitem">
+Denny, Matthew J., and Arthur Spirling. 2018. <span>“Text Preprocessing for Unsupervised Learning: Why It Matters, When It Misleads, and What to Do about It.”</span> <em>Political Analysis</em> 26 (2): 168–89. <a href="https://doi.org/10.1017/pan.2017.44">https://doi.org/10.1017/pan.2017.44</a>.
+</div>
+<div id="ref-grimmer2013" class="csl-entry" role="listitem">
+Grimmer, Justin, and Brandon M. Stewart. 2013. <span>“Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.”</span> <em>Political Analysis</em> 21 (3): 267–97. <a href="https://doi.org/10.1093/pan/mps028">https://doi.org/10.1093/pan/mps028</a>.
+</div>
+<div id="ref-hopkins2010" class="csl-entry" role="listitem">
+Hopkins, Daniel J., and Gary King. 2010. <span>“A Method of Automated Nonparametric Content Analysis for Social Science.”</span> <em>American Journal of Political Science</em> 54 (1): 229–47. <a href="https://doi.org/10.1111/j.1540-5907.2009.00428.x">https://doi.org/10.1111/j.1540-5907.2009.00428.x</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
