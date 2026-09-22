@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Text as Data – Applied AI for Political Scientists</title>
+<title>4&nbsp; Text as Data: Naive Bayes – Applied AI for Political Scientists</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -76,6 +111,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -88,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w04-text-as-data.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w04-text-as-data.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -190,7 +254,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -224,15 +288,49 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-naive-bayes-is-good-at-and-what-it-is-not" id="toc-what-naive-bayes-is-good-at-and-what-it-is-not" class="nav-link active" data-scroll-target="#what-naive-bayes-is-good-at-and-what-it-is-not"><span class="header-section-number">4.1</span> What Naive Bayes is good at, and what it is not</a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data"><span class="header-section-number">4.2</span> The data</a></li>
+  <li><a href="#part-i.-from-tweets-to-a-matrix" id="toc-part-i.-from-tweets-to-a-matrix" class="nav-link" data-scroll-target="#part-i.-from-tweets-to-a-matrix"><span class="header-section-number">4.3</span> Part I. From tweets to a matrix</a>
+  <ul class="collapse">
+  <li><a href="#reading-the-text-before-modeling-it" id="toc-reading-the-text-before-modeling-it" class="nav-link" data-scroll-target="#reading-the-text-before-modeling-it"><span class="header-section-number">4.3.1</span> Reading the text before modeling it</a></li>
+  <li><a href="#the-bag-of-words" id="toc-the-bag-of-words" class="nav-link" data-scroll-target="#the-bag-of-words"><span class="header-section-number">4.3.2</span> The bag of words</a></li>
+  <li><a href="#cleaning-one-decision-at-a-time" id="toc-cleaning-one-decision-at-a-time" class="nav-link" data-scroll-target="#cleaning-one-decision-at-a-time"><span class="header-section-number">4.3.3</span> Cleaning, one decision at a time</a></li>
+  <li><a href="#the-document-term-matrix" id="toc-the-document-term-matrix" class="nav-link" data-scroll-target="#the-document-term-matrix"><span class="header-section-number">4.3.4</span> The document-term matrix</a></li>
+  <li><a href="#what-is-in-the-corpus" id="toc-what-is-in-the-corpus" class="nav-link" data-scroll-target="#what-is-in-the-corpus"><span class="header-section-number">4.3.5</span> What is in the corpus</a></li>
+  <li><a href="#splitting-before-anything-else" id="toc-splitting-before-anything-else" class="nav-link" data-scroll-target="#splitting-before-anything-else"><span class="header-section-number">4.3.6</span> Splitting before anything else</a></li>
+  <li><a href="#trimming-the-vocabulary" id="toc-trimming-the-vocabulary" class="nav-link" data-scroll-target="#trimming-the-vocabulary"><span class="header-section-number">4.3.7</span> Trimming the vocabulary</a></li>
+  <li><a href="#the-counts-stay-as-counts" id="toc-the-counts-stay-as-counts" class="nav-link" data-scroll-target="#the-counts-stay-as-counts"><span class="header-section-number">4.3.8</span> The counts stay as counts</a></li>
+  <li><a href="#two-rates-per-word" id="toc-two-rates-per-word" class="nav-link" data-scroll-target="#two-rates-per-word"><span class="header-section-number">4.3.9</span> Two rates per word</a></li>
+  </ul></li>
+  <li><a href="#part-ii.-naive-bayes" id="toc-part-ii.-naive-bayes" class="nav-link" data-scroll-target="#part-ii.-naive-bayes"><span class="header-section-number">4.4</span> Part II. Naive Bayes</a>
+  <ul class="collapse">
+  <li><a href="#the-question-the-model-asks" id="toc-the-question-the-model-asks" class="nav-link" data-scroll-target="#the-question-the-model-asks"><span class="header-section-number">4.4.1</span> The question the model asks</a></li>
+  <li><a href="#the-naive-assumption-which-is-false" id="toc-the-naive-assumption-which-is-false" class="nav-link" data-scroll-target="#the-naive-assumption-which-is-false"><span class="header-section-number">4.4.2</span> The naive assumption, which is false</a></li>
+  <li><a href="#words-that-never-occurred" id="toc-words-that-never-occurred" class="nav-link" data-scroll-target="#words-that-never-occurred"><span class="header-section-number">4.4.3</span> Words that never occurred</a></li>
+  <li><a href="#fitting" id="toc-fitting" class="nav-link" data-scroll-target="#fitting"><span class="header-section-number">4.4.4</span> Fitting</a></li>
+  <li><a href="#predicting" id="toc-predicting" class="nav-link" data-scroll-target="#predicting"><span class="header-section-number">4.4.5</span> Predicting</a></li>
+  <li><a href="#the-confusion-matrix" id="toc-the-confusion-matrix" class="nav-link" data-scroll-target="#the-confusion-matrix"><span class="header-section-number">4.4.6</span> The confusion matrix</a></li>
+  <li><a href="#the-most-informative-words" id="toc-the-most-informative-words" class="nav-link" data-scroll-target="#the-most-informative-words"><span class="header-section-number">4.4.7</span> The most informative words</a></li>
+  <li><a href="#reading-the-errors" id="toc-reading-the-errors" class="nav-link" data-scroll-target="#reading-the-errors"><span class="header-section-number">4.4.8</span> Reading the errors</a></li>
+  </ul></li>
+  <li><a href="#the-politics-of-classification" id="toc-the-politics-of-classification" class="nav-link" data-scroll-target="#the-politics-of-classification"><span class="header-section-number">4.5</span> The politics of classification</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading"><span class="header-section-number">4.6</span> Reading</a></li>
+  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop"><span class="header-section-number">4.7</span> Before the workshop</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session"><span class="header-section-number">4.8</span> Questions for the session</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w04-text-as-data.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../handouts/w01-prediction-causation.html">Weekly Handouts</a></li><li class="breadcrumb-item"><a href="../handouts/w04-text-as-data.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></h1>
 </div>
 
 
@@ -249,9 +347,697 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p><em>Week 4, 23 September</em></p>
+<p>Every dataset used so far arrived with its features already made. The UN file had a column for income and a column for urbanization; Fearon and Laitin supplied eleven covariates measured, coded, and named by somebody else. The modeling began at the point where the measurement had finished, and the measurement itself was never our problem.</p>
+<p>This week it is our problem. The raw material is 905 tweets, and a tweet is not a row of numbers. Before any algorithm can be applied, somebody has to decide what a feature of a tweet even is, and that decision is not a technical preliminary to the analysis. It is a large part of the analysis, and most of what can go wrong this week goes wrong there rather than in the classifier.</p>
+<p>The classifier itself, once we reach it, has an unusual property worth stating at the outset. It rests on an assumption about language that is not approximately true, or true under conditions, but flatly and obviously false, and it works anyway. Establishing why is the second half of the session.</p>
+<section id="what-naive-bayes-is-good-at-and-what-it-is-not" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="what-naive-bayes-is-good-at-and-what-it-is-not"><span class="header-section-number">4.1</span> What Naive Bayes is good at, and what it is not</h2>
+<p><strong>Benefits.</strong></p>
+<ul>
+<li>It is fast, in that fitting consists of counting rather than of optimization, and it scales to vocabularies of tens of thousands of words without difficulty.</li>
+<li>It performs well with small training sets, which matters when every label has been assigned by a human being reading a document.</li>
+<li>It can be inspected. The fitted model is a table of word frequencies, and one can read off exactly which words pushed a document in which direction.</li>
+<li>It produces a probability for each document rather than a bare classification, and that probability can be thresholded to suit the purpose.</li>
+</ul>
+<p><strong>The disadvantages</strong> are two, and they are of different kinds.</p>
+<p>The first is that the independence assumption on which the method rests is false of language, and we will state it plainly and then violate it deliberately.</p>
+<p>The second is subtler and matters more for political science. A text classifier is only ever as good as the labels it was trained on, and those labels were produced by a person applying a coding scheme. The model does not learn what immigration is. It learns what one coder, working from one scheme, decided to call immigration, and it will reproduce that decision faithfully, including the parts of it that were arbitrary.</p>
+</section>
+<section id="the-data" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-data"><span class="header-section-number">4.2</span> The data</h2>
+<p>The corpus consists of tweets posted by <code>@realDonaldTrump</code> in 2019, filtered and hand-labeled for whether immigration is a main subject of the tweet. It contains 905 tweets.</p>
+<p>Before everything else, make sure the necessary packages are installed:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tm"</span>, <span class="st">"SnowballC"</span>, <span class="st">"wordcloud"</span>, <span class="st">"e1071"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wordcloud)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">"AppliedAI-PoliSci/refs/heads/main/data/"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"trump_immigration_2019.csv"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>tweets <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(tweets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 905</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(tweets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   905 obs. of  4 variables:
+ $ id   : num  1084065832941031424 1183369132634456064 1097856727020720000 1149289425836367872 1184426268177129472 ...
+ $ date : chr  "2019-01-12 20:33" "2019-10-13 21:09" "2019-02-19 21:53" "2019-07-11 20:08" ...
+ $ label: chr  "other" "other" "immigration" "immigration" ...
+ $ text : chr  "....the FBI was in complete turmoil (see N.Y. Post) because of Comey’s poor leadership and the way he handled t"| __truncated__ "Do you remember two years ago when Iraq was going to fight the Kurds in a different part of Syria. Many people "| __truncated__ "The failed Fast Train project in California, where the cost overruns are becoming world record setting, is hund"| __truncated__ "Democrats had to quickly take down a tweet called “Kids In Cages, Inhumane Treatment at the Border,” because th"| __truncated__ ...</code></pre>
+</div>
+</div>
+<p>The dataset has four columns: a tweet ID, a timestamp, a label, and the text itself.</p>
+<p>The outcome needs to be a factor, and the order of its levels is a decision we should make deliberately rather than let R make alphabetically.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tweets<span class="sc">$</span>label <span class="ot">&lt;-</span> <span class="fu">factor</span>(tweets<span class="sc">$</span>label, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(tweets<span class="sc">$</span>label)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      other immigration 
+        538         367 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">prop.table</span>(<span class="fu">table</span>(tweets<span class="sc">$</span>label)), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      other immigration 
+      0.594       0.406 </code></pre>
+</div>
+</div>
+<p>The majority class is <code>other</code>, at roughly 59 per cent, and that figure plays the same role here that the two per cent base rate played last week. It is the accuracy obtainable by a model that reads nothing, and no accuracy figure means anything until it has been compared against it.</p>
+<p>Notice, though, how different this baseline is from last week’s. Civil war onset occurred in two country-years in a hundred, and the baseline was consequently 98 per cent, which is nearly impossible to beat and useless to match. Here the two classes are of comparable size, which makes accuracy a sensible thing to report at all. That comparability is not a fact about Trump’s Twitter account. It is a property of a corpus that was deliberately constructed to have it, and the price of the construction is that the corpus no longer represents the stream of tweets it was drawn from.</p>
+</section>
+<section id="part-i.-from-tweets-to-a-matrix" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="part-i.-from-tweets-to-a-matrix"><span class="header-section-number">4.3</span> Part I. From tweets to a matrix</h2>
+<section id="reading-the-text-before-modeling-it" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="reading-the-text-before-modeling-it"><span class="header-section-number">4.3.1</span> Reading the text before modeling it</h3>
+<p>The single most useful thing to do with a new corpus is to read some of it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">as.character</span>(tweets<span class="sc">$</span>label[i]), <span class="st">"|"</span>, tweets<span class="sc">$</span>text[i], <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>other | ....the FBI was in complete turmoil (see N.Y. Post) because of Comey’s poor leadership and the way he handled the Clinton mess (not to mention his usurpation of powers from the Justice Department). My firing of James Comey was a great day for America. He was a Crooked Cop...... 
+
+other | Do you remember two years ago when Iraq was going to fight the Kurds in a different part of Syria. Many people wanted us to fight with the Kurds against Iraq, who we just fought for. I said no, and the Kurds left the fight, twice. Now the same thing is happening with Turkey...... 
+
+immigration | The failed Fast Train project in California, where the cost overruns are becoming world record setting, is hundreds of times more expensive than the desperately needed Wall! 
+
+immigration | Democrats had to quickly take down a tweet called “Kids In Cages, Inhumane Treatment at the Border,” because the horrible picture used was from the Obama years. Very embarrassing! @foxandfriends </code></pre>
+</div>
+</div>
+<p>Four tweets, and already several of the difficulties are visible. There are URLs, which carry no meaning of their own. There are handles beginning with <code>@</code>. There are capitals used for emphasis rather than for grammar. There are curly quotation marks rather than straight ones, which look identical on the page and are entirely different characters to R. And at least one of these tweets is labeled in a way that a reasonable person might dispute.</p>
+</section>
+<section id="the-bag-of-words" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="the-bag-of-words"><span class="header-section-number">4.3.2</span> The bag of words</h3>
+<p>The representation we are going to use is the simplest one available, and it is worth stating what it discards before we adopt it.</p>
+<p>A document is represented as the set of words it contains, and nothing else. Word order is discarded. Grammar is discarded. Which word modifies which is discarded. “The wall stopped the caravan” and “the caravan stopped the wall” become the same document.</p>
+<p>This is called the <strong>bag of words</strong>, and the name is accurate: we tip the document into a bag, shake it, and record what is inside.</p>
+<p>Stated that way it sounds indefensible, and for many questions it is. For <em>this</em> question it is mostly adequate, because whether a tweet is about immigration is largely determined by which words appear in it and hardly at all by the order in which they appear. A tweet containing <em>border</em>, <em>caravan</em>, and <em>asylum</em> is about immigration under any permutation. The adequacy of the representation depends on the question, therefore, and not on the corpus, and a question about who did what to whom would require something else entirely.</p>
+</section>
+<section id="cleaning-one-decision-at-a-time" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="cleaning-one-decision-at-a-time"><span class="header-section-number">4.3.3</span> Cleaning, one decision at a time</h3>
+<p><code>tm</code> works on a <strong>corpus</strong>, which is its container for a collection of documents.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>corpus <span class="ot">&lt;-</span> <span class="fu">VCorpus</span>(<span class="fu">VectorSource</span>(tweets<span class="sc">$</span>text))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>corpus[[<span class="dv">1</span>]]<span class="sc">$</span>content</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "....the FBI was in complete turmoil (see N.Y. Post) because of Comey’s poor leadership and the way he handled the Clinton mess (not to mention his usurpation of powers from the Justice Department). My firing of James Comey was a great day for America. He was a Crooked Cop......"</code></pre>
+</div>
+</div>
+<p>Cleaning is applied with <code>tm_map()</code>, which takes a corpus and a transformation and returns a corpus. We will need one transformation that <code>tm</code> does not supply, namely the removal of a pattern, so we build it first.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>replace_with_space <span class="ot">&lt;-</span> <span class="fu">content_transformer</span>(<span class="cf">function</span>(x, pattern) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(pattern, <span class="st">" "</span>, x)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>content_transformer()</code> wraps an ordinary function operating on character strings so that <code>tm_map()</code> will apply it to the text of each document. Any cleaning step you invent yourself will need this wrapper.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus, <span class="fu">content_transformer</span>(tolower))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"http[s]?://</span><span class="sc">\\</span><span class="st">S*"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"@</span><span class="sc">\\</span><span class="st">S+"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"[^a-z ]"</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, removeWords, <span class="fu">stopwords</span>(<span class="st">"english"</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, stemDocument)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, stripWhitespace)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>clean[[<span class="dv">1</span>]]<span class="sc">$</span>content</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "fbi complet turmoil see n y post comey s poor leadership way handl clinton mess mention usurp power justic depart fire jame comey great day america crook cop"</code></pre>
+</div>
+</div>
+<p>Seven lines, and every one of them is a substantive choice rather than a housekeeping step. Taking them in order:</p>
+<p><strong>Lowercasing</strong> makes <em>Wall</em> and <em>wall</em> the same feature, which is what we want, and also makes <em>US</em> and <em>us</em> the same feature, which is not. There is no setting that gets both right.</p>
+<p><strong>Removing URLs and handles</strong> is straightforward here, since a link carries no words. Note that this throws away <code>@ThomasHomanICE</code>, the acting director of Immigration and Customs Enforcement, whose presence in a tweet is close to decisive evidence about its topic. We are discarding a genuinely informative feature for the sake of a simple pipeline, and whether that is the right trade is a question you could answer empirically in the workshop.</p>
+<p><strong><code>[^a-z ]</code></strong> deletes everything that is not a lowercase letter or a space, which removes punctuation, digits, emoji, and — the reason it is written this way rather than with <code>removePunctuation()</code> — the curly quotation marks and en dashes that <code>removePunctuation()</code> leaves untouched. Without this line the model acquires features that are invisible on screen and appear in the output as things like <code>&lt;U+2019&gt;</code>, which is among the more disorienting hours available to a beginner in text analysis.</p>
+<p><strong>Stopwords</strong> are the words carrying little topical content: <em>the</em>, <em>and</em>, <em>of</em>, <em>is</em>. <code>stopwords("english")</code> is a list somebody else compiled, and you should look at it (<code>head(stopwords("english"), 50)</code>) rather than trust it. It contains <em>not</em>, which reverses meaning, and it contains <em>against</em>, which is doing real work in a corpus about policy disputes.</p>
+<p><strong>Stemming</strong> reduces inflected forms to a common root, so <em>immigration</em>, <em>immigrants</em>, and <em>immigrate</em> all become <code>immigr</code>. This is why the output above is not quite English. The gain is that three sparse features become one dense one; the cost is that the stems are occasionally wrong and always ugly.</p>
+<p><strong>Whitespace</strong> is cosmetic, and is the one line here that is genuinely housekeeping.</p>
+<p>The order matters, and not always in obvious ways. We strip punctuation <em>before</em> removing stopwords, which means <code>don't</code> has already become <code>dont</code> and no longer matches the stopword <code>don't</code>. Reversing those two lines changes the vocabulary. This is the argument of Denny and Spirling <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref"><strong>denny2018?</strong></a>)</span>, one of this week’s readings, and their finding is worth carrying into any project of your own: preprocessing choices that are reported in a single sentence of an appendix, if at all, can change the substantive results.</p>
+</section>
+<section id="the-document-term-matrix" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="the-document-term-matrix"><span class="header-section-number">4.3.4</span> The document-term matrix</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dtm <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(clean)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>dtm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;&lt;DocumentTermMatrix (documents: 905, terms: 2735)&gt;&gt;
+Non-/sparse entries: 16606/2458569
+Sparsity           : 99%
+Maximal term length: 16
+Weighting          : term frequency (tf)</code></pre>
+</div>
+</div>
+<p>This is the object the whole of Part I was building toward. Rows are documents, columns are terms, and the entry in row <span class="math inline">\(i\)</span> and column <span class="math inline">\(j\)</span> is the number of times term <span class="math inline">\(j\)</span> appears in document <span class="math inline">\(i\)</span>.</p>
+<p>Two numbers in that output deserve attention. There are close to three thousand distinct terms across 905 tweets, so the matrix has several times more columns than rows. And it is 99 per cent sparse, meaning that essentially every cell is zero, since any given tweet contains perhaps fifteen of the three thousand available words.</p>
+<p>Both properties are normal for text and both would be alarming anywhere else. A regression with three thousand predictors and nine hundred observations cannot be fitted at all. Naive Bayes can, and the reason it can is exactly the assumption we are about to make.</p>
+</section>
+<section id="what-is-in-the-corpus" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="what-is-in-the-corpus"><span class="header-section-number">4.3.5</span> What is in the corpus</h3>
+<p>Before modeling, it is worth looking at the two classes side by side.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud</span>(clean[tweets<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"immigration"</span>], <span class="at">min.freq =</span> <span class="dv">12</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">random.order =</span> <span class="cn">FALSE</span>, <span class="at">colors =</span> <span class="fu">brewer.pal</span>(<span class="dv">7</span>, <span class="st">"Blues"</span>)[<span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>])</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">"immigration"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud</span>(clean[tweets<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"other"</span>], <span class="at">min.freq =</span> <span class="dv">12</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">random.order =</span> <span class="cn">FALSE</span>, <span class="at">colors =</span> <span class="fu">brewer.pal</span>(<span class="dv">7</span>, <span class="st">"Oranges"</span>)[<span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>])</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">"other"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w04-text-as-data_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Word clouds are a poor instrument for inference, since the eye cannot compare areas reliably and the layout is random. As a first look at a corpus, however, they are hard to beat.</p>
+<p>Note what they show and what they do not. <code>border</code> and <code>wall</code> dominate the immigration cloud, as expected. But <code>illeg</code> appears in <em>both</em>, because the negative class was deliberately constructed to contain tweets about illegal wiretaps and illegal impeachments. And <code>democrat</code> is large on both sides, because Trump attacks Democrats over immigration and over everything else. The classifier cannot succeed here by finding a single keyword, which is the reason this corpus was built the way it was.</p>
+</section>
+<section id="splitting-before-anything-else" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="splitting-before-anything-else"><span class="header-section-number">4.3.6</span> Splitting before anything else</h3>
+<p>The rows were shuffled before distribution, so splitting on row number gives an approximately random split.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tweets)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">floor</span>(<span class="fl">0.8</span> <span class="sc">*</span> n)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>dtm_train <span class="ot">&lt;-</span> dtm[train_id, ]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>dtm_test  <span class="ot">&lt;-</span> dtm[<span class="sc">-</span>train_id, ]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> tweets<span class="sc">$</span>label[train_id]</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>y_test  <span class="ot">&lt;-</span> tweets<span class="sc">$</span>label[<span class="sc">-</span>train_id]</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">train =</span> <span class="fu">length</span>(y_train), <span class="at">test =</span> <span class="fu">length</span>(y_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>train  test 
+  724   181 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">prop.table</span>(<span class="fu">table</span>(y_train)), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>y_train
+      other immigration 
+      0.613       0.387 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">prop.table</span>(<span class="fu">table</span>(y_test)), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>y_test
+      other immigration 
+      0.519       0.481 </code></pre>
+</div>
+</div>
+<p>The class proportions differ somewhat between the two halves, which is what a random split of nine hundred cases does, and the test-set proportion is the baseline any test-set accuracy must be compared against.</p>
+<p><strong>The split comes before the next step, and the order is not arbitrary.</strong> We are about to choose which words to keep, and that choice will be made using the training data alone. Selecting a vocabulary on all 905 tweets and then splitting would let information from the test set into the model, and the resulting accuracy would be optimistic for a reason nothing in the output would reveal. This is the most common way a text classification pipeline lies to its author.</p>
+</section>
+<section id="trimming-the-vocabulary" class="level3" data-number="4.3.7">
+<h3 data-number="4.3.7" class="anchored" data-anchor-id="trimming-the-vocabulary"><span class="header-section-number">4.3.7</span> Trimming the vocabulary</h3>
+<p>Most of the three thousand terms appear once or twice in the entire corpus. They cannot support any generalization, and they enlarge the model considerably.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>freq_words <span class="ot">&lt;-</span> <span class="fu">findFreqTerms</span>(dtm_train, <span class="dv">5</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(freq_words)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 651</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq_words, <span class="dv">24</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "abl"       "absolut"   "abus"      "act"       "action"    "actual"   
+ [7] "adam"      "administr" "african"   "agenda"    "agent"     "ago"      
+[13] "agre"      "agreement" "aid"       "alien"     "allow"     "almost"   
+[19] "along"     "alreadi"   "also"      "alway"     "amend"     "america"  </code></pre>
+</div>
+</div>
+<p>Keeping only terms appearing at least five times in the training documents reduces the vocabulary by roughly three quarters. The threshold of five is conventional and arbitrary in equal measure, which makes it a parameter of exactly the kind we have twice now chosen by cross-validation: <span class="math inline">\(k\)</span> in Week 2, the complexity parameter in Week 3, and the size of the vocabulary here. Changing it and watching what happens is the first thing to try in the workshop.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dtm_train <span class="ot">&lt;-</span> dtm_train[, freq_words]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>dtm_test  <span class="ot">&lt;-</span> dtm_test[, freq_words]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The test matrix is subset to the <em>training</em> vocabulary. Words that occur only in the test set are discarded, which is the correct behavior: a model that never saw a word during training has nothing to say about it.</p>
+</section>
+<section id="the-counts-stay-as-counts" class="level3" data-number="4.3.8">
+<h3 data-number="4.3.8" class="anchored" data-anchor-id="the-counts-stay-as-counts"><span class="header-section-number">4.3.8</span> The counts stay as counts</h3>
+<p>That is the matrix we will model, and no further transformation of it is needed. Rows are tweets, columns are words, and each entry is the number of times that word is used in that tweet.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>counts_train <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm_train)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>counts_test  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm_test)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(counts_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 724 651</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>counts_train[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Terms
+Docs abl absolut abus act action actual
+   1   0       0    0   0      0      0
+   2   0       0    0   0      0      0
+   3   0       0    0   0      0      0</code></pre>
+</div>
+</div>
+<p><code>as.matrix()</code> converts <code>tm</code>’s compressed representation into an ordinary R matrix, which is easier to work with and, at this size, costs nothing. On a corpus of a hundred thousand documents it would exhaust the memory of your laptop, and the compressed form would have to be kept.</p>
+</section>
+<section id="two-rates-per-word" class="level3" data-number="4.3.9">
+<h3 data-number="4.3.9" class="anchored" data-anchor-id="two-rates-per-word"><span class="header-section-number">4.3.9</span> Two rates per word</h3>
+<p>Almost everything the classifier will do is contained in the following comparison, which we can compute directly and without any model at all. The question is only how often each word gets used in each kind of tweet.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>total_immigration <span class="ot">&lt;-</span> <span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"immigration"</span>, ])</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>total_other       <span class="ot">&lt;-</span> <span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"other"</span>, ])</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">word        =</span> freq_words,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">immigration =</span> total_immigration,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">other       =</span> total_other)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(totals[<span class="fu">order</span>(<span class="sc">-</span>totals<span class="sc">$</span>immigration), <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         immigration other
+border           237    49
+wall             131    12
+will             111   140
+democrat          90    51
+immigr            67     5
+mexico            66    34
+southern          63     1
+countri           62    38
+secur             62    13
+illeg             54    51
+great             52   124
+want              46    22</code></pre>
+</div>
+</div>
+<p>Across the training tweets labeled <code>immigration</code>, the stem <code>border</code> is used 237 times; across those labeled <code>other</code>, 49 times.</p>
+<p>Those two numbers cannot be compared as they stand, because the two groups are not the same size and do not contain the same quantity of text.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(total_immigration)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4786</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(total_other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6395</code></pre>
+</div>
+</div>
+<p>The immigration tweets supply fewer words in total, so <em>every</em> word will tend to show a smaller count there, whether or not it is distinctive. The remedy is to divide by the total, which turns a count into a rate: out of every thousand words used in immigration tweets, how many are this word?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rate_immigration <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="sc">*</span> total_immigration <span class="sc">/</span> <span class="fu">sum</span>(total_immigration)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>rate_other       <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="sc">*</span> total_other       <span class="sc">/</span> <span class="fu">sum</span>(total_other)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>rates <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">word        =</span> freq_words,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">immigration =</span> rate_immigration,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">other       =</span> rate_other)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">head</span>(rates[<span class="fu">order</span>(<span class="sc">-</span>rates<span class="sc">$</span>immigration), <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">12</span>), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         immigration other
+border         49.52  7.66
+wall           27.37  1.88
+will           23.19 21.89
+democrat       18.80  7.97
+immigr         14.00  0.78
+mexico         13.79  5.32
+southern       13.16  0.16
+countri        12.95  5.94
+secur          12.95  2.03
+illeg          11.28  7.97
+great          10.87 19.39
+want            9.61  3.44</code></pre>
+</div>
+</div>
+<p>Read the first row as a conditional statement: <strong>given that</strong> a tweet is about immigration, about 50 of every thousand words it uses are <code>border</code>; given that it is about something else, about 8 are.</p>
+<p>That is a conditional probability, and it is the only probabilistic idea this handout requires. A conditional probability is a rate computed within a subgroup rather than across everything. We are not asking how common <em>border</em> is in the corpus. We are asking how common it is <strong>within</strong> the immigration tweets, and then asking the same question again within the others. Naive Bayes is built entirely out of quantities of this kind, and every one of them is a proportion you could work out by hand from <code>colSums()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rates, <span class="fu">aes</span>(other, immigration)) <span class="sc">+</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"gray60"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">subset</span>(rates, immigration <span class="sc">&gt;</span> <span class="dv">6</span> <span class="sc">|</span> other <span class="sc">&gt;</span> <span class="dv">6</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">label =</span> word), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Uses per 1,000 words in *other* tweets"</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Uses per 1,000 words in *immigration* tweets"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w04-text-as-data_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The dashed line is equality, and a word sitting on it carries no information whatever about the label. Distance from the line is informativeness, and the direction of the departure is which way the word votes.</p>
+<p>Most of the vocabulary sits in the corner near the origin, used rarely in both classes. A small number of words sit far above the line: <code>border</code>, <code>wall</code>, <code>southern</code>, <code>secur</code>, <code>immigr</code>. A few sit below it, <code>great</code>, <code>presid</code>, and <code>thank</code> among them, and they are evidence <em>against</em> the immigration label. And <code>will</code> sits high on both axes, which is to say it is common everywhere and therefore useless.</p>
+<p>Nothing has been fitted. This figure is the model, drawn before we build it.</p>
+</section>
+</section>
+<section id="part-ii.-naive-bayes" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="part-ii.-naive-bayes"><span class="header-section-number">4.4</span> Part II. Naive Bayes</h2>
+<section id="the-question-the-model-asks" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="the-question-the-model-asks"><span class="header-section-number">4.4.1</span> The question the model asks</h3>
+<p>We have a tweet, and we want to know which label it should receive. The tempting way to proceed is to ask directly: given these words, how likely is the tweet to be about immigration?</p>
+<p>That question is difficult to answer, because the number of possible combinations of words is astronomically large and we have 724 training tweets. Almost no combination will ever have been observed.</p>
+<p>The move that makes the problem tractable is to turn the question around. Instead of asking how likely the label is given the words, we ask <strong>how likely the words are given each label</strong>, which is a question we can answer, because it is the table of rates we just computed. Then we compare.</p>
+<p>For a tweet containing <em>border</em> and <em>wall</em>, the comparison runs:</p>
+<ul>
+<li>If this tweet were about immigration, how surprising would these words be? Not very: in immigration tweets <em>border</em> is used at about 50 words per thousand and <em>wall</em> at about 27.</li>
+<li>If this tweet were about something else, how surprising would they be? Considerably more so: about 8 per thousand and about 2.</li>
+</ul>
+<p>The words are far less surprising under the first supposition than the second, and the tweet is therefore assigned to <code>immigration</code>. That is the entire idea. <strong>Bayes’ rule is the formal statement of “turn the question around,”</strong> and it also supplies the correction for how common each label is to begin with, so that a rare category requires more evidence than a common one. For our purposes the sentence is enough; the algebra is in the further reading for those who want it.</p>
+</section>
+<section id="the-naive-assumption-which-is-false" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="the-naive-assumption-which-is-false"><span class="header-section-number">4.4.2</span> The naive assumption, which is false</h3>
+<p>Turning the question around gets us to “how likely are these words, given the label,” and that is still a question about a whole combination of words at once. The final simplification, the one the method is named for, is this:</p>
+<blockquote class="blockquote">
+<p>Assume that, within a class, each word appears independently of every other.</p>
+</blockquote>
+<p>Which is to say that once we know the tweet is about immigration, learning that it contains <em>southern</em> tells us nothing about whether it contains <em>border</em>.</p>
+<p>That is false. It is not a convenient approximation or a claim that holds under stated conditions. <em>Southern</em> and <em>border</em> co-occur constantly in this corpus, as do <em>illegal</em> and <em>immigration</em>, and <em>caravan</em> and <em>migrant</em>. Language is nothing but dependence between words.</p>
+<p>The assumption is made anyway, because it converts an impossible calculation into a possible one: the joint question about a whole tweet becomes a product of the separate per-word rates in the table above, each of which we can estimate from a few hundred documents.</p>
+<p>The consequence is specific and worth knowing, because it determines how the output should be read. Correlated words constitute double counting. When a tweet contains <em>border</em>, <em>southern</em>, <em>wall</em>, and <em>patrol</em>, the model treats these as four independent pieces of evidence when they are closer to one piece stated four times, and it therefore becomes far more confident than the evidence warrants. This is why naive Bayes classifies well and yet reports probabilities that pile up at 0 and 1 with almost nothing in between. <strong>The ranking is usually right and the confidence is usually overstated</strong>, so these numbers can be used to sort documents but should not be read as calibrated probabilities.</p>
+</section>
+<section id="words-that-never-occurred" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="words-that-never-occurred"><span class="header-section-number">4.4.3</span> Words that never occurred</h3>
+<p>One arithmetic problem has to be dealt with before fitting. Consider the words that appear in one class of the training data and never in the other.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>never_in_other <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which</span>(total_other <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(never_in_other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>never_in_other</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "aid"          "alien"        "apprehend"    "build"        "caravan"     
+ [6] "census"       "citizenship"  "cross"        "daca"         "deport"      
+[11] "emerg"        "expens"       "humanitarian" "migrant"      "progress"    
+[16] "reduc"        "renov"        "schumer"      "section"      "solv"        
+[21] "stay"        </code></pre>
+</div>
+</div>
+<p>Twenty-one words are used in immigration tweets and never once in an <code>other</code> tweet. Several are the terms one would expect — <code>caravan</code>, <code>deport</code>, <code>daca</code>, <code>migrant</code>, <code>alien</code>, <code>apprehend</code> — and several are not: <code>stay</code>, <code>progress</code>, <code>solv</code>, <code>expens</code> have nothing to do with immigration and are absent from the other class by accident, having been used five or six times in the whole training set and happened to land on one side.</p>
+<p>The estimated rate for such a word in the <code>other</code> class is zero out of 6,395, and because the model multiplies the per-word rates together, a single zero drives the entire product to zero. One occurrence of <code>caravan</code> would then rule out the <code>other</code> label absolutely, no matter what the remaining thirty words in the tweet said.</p>
+<p>That is too strong a conclusion to draw from six thousand words of training text. The absence of a word is evidence that it is rare in that class, not proof that it is impossible.</p>
+<p>The standard repair, <strong>Laplace smoothing</strong>, adds one pretend occurrence of every word to every class before the rates are computed, so that no rate is exactly zero and no single word can veto a class outright.</p>
+</section>
+<section id="fitting" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="fitting"><span class="header-section-number">4.4.4</span> Fitting</h3>
+<p>Fitting is two lines, because fitting is nothing but the counting we have already done.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>p_immigration <span class="ot">&lt;-</span> (total_immigration <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sum</span>(total_immigration <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>p_other       <span class="ot">&lt;-</span> (total_other <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sum</span>(total_other <span class="sc">+</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Each vector holds, for one class, the share of that class’s words accounted for by each word in the vocabulary. The <code>+ 1</code> is the smoothing, visible here as an actual addition rather than hidden behind an argument, and adding it to the denominator as well keeps each vector summing to one.</p>
+<p>One thing remains, which is how common each label is to begin with. A tweet with no informative words in it should fall to whichever label is more common, and Bayes’ rule supplies that correction automatically.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>prior_immigration <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_train <span class="sc">==</span> <span class="st">"immigration"</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>prior_other       <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_train <span class="sc">==</span> <span class="st">"other"</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">other =</span> prior_other, <span class="at">immigration =</span> prior_immigration), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      other immigration 
+      0.613       0.387 </code></pre>
+</div>
+</div>
+<p>That is the whole model: two rate tables and two prior probabilities. Nothing was optimized, nothing converged, and there is no random seed to set. It can also be read directly, which is a thing that could not be said of last week’s forest.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="dv">1000</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="at">immigration =</span> p_immigration[[<span class="st">"border"</span>]],</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">other       =</span> p_other[[<span class="st">"border"</span>]]), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>immigration       other 
+      43.77        7.10 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="dv">1000</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="at">immigration =</span> p_immigration[[<span class="st">"great"</span>]],</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">other       =</span> p_other[[<span class="st">"great"</span>]]), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>immigration       other 
+       9.75       17.74 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="dv">1000</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="at">immigration =</span> p_immigration[[<span class="st">"caravan"</span>]],</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">other       =</span> p_other[[<span class="st">"caravan"</span>]]), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>immigration       other 
+       2.02        0.14 </code></pre>
+</div>
+</div>
+<p>The first word points strongly toward <code>immigration</code> and the second, <code>great</code>, points the other way. The third is one of the twenty-one: its rate in the <code>other</code> class is no longer zero, but it is very small, and a tweet mentioning caravans can still be classified as <code>other</code> if everything else about it says so.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You may be expecting a call to a modeling function here, and <code>e1071</code> does provide <code>naiveBayes()</code>. Given a matrix of numbers, however, that function assumes each feature is normally distributed within each class, which is badly wrong for word counts that are zero in nine cases out of ten; fed this matrix it classifies almost every tweet as <code>immigration</code>. The arithmetic above is the version the literature means by naive Bayes for text, and it is short enough to write out.</p>
+</div>
+</div>
+</section>
+<section id="predicting" class="level3" data-number="4.4.5">
+<h3 data-number="4.4.5" class="anchored" data-anchor-id="predicting"><span class="header-section-number">4.4.5</span> Predicting</h3>
+<p>For a new tweet we work out how well each of the two rate tables accounts for the words it contains, and assign it to whichever does better.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>score_immigration <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(counts_test <span class="sc">%*%</span> <span class="fu">log</span>(p_immigration)) <span class="sc">+</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(prior_immigration)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>score_other <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(counts_test <span class="sc">%*%</span> <span class="fu">log</span>(p_other)) <span class="sc">+</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(prior_other)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(score_immigration <span class="sc">&gt;</span> score_other, <span class="st">"immigration"</span>, <span class="st">"other"</span>),</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] other       other       immigration other       immigration other      
+Levels: other immigration</code></pre>
+</div>
+</div>
+<p>The matrix multiplication does one thing per tweet: for every word in the vocabulary, take that word’s rate under one label, and add it in once for each time the tweet uses it. A tweet using <em>border</em> four times therefore contributes four times the evidence of a tweet using it once, which is the whole reason for keeping counts rather than mere presence.</p>
+<p>Logarithms are used because the alternative is multiplying several hundred numbers of size one in a thousand, which underflows to zero on any computer. Adding logarithms instead leaves the ordering of the two scores unchanged, and the ordering is all we need.</p>
+</section>
+<section id="the-confusion-matrix" class="level3" data-number="4.4.6">
+<h3 data-number="4.4.6" class="anchored" data-anchor-id="the-confusion-matrix"><span class="header-section-number">4.4.6</span> The confusion matrix</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> pred, <span class="at">Actual =</span> y_test)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>cm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Actual
+Predicted     other immigration
+  other          82           5
+  immigration    12          82</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(cm)) <span class="sc">/</span> <span class="fu">sum</span>(cm)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(accuracy, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9061</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">mean</span>(y_test <span class="sc">==</span> <span class="st">"other"</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(baseline, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5193</code></pre>
+</div>
+</div>
+<p>Roughly 90 per cent correct against a baseline of roughly 52 per cent, and unlike last week the gap is large. The model has learned something.</p>
+<p>It is worth being precise about what it is 90 per cent accurate <em>at</em>. This is a corpus assembled so that the two classes would be of comparable size; in Trump’s actual 2019 output, immigration tweets are a clear minority and the tweets that are not about immigration are far more varied than the ones collected here. Run on the full year, the model would meet many more opportunities to produce a false alarm, and its performance would fall.</p>
+<p>Last week’s discipline still applies, then: the summary number is not where the substance lies. The table is.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(pred, y_test, <span class="at">positive =</span> <span class="st">"immigration"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+             Reference
+Prediction    other immigration
+  other          82           5
+  immigration    12          82
+                                             
+               Accuracy : 0.9061             
+                 95% CI : (0.8539, 0.9443)   
+    No Information Rate : 0.5193             
+    P-Value [Acc &gt; NIR] : &lt;0.0000000000000002
+                                             
+                  Kappa : 0.8124             
+                                             
+ Mcnemar's Test P-Value : 0.1456             
+                                             
+            Sensitivity : 0.9425             
+            Specificity : 0.8723             
+         Pos Pred Value : 0.8723             
+         Neg Pred Value : 0.9425             
+             Prevalence : 0.4807             
+         Detection Rate : 0.4530             
+   Detection Prevalence : 0.5193             
+      Balanced Accuracy : 0.9074             
+                                             
+       'Positive' Class : immigration        
+                                             </code></pre>
+</div>
+</div>
+<p><code>caret</code> supplies the quantities that accuracy conceals, and three of them are worth reading now, with a fuller treatment in Week 6.</p>
+<p><strong>No Information Rate</strong> is the baseline computed above, printed by <code>caret</code> so that it cannot be overlooked, together with a test of whether the model beats it.</p>
+<p><strong>Sensitivity</strong>, also called recall, is the share of genuine immigration tweets that the model found. Of the immigration tweets in the test set, it caught almost all of them.</p>
+<p><strong>Positive predictive value</strong>, also called precision, is the share of the tweets it flagged that really were about immigration, and here it is noticeably lower. The model over-flags: it would rather call a borderline tweet <code>immigration</code> than miss one.</p>
+<p>Which of those two numbers matters more is not a statistical question. If the classifier is being used to estimate how much of Trump’s 2019 output concerned immigration, over-flagging inflates the estimate directly and precision is the number to watch. If it is being used to retrieve a set of tweets for a human being to read through, recall matters more and a few false positives cost only reading time.</p>
+</section>
+<section id="the-most-informative-words" class="level3" data-number="4.4.7">
+<h3 data-number="4.4.7" class="anchored" data-anchor-id="the-most-informative-words"><span class="header-section-number">4.4.7</span> The most informative words</h3>
+<p>The fitted model is a pair of tables, so we can ask which words move it most. For each word, compare its rate in one class with its rate in the other, on a log scale so that the two directions are symmetric.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>log_ratio <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">log</span>(p_immigration <span class="sc">/</span> p_other))</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>top <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">head</span>(log_ratio, <span class="dv">12</span>), <span class="fu">tail</span>(log_ratio, <span class="dv">12</span>))</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">2</span>))</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(top, <span class="at">horiz =</span> <span class="cn">TRUE</span>, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">cex.names =</span> <span class="fl">0.8</span>,</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">ifelse</span>(top <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"steelblue"</span>, <span class="st">"darkorange"</span>),</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"log ratio, immigration versus other"</span>,</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"The words that move the classifier"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w04-text-as-data_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is the compensation for having a simple model, and it is worth comparing with last week’s variable importance plot, which could report only <em>how much</em> a feature mattered. Here we can read the direction as well, and the words themselves are legible: <code>southern</code>, <code>apprehend</code>, <code>caravan</code>, <code>alien</code>, <code>humanitarian</code>, <code>loophol</code> on one side, and <code>impeach</code>, <code>witch</code>, <code>hunt</code>, <code>collus</code>, <code>mueller</code> on the other.</p>
+<p>The orange side is worth a moment, because it shows the classifier learning something other than the concept we asked it to learn. Impeachment and the Mueller investigation are not the opposite of immigration. They are simply what else Trump was tweeting about in 2019, and the model has discovered that a tweet about the Mueller report is not about the border. That inference is correct on this corpus and would transfer to no other year, no other author, and no other period.</p>
+</section>
+<section id="reading-the-errors" class="level3" data-number="4.4.8">
+<h3 data-number="4.4.8" class="anchored" data-anchor-id="reading-the-errors"><span class="header-section-number">4.4.8</span> Reading the errors</h3>
+<p>Fewer than twenty test tweets were misclassified, and reading all of them is more informative than any summary statistic.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>test_text <span class="ot">&lt;-</span> tweets<span class="sc">$</span>text[<span class="sc">-</span>train_id]</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>wrong <span class="ot">&lt;-</span> <span class="fu">which</span>(pred <span class="sc">!=</span> y_test)</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(wrong)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> wrong) {</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"actual:"</span>, <span class="fu">as.character</span>(y_test[i]),</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">"| predicted:"</span>, <span class="fu">as.character</span>(pred[i]), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">substr</span>(test_text[i], <span class="dv">1</span>, <span class="dv">180</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>actual: other | predicted: immigration 
+ Everyone very excited about the new deal with Mexico! 
+
+actual: immigration | predicted: other 
+ While the reviews and reporting on our Border Immigration Agreement with Mexico have been very good, there has nevertheless been much false reporting (surprise!) by the Fake and Co 
+
+actual: other | predicted: immigration 
+ “This is not Congressional Oversight, this is bullying.” Jason Riley, The Wall Street Journal 
+
+actual: other | predicted: immigration 
+ Kevin Corke, @FoxNews “Don’t forget, Michael Cohen has already been convicted of perjury and fraud, and as recently as this week, the Wall Street Journal has suggested that he may  
+
+actual: immigration | predicted: other 
+ Our Border Control Agents have done an incredible job under very adverse conditions. I am very proud to have increased their salaries because of the great job they do. Nobody deser 
+
+actual: other | predicted: immigration 
+ As Corey Lewandowski stated very clearly yesterday in front of the House Judiciary Committee, President Trump didn’t do anything wrong or illegal. But they all know that. The Democ 
+
+actual: other | predicted: immigration 
+ “Poll shows Dems losing interest in Impeachment inquiry all across the board. These Polls are actually devastating to the Democrats. But the writing was on the wall. He’s done so m 
+
+actual: other | predicted: immigration 
+ Been fully briefed on earthquake in Southern California. All seems to be very much under control! 
+
+actual: other | predicted: immigration 
+ Senator Cindy Hyde-Smith is doing a GREAT JOB for the people of Mississippi and fully supports our #MAGA Agenda. Cindy is tough on Crime, Strong on the Border and Illegal Immigrati 
+
+actual: other | predicted: immigration 
+ I will be signing our 738 Billion Dollar Defense Spending Bill today. It will include 12 weeks  Paid Parental Leave, gives our troops a raise, importantly creates the SPACE FORCE,  
+
+actual: immigration | predicted: other 
+ Looking forward to soon being in North Carolina to hold a big rally for wonderful Dan Bishop, who is running for Congress. His opponent wants Open Borders, Sanctuary Cities, and So 
+
+actual: other | predicted: immigration 
+ I will be there in two weeks, The Southern White House!https://twitter.com/Trump/status/1204520225607225344 … 
+
+actual: immigration | predicted: other 
+ THANK YOU @DHSgov, @CBP, and @ICEgov! https://t.co/BzNwKoUJlg 
+
+actual: other | predicted: immigration 
+ It was a very bad week for the Democrats, with the GREAT economic numbers, The Virginia disaster and the State of the Union address. Now, with the terrible offers being made by the 
+
+actual: immigration | predicted: other 
+ The Fake News Media, in particular the Failing @nytimes, is writing phony and exaggerated accounts of the Border Detention Centers. First of all, people should not be entering our  
+
+actual: other | predicted: immigration 
+ Just talked to Governor Roy Cooper of North Carolina as Hurricane Dorian ominously comes up the East Coast. We are monitoring it at the @WhiteHouse, ready to assist via our great t 
+
+actual: other | predicted: immigration 
+ I will be interviewed by Jeanine Pirro at 9:00 P.M. on @FoxNews. Watch @JesseBWatters before and @greggutfeld after. All terrific people. I am in the White House waiting for Cryin’ </code></pre>
+</div>
+</div>
+<p>The failures fall into recognizable families, and none of them is random.</p>
+<p>There are two tweets about the <strong>Wall Street</strong> Journal and one in which the writing was on the <strong>wall</strong>, and in each the model saw <em>wall</em>. There is an earthquake in <strong>Southern</strong> California and a reference to the <strong>Southern</strong> White House, in which it saw <em>southern</em>. There is a tweet insisting that the president did nothing <strong>illegal</strong>, in which it saw <em>illeg</em>. These are the near misses the corpus was built to contain, and they are precisely the errors the bag of words guarantees, since <em>Wall Street</em> is a phrase and a bag has no phrases in it.</p>
+<p>There is an endorsement of Senator Cindy Hyde-Smith, who is described as tough on crime and strong on the border and illegal immigration. The coding scheme says that endorsement boilerplate is <code>other</code>, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world. It is failing to reproduce a coding rule, and the rule was a defensible decision that could have gone the other way.</p>
+<p>And there is a tweet thanking <code>@DHSgov</code>, <code>@CBP</code>, and <code>@ICEgov</code>, labeled <code>immigration</code>, that the model called <code>other</code> because after the third line of our cleaning pipeline there was almost nothing left of it but the words <em>thank you</em>.</p>
+<p>Each family points to a different repair: word pairs rather than single words for <em>Wall Street</em>, keeping handles for the CBP tweet, and, for the endorsement boilerplate, nothing that a bag of words can do at all.</p>
+</section>
+</section>
+<section id="the-politics-of-classification" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="the-politics-of-classification"><span class="header-section-number">4.5</span> The politics of classification</h2>
+<p>Every model this term has been an instrument for sorting cases into categories, and text classifiers are distinctive only in that the categories are usually categories of speech.</p>
+<p>Consider what this one is. It is a small machine that reads political speech and decides what it is about. Scaled up and pointed at a stream rather than a file, that is content moderation, media monitoring, and a large part of contemporary state surveillance of political communication. The architecture in this handout is the architecture of those systems, differing in scale and in vocabulary rather than in kind.</p>
+<p>Two properties of what we built are therefore worth carrying forward.</p>
+<p>The first is that the categories arrive from outside the model and are not discoverable from within it. Someone decided that <code>immigration</code> and <code>other</code> were the relevant distinction, and no amount of accuracy makes that the right distinction to have drawn. The choice of categories is prior to everything technical and is almost never presented as a choice.</p>
+<p>The second is that the errors are not evenly distributed. Our classifier over-flags, and the tweets it wrongly flags are not a random selection: they are the ones using the vocabulary of immigration for other purposes. Any system of this kind misclassifies in a patterned way, and the pattern falls on whoever happens to speak in the terms the model has learned to watch for. When the stakes are a table in a paper, this is a measurement error. When the stakes are a takedown, a flag, or a visit, it is something else.</p>
+<p>Week 2 ended on who defines similarity and Week 3 on who sets the threshold. This week the question is who writes the codebook, since by the time the model is trained, the most consequential decisions have already been made and are no longer visible anywhere in the output.</p>
+</section>
+<section id="reading" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="reading"><span class="header-section-number">4.6</span> Reading</h2>
+<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="../references.html#ref-grimmer2013" role="doc-biblioref"><strong>grimmer2013?</strong></a>)</span></p>
+<p>The standard orientation to the field, and the source of the principles this handout has been quietly applying throughout: that all language models are wrong but some are useful, that there is no globally best method, and above all that validation is not optional. Read their discussion of supervised methods alongside Part II, and note how much of the article is about what can go wrong rather than about what to run.</p>
+<p>Denny, M. J., and Spirling, A. 2018. “Text Preprocessing For Unsupervised Learning: Why It Matters, When It Misleads, and What To Do About It.” <em>Political Analysis</em> 26(2): 168–189. <span class="citation" data-cites="denny2018">(<a href="../references.html#ref-denny2018" role="doc-biblioref"><strong>denny2018?</strong></a>)</span></p>
+<p>This is the article behind the cleaning section. Their demonstration is that decisions reported in a sentence of an appendix — stemming, stopwords, whether to lowercase — can change substantive conclusions, and that the ordering of those decisions is itself consequential. Their setting is unsupervised, and the reason to read it here is that supervised work hides the same problem behind an accuracy figure that looks like validation and is not.</p>
+<p>Barberá, P., Boydstun, A. E., Linn, S., McMahon, R., and Nagler, J. 2021. “Automated Text Classification of News Articles: A Practical Guide to Using Supervised Machine Learning Methods.” <em>Political Analysis</em> 29(1): 19–42. <span class="citation" data-cites="barbera2021">(<a href="../references.html#ref-barbera2021" role="doc-biblioref"><strong>barbera2021?</strong></a>)</span></p>
+<p>The closest article to what we did above, and the one to read for the parts this handout compressed. Give particular attention to their treatment of the human coding stage, including how many coders are needed and how disagreement between them should be handled, since that is the stage our corpus has exactly one of.</p>
+<p><strong>Recommended, not required.</strong></p>
+<p>Hopkins, D. J., and King, G. 2010. “A Method of Automated Nonparametric Content Analysis for Social Science.” <em>American Journal of Political Science</em> 54(1): 229–247. <span class="citation" data-cites="hopkins2010">(<a href="../references.html#ref-hopkins2010" role="doc-biblioref"><strong>hopkins2010?</strong></a>)</span></p>
+<p>Worth reading for one argument that cuts against the whole framing of this week. Most political science questions about text are questions about <em>proportions</em> — what share of tweets concerned immigration — rather than about individual documents, and the authors show that a classifier optimized for per-document accuracy can produce biased estimates of exactly those proportions, because its errors need not cancel. If you intend to count categories rather than retrieve documents, this is the article to have read first.</p>
+</section>
+<section id="before-the-workshop" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">4.7</span> Before the workshop</h2>
+<p>Install <code>tm</code>, <code>SnowballC</code>, <code>wordcloud</code>, <code>caret</code>, and <code>e1071</code>, and run every chunk in this handout once. Nothing here takes more than a few seconds, and the entire pipeline runs in well under a minute, which is a pleasant change from last week. <code>e1071</code> is not called directly anywhere below, but <code>caret</code> needs it installed in order to report the confusion matrix.</p>
+<p>Read the data README, at <code>data/trump_immigration_2019_README.md</code> in the course repository, and in particular the coding scheme and the four rules for hard cases. It also carries a content warning that is worth taking seriously: these tweets make disputed empirical claims about immigrants, and some of the language is ugly. They are reproduced unedited because editing them would corrupt the corpus.</p>
+</section>
+<section id="questions-for-the-session" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="questions-for-the-session"><span class="header-section-number">4.8</span> Questions for the session</h2>
+<p>Come with a view on at least two of these.</p>
+<ol type="1">
+<li><p>The independence assumption is false of language and the classifier works anyway. What does that suggest about the relationship between the realism of a model’s assumptions and its usefulness? Is your answer the same for a predictive model as for an explanatory one?</p></li>
+<li><p>Our cleaning pipeline deleted <code>@ThomasHomanICE</code>, the handle of the acting director of ICE, whose presence is close to decisive evidence about a tweet’s topic. Defend the deletion. Then defend the opposite choice. Which argument would you actually make in a paper, and what would you have to report either way?</p></li>
+<li><p>The model learned that <code>impeach</code>, <code>mueller</code>, and <code>collus</code> are evidence against the immigration label. That is correct on this corpus and would transfer to nothing. How would you detect this kind of learning in a model of your own, given that every diagnostic in this handout reports it as success?</p></li>
+<li><p>The coding scheme decides that immigration mentioned as the seventh item in a list of accomplishments is <code>other</code>. A different coder could decide otherwise. Trace what would change: the labels, the model, the accuracy, and the substantive claim you would end up making about how much of Trump’s 2019 output concerned immigration.</p></li>
+<li><p>Our classifier over-flags, calling borderline tweets <code>immigration</code> rather than missing them. Name a research use where that is the right error to make, and one where it would invalidate the result.</p></li>
+<li><p>This corpus was assembled so that the two classes would be roughly balanced, which is why an accuracy figure is interpretable at all. It is therefore no longer a sample of anything. What would you have to do differently if the question were not “is this tweet about immigration” but “what share of Trump’s 2019 tweets were about immigration”?</p></li>
+<li><p>This handout built a machine that reads political speech and decides what it is about, using roughly forty lines of R and 724 labeled examples. Given how little that took, what follows about who is able to build such systems, and about what a political scientist’s distinctive contribution to them should be?</p></li>
+</ol>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
