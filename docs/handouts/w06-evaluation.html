@@ -26,7 +26,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -76,6 +130,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -190,7 +273,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -224,8 +307,43 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#part-i.-what-accuracy-hides" id="toc-part-i.-what-accuracy-hides" class="nav-link active" data-scroll-target="#part-i.-what-accuracy-hides"><span class="header-section-number">6.1</span> Part I. What accuracy hides</a>
+  <ul class="collapse">
+  <li><a href="#the-classifier-rebuilt" id="toc-the-classifier-rebuilt" class="nav-link" data-scroll-target="#the-classifier-rebuilt"><span class="header-section-number">6.1.1</span> The classifier, rebuilt</a></li>
+  <li><a href="#precision-and-recall-at-last" id="toc-precision-and-recall-at-last" class="nav-link" data-scroll-target="#precision-and-recall-at-last"><span class="header-section-number">6.1.2</span> Precision and recall, at last</a></li>
+  <li><a href="#the-threshold-is-a-choice-not-a-finding" id="toc-the-threshold-is-a-choice-not-a-finding" class="nav-link" data-scroll-target="#the-threshold-is-a-choice-not-a-finding"><span class="header-section-number">6.1.3</span> The threshold is a choice, not a finding</a></li>
+  <li><a href="#a-warning-about-those-probabilities" id="toc-a-warning-about-those-probabilities" class="nav-link" data-scroll-target="#a-warning-about-those-probabilities"><span class="header-section-number">6.1.4</span> A warning about those probabilities</a></li>
+  </ul></li>
+  <li><a href="#part-ii.-validating-a-language-model" id="toc-part-ii.-validating-a-language-model" class="nav-link" data-scroll-target="#part-ii.-validating-a-language-model"><span class="header-section-number">6.2</span> Part II. Validating a language model</a>
+  <ul class="collapse">
+  <li><a href="#what-is-in-the-file-and-where-it-came-from" id="toc-what-is-in-the-file-and-where-it-came-from" class="nav-link" data-scroll-target="#what-is-in-the-file-and-where-it-came-from"><span class="header-section-number">6.2.1</span> What is in the file, and where it came from</a></li>
+  <li><a href="#three-label-sources-one-set-of-tweets" id="toc-three-label-sources-one-set-of-tweets" class="nav-link" data-scroll-target="#three-label-sources-one-set-of-tweets"><span class="header-section-number">6.2.2</span> Three label sources, one set of tweets</a></li>
+  <li><a href="#check-one-does-the-claim-survive-checking" id="toc-check-one-does-the-claim-survive-checking" class="nav-link" data-scroll-target="#check-one-does-the-claim-survive-checking"><span class="header-section-number">6.2.3</span> Check one, does the claim survive checking</a></li>
+  <li><a href="#check-two-does-the-answer-survive-a-reworded-prompt" id="toc-check-two-does-the-answer-survive-a-reworded-prompt" class="nav-link" data-scroll-target="#check-two-does-the-answer-survive-a-reworded-prompt"><span class="header-section-number">6.2.4</span> Check two, does the answer survive a reworded prompt</a></li>
+  <li><a href="#check-three-does-a-second-model-agree" id="toc-check-three-does-a-second-model-agree" class="nav-link" data-scroll-target="#check-three-does-a-second-model-agree"><span class="header-section-number">6.2.5</span> Check three, does a second model agree</a></li>
+  <li><a href="#agreement-is-not-accuracy" id="toc-agreement-is-not-accuracy" class="nav-link" data-scroll-target="#agreement-is-not-accuracy"><span class="header-section-number">6.2.6</span> Agreement is not accuracy</a></li>
+  </ul></li>
+  <li><a href="#part-iii.-why-a-good-score-can-be-the-wrong-number" id="toc-part-iii.-why-a-good-score-can-be-the-wrong-number" class="nav-link" data-scroll-target="#part-iii.-why-a-good-score-can-be-the-wrong-number"><span class="header-section-number">6.3</span> Part III. Why a good score can be the wrong number</a>
+  <ul class="collapse">
+  <li><a href="#what-the-score-is-a-score-of" id="toc-what-the-score-is-a-score-of" class="nav-link" data-scroll-target="#what-the-score-is-a-score-of"><span class="header-section-number">6.3.1</span> What the score is a score of</a></li>
+  <li><a href="#contamination-and-leakage" id="toc-contamination-and-leakage" class="nav-link" data-scroll-target="#contamination-and-leakage"><span class="header-section-number">6.3.2</span> Contamination and leakage</a></li>
+  <li><a href="#what-a-benchmark-number-means" id="toc-what-a-benchmark-number-means" class="nav-link" data-scroll-target="#what-a-benchmark-number-means"><span class="header-section-number">6.3.3</span> What a benchmark number means</a></li>
+  </ul></li>
+  <li><a href="#part-iv.-when-the-measurement-feeds-a-regression" id="toc-part-iv.-when-the-measurement-feeds-a-regression" class="nav-link" data-scroll-target="#part-iv.-when-the-measurement-feeds-a-regression"><span class="header-section-number">6.4</span> Part IV. When the measurement feeds a regression</a>
+  <ul class="collapse">
+  <li><a href="#what-to-do-about-it" id="toc-what-to-do-about-it" class="nav-link" data-scroll-target="#what-to-do-about-it"><span class="header-section-number">6.4.1</span> What to do about it</a></li>
+  </ul></li>
+  <li><a href="#the-politics-of-who-may-audit" id="toc-the-politics-of-who-may-audit" class="nav-link" data-scroll-target="#the-politics-of-who-may-audit"><span class="header-section-number">6.5</span> The politics of who may audit</a></li>
+  <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading"><span class="header-section-number">6.6</span> Reading</a></li>
+  <li><a href="#before-the-workshop" id="toc-before-the-workshop" class="nav-link" data-scroll-target="#before-the-workshop"><span class="header-section-number">6.7</span> Before the workshop</a></li>
+  <li><a href="#questions-for-the-session" id="toc-questions-for-the-session" class="nav-link" data-scroll-target="#questions-for-the-session"><span class="header-section-number">6.8</span> Questions for the session</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -249,9 +367,615 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><em>In preparation.</em></p>
+<p><em>Week 6, 7 October</em></p>
+<p>Last week a language model was asked to sort 181 tweets into two categories, having been shown no labeled examples whatever, and it agreed with the human coder on 95 percent of them. The Naive Bayes classifier built in Week 4, trained on 724 hand-coded tweets, managed roughly 90 percent on the same held-out cases. If those two numbers are the whole story, then Week 4 was a waste of an afternoon, and the sensible advice to anybody studying political text is to write a paragraph of English and stop there.</p>
+<p>Both numbers are accurate. However, the conclusion does not follow from them, and the gap between what the figures say and what they license is the subject of this session.</p>
+<p>Two reasons are developed below, and they operate at different levels. The first concerns what an accuracy figure is a statement about, which turns out to be agreement with one coder’s application of one codebook rather than correspondence with the world. The second is more specific and, for anybody intending to use these labels in a project, considerably more alarming: labels that are 95 percent correct do not yield estimates that are 95 percent correct, and the error that survives is not noise but bias.</p>
+<section id="part-i.-what-accuracy-hides" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="part-i.-what-accuracy-hides"><span class="header-section-number">6.1</span> Part I. What accuracy hides</h2>
+<section id="the-classifier-rebuilt" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="the-classifier-rebuilt"><span class="header-section-number">6.1.1</span> The classifier, rebuilt</h3>
+<p>Everything in this part runs on the Week 4 pipeline, compressed and otherwise unchanged. Nothing in the chunk below is new, and the commentary on any line of it is in last week but one.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tm"</span>, <span class="st">"SnowballC"</span>, <span class="st">"caret"</span>, <span class="st">"e1071"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>url4 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">"AppliedAI-PoliSci/refs/heads/main/data/"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               <span class="st">"trump_immigration_2019.csv"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>tweets <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url4, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>tweets<span class="sc">$</span>label <span class="ot">&lt;-</span> <span class="fu">factor</span>(tweets<span class="sc">$</span>label, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>corpus <span class="ot">&lt;-</span> <span class="fu">VCorpus</span>(<span class="fu">VectorSource</span>(tweets<span class="sc">$</span>text))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>replace_with_space <span class="ot">&lt;-</span> <span class="fu">content_transformer</span>(<span class="cf">function</span>(x, pattern) {</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub</span>(pattern, <span class="st">" "</span>, x)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus, <span class="fu">content_transformer</span>(tolower))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"http[s]?://</span><span class="sc">\\</span><span class="st">S*"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"@</span><span class="sc">\\</span><span class="st">S+"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, replace_with_space, <span class="st">"[^a-z ]"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, removeWords, <span class="fu">stopwords</span>(<span class="st">"english"</span>))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, stemDocument)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(clean, stripWhitespace)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>dtm <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(clean)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">floor</span>(<span class="fl">0.8</span> <span class="sc">*</span> <span class="fu">nrow</span>(tweets))</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>freq_words <span class="ot">&lt;-</span> <span class="fu">findFreqTerms</span>(dtm[train_id, ], <span class="dv">5</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>counts_train <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm[train_id, freq_words])</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>counts_test  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm[<span class="sc">-</span>train_id, freq_words])</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> tweets<span class="sc">$</span>label[train_id]</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>y_test  <span class="ot">&lt;-</span> tweets<span class="sc">$</span>label[<span class="sc">-</span>train_id]</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>p_immigration <span class="ot">&lt;-</span> (<span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"immigration"</span>, ]) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"immigration"</span>, ]) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>p_other <span class="ot">&lt;-</span> (<span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"other"</span>, ]) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">colSums</span>(counts_train[y_train <span class="sc">==</span> <span class="st">"other"</span>, ]) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>margin <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(counts_test <span class="sc">%*%</span> <span class="fu">log</span>(p_immigration)) <span class="sc">+</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(<span class="fu">mean</span>(y_train <span class="sc">==</span> <span class="st">"immigration"</span>)) <span class="sc">-</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.vector</span>(counts_test <span class="sc">%*%</span> <span class="fu">log</span>(p_other)) <span class="sc">-</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(<span class="fu">mean</span>(y_train <span class="sc">==</span> <span class="st">"other"</span>))</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn the score difference into a probability that the tweet is about</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># immigration. This is the quantity the threshold is applied to.</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>margin))</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>nb_pred <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">"immigration"</span>, <span class="st">"other"</span>),</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>                  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Two lines there need explaining, because the whole of this part depends on them.</p>
+<p><code>margin</code> is the difference between the two scores Week 4 computed separately, and the size of that difference records how lopsided the classifier’s judgment is. It is not on any scale a reader can interpret, since it is a sum of logarithms whose units mean nothing outside the model. The next line therefore converts it into something that does mean something: <span class="math inline">\(P(\text{immigration} \mid \text{tweet})\)</span>, the probability the classifier assigns to a tweet being about immigration. The conversion is the familiar logistic transformation, and it is monotone, so it reorders nothing.</p>
+<p><strong>The classifier’s default is to flag a tweet when that probability exceeds 0.5</strong>, which is simply the rule that a tweet goes to whichever class the model thinks more likely. Comparing the probability against 0.5 and comparing the margin against zero are the same comparison written twice. That cut point, rather than anything in the classifier itself, is what we are about to interrogate.</p>
+</section>
+<section id="precision-and-recall-at-last" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="precision-and-recall-at-last"><span class="header-section-number">6.1.2</span> Precision and recall, at last</h3>
+<p>Twice now, in the Week 2 and Week 4 assignments, two numbers have been deferred with a promise that they belong here. Both describe the same confusion matrix from different directions, and both are computed with respect to a positive class that the researcher nominates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(nb_pred, y_test, <span class="at">positive =</span> <span class="st">"immigration"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cm<span class="sc">$</span>table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Reference
+Prediction    other immigration
+  other          82           5
+  immigration    12          82</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(cm<span class="sc">$</span>byClass[<span class="fu">c</span>(<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1"</span>)], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Precision    Recall        F1 
+    0.872     0.943     0.906 </code></pre>
+</div>
+</div>
+<p><strong>Recall</strong>, also reported as sensitivity, answers a question about the cases that genuinely are positive: of the tweets that really concern immigration, what proportion did the classifier find? <strong>Precision</strong>, reported by <code>caret</code> as positive predictive value, answers a question about the cases the classifier flagged: of the tweets it called immigration, what proportion really were? The first is a statement about coverage, the second about trustworthiness, and a classifier can be excellent at one while being poor at the other.</p>
+<p>Neither, however, is a property the classifier possesses on its own: both are properties of the classifier taken together with a decision about where the line is drawn, and the next section makes that dependence visible.</p>
+</section>
+<section id="the-threshold-is-a-choice-not-a-finding" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="the-threshold-is-a-choice-not-a-finding"><span class="header-section-number">6.1.3</span> The threshold is a choice, not a finding</h3>
+<p>Flagging a tweet when the probability passes 0.5 is a convention rather than a result. Any other cut point produces a different classifier from the same fitted model, and nothing in the data says that one half is the right place to stand.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cuts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>sweep_out <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (cc <span class="cf">in</span> cuts) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  pred_c <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(prob <span class="sc">&gt;</span> cc, <span class="st">"immigration"</span>, <span class="st">"other"</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  tp <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred_c <span class="sc">==</span> <span class="st">"immigration"</span> <span class="sc">&amp;</span> y_test <span class="sc">==</span> <span class="st">"immigration"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  fp <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred_c <span class="sc">==</span> <span class="st">"immigration"</span> <span class="sc">&amp;</span> y_test <span class="sc">==</span> <span class="st">"other"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  fn <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred_c <span class="sc">==</span> <span class="st">"other"</span> <span class="sc">&amp;</span> y_test <span class="sc">==</span> <span class="st">"immigration"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  tn <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred_c <span class="sc">==</span> <span class="st">"other"</span> <span class="sc">&amp;</span> y_test <span class="sc">==</span> <span class="st">"other"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  sweep_out <span class="ot">&lt;-</span> <span class="fu">rbind</span>(sweep_out,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(<span class="at">threshold =</span> cc,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                                <span class="at">flagged   =</span> tp <span class="sc">+</span> fp,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                                <span class="at">precision =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fp),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                                <span class="at">recall    =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fn),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                                <span class="at">accuracy  =</span> (tp <span class="sc">+</span> tn) <span class="sc">/</span> <span class="fu">length</span>(y_test)))</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>sweep_out<span class="sc">$</span>default <span class="ot">&lt;-</span> sweep_out<span class="sc">$</span>threshold <span class="sc">==</span> <span class="fl">0.5</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(sweep_out[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  threshold flagged precision recall accuracy
+1       0.1     106     0.802  0.977    0.873
+2       0.2     100     0.840  0.966    0.895
+3       0.3      99     0.848  0.966    0.901
+4       0.4      96     0.865  0.954    0.906
+5       0.5      94     0.872  0.943    0.906
+6       0.6      91     0.901  0.943    0.923
+7       0.7      90     0.900  0.931    0.917
+8       0.8      86     0.907  0.897    0.906
+9       0.9      81     0.914  0.851    0.890</code></pre>
+</div>
+</div>
+<p>Read that table one row at a time, because each row is a complete confusion matrix compressed into three numbers. At a threshold of 0.1 the classifier flags a tweet on the slightest suspicion, so it finds nearly every immigration tweet and buys that coverage with false alarms. At 0.9 it flags only what it is nearly certain about, and the tweets it flags are nearly all correct, while a good many genuine ones are let through. The row marked 0.5 is the default, and it is one row among nine rather than the answer.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sweep_out, <span class="fu">aes</span>(recall, precision)) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">colour =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">colour =</span> <span class="st">"grey25"</span>, <span class="at">size =</span> <span class="fl">1.9</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> threshold), <span class="at">size =</span> <span class="fl">3.1</span>, <span class="at">colour =</span> <span class="st">"grey25"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.35</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> sweep_out[sweep_out<span class="sc">$</span>default, ],</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"maroon"</span>, <span class="at">size =</span> <span class="fl">3.4</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> sweep_out[sweep_out<span class="sc">$</span>default, ],</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">label =</span> <span class="st">"default, p = 0.5"</span>, <span class="at">colour =</span> <span class="st">"maroon"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">3.3</span>, <span class="at">hjust =</span> <span class="fl">1.15</span>, <span class="at">vjust =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">max</span>(sweep_out<span class="sc">$</span>recall) <span class="sc">+</span> <span class="fl">0.04</span>) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"recall"</span>, <span class="at">y =</span> <span class="st">"precision"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Every point is the same classifier, cut in a different place"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Labels are the probability threshold for flagging a tweet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w06-evaluation_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The curve falls from left to right, which is the trade-off drawn rather than described, and the labels say what it costs to move along it. The maroon point is not privileged. It is simply where a convention happens to put us, and its neighbors show what a different convention would have bought.</p>
+<p>Which point on that curve is the right one is not a question the data can answer. If the labels are going to be counted, for instance to estimate what share of a year’s output concerned immigration, then false alarms inflate the count directly and precision is the quantity to protect. If the labels are going to retrieve a set of documents for a person to read, missing cases is the costly error and recall matters more, since a false alarm costs only reading time. The choice is made by the purpose, and reporting the accuracy without reporting the purpose conceals it.</p>
+</section>
+<section id="a-warning-about-those-probabilities" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="a-warning-about-those-probabilities"><span class="header-section-number">6.1.4</span> A warning about those probabilities</h3>
+<p>The thresholds above are interpretable, and the probabilities they are applied to are a good deal less trustworthy than they look.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">table</span>(<span class="fu">cut</span>(prob, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="fl">0.99</span>, <span class="dv">1</span>))) <span class="sc">/</span> <span class="fu">length</span>(prob), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  (0,0.01] (0.01,0.1]  (0.1,0.5]  (0.5,0.9] (0.9,0.99]   (0.99,1] 
+     0.337      0.077      0.066      0.072      0.116      0.331 </code></pre>
+</div>
+</div>
+<p>Most tweets sit at one end or the other, with the classifier reporting near-certainty in both directions. That is why moving the threshold from 0.1 to 0.9 changes the label of fewer tweets than you might expect: most of them were never close to the line.</p>
+<p>The cause is the independence assumption from Week 4. A tweet containing <em>border</em>, <em>southern</em>, <em>wall</em>, and <em>patrol</em> supplies four pieces of evidence that the model treats as independent when they are closer to one piece stated four times, so the evidence is multiplied rather than discounted and the probability is driven to an extreme. The ordering of the tweets is still informative, which is why the sweep works at all. The numbers themselves should not be read as the model’s honest degree of belief.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Calibration</strong> is a third property, distinct from both of these: whether a model that says seventy percent is right about seventy percent of the time. It is the central question for anything used as an early warning system, so it belongs with next week’s material on crisis management rather than here.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="part-ii.-validating-a-language-model" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="part-ii.-validating-a-language-model"><span class="header-section-number">6.2</span> Part II. Validating a language model</h2>
+<p>Week 5 ended with an admission. A language model had classified a corpus, the output had the right shape, and nothing in that session established whether any of it was correct, because the NATO tweets carried no labels to check against. The instrument required was the one Week 4 built, and it is applied here.</p>
+<p>Two systems are now in play, so the naming below is fixed and used consistently. <strong>The classifier</strong> is the Naive Bayes model of Week 4, trained on 724 hand-coded tweets. <strong>The model</strong>, or the language model, is the one from last week, which was trained on nothing of ours and told what to do in a paragraph of English.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>url6 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"AppliedAI-PoliSci/refs/heads/main/data/"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"llm_labels_w6.csv"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>llm <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url6, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(llm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   181 obs. of  7 variables:
+ $ id        : num  1.12e+18 1.12e+18 1.11e+18 1.17e+18 1.16e+18 ...
+ $ date      : chr  "2019-05-04 21:49" "2019-04-23 23:47" "2019-03-14 22:46" "2019-09-17 11:38" ...
+ $ text      : chr  "Very good call yesterday with President Putin of Russia. Tremendous potential for a good/great relationship wit"| __truncated__ "Great interview by Jared. Nice to have extraordinarily smart people serving our Country! https://t.co/d6Tgrn4Tzn" "A vote for today’s resolution by Republican Senators is a vote for Nancy Pelosi, Crime, and the Open Border Democrats!" "Beautiful evening in New Mexico with Great American Patriots! https://t.co/S8eDG3dAq0" ...
+ $ human     : chr  "other" "other" "immigration" "other" ...
+ $ llm_main  : chr  "other" "other" "immigration" "other" ...
+ $ llm_reword: chr  "other" "other" "immigration" "other" ...
+ $ llm_model2: chr  "other" "other" "immigration" "other" ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(llm<span class="sc">$</span>id <span class="sc">==</span> tweets<span class="sc">$</span>id[<span class="sc">-</span>train_id])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<p>That last line is not ceremony. The file holds the same 181 tweets in the same order as the Week 4 test set, and if it ever stops doing so, every number below becomes meaningless without becoming visibly wrong. Check alignment whenever you compare two sources of labels for the same cases.</p>
+<section id="what-is-in-the-file-and-where-it-came-from" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="what-is-in-the-file-and-where-it-came-from"><span class="header-section-number">6.2.1</span> What is in the file, and where it came from</h3>
+<p>The file carries four labels for every tweet, and the rest of this part is built on the differences between them, so it is worth being precise about what each one is.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What produced it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>human</code></td>
+<td>The Week 4 hand coding, one person working from a written codebook</td>
+</tr>
+<tr class="even">
+<td><code>llm_main</code></td>
+<td>A language model, given the prompt below, called <strong>prompt A</strong></td>
+</tr>
+<tr class="odd">
+<td><code>llm_reword</code></td>
+<td>The <strong>same model</strong> on the same tweets, given a differently worded prompt saying the same thing, called <strong>prompt B</strong></td>
+</tr>
+<tr class="even">
+<td><code>llm_model2</code></td>
+<td>A <strong>second, larger model</strong> from the same provider, given prompt A again</td>
+</tr>
+</tbody>
+</table>
+<p>So two things vary, and only one at a time. Comparing <code>llm_main</code> against <code>llm_reword</code> holds the model fixed and changes the wording. Comparing <code>llm_main</code> against <code>llm_model2</code> holds the wording fixed and changes the model. The exact model names and the date of the run are recorded in <code>data/llm_labels_w6_README.md</code>, since a measurement of this kind is meaningless without them.</p>
+<p>Both prompts were written to do the same job, and neither is a straw man.</p>
+<p><strong>Prompt A</strong>, which produced <code>llm_main</code> and <code>llm_model2</code>:</p>
+<blockquote class="blockquote">
+<p>You are coding tweets for a political science project.</p>
+<p>Decide whether immigration is a main subject of the tweet. This includes the southern border, the border wall, illegal immigration, deportation, ICE, sanctuary cities, asylum, visas, and DACA.</p>
+<p>If immigration is mentioned only in passing within a longer list of topics, code it as other.</p>
+</blockquote>
+<p><strong>Prompt B</strong>, which produced <code>llm_reword</code>:</p>
+<blockquote class="blockquote">
+<p>Classify each tweet by topic.</p>
+<p>Answer immigration if the tweet concerns immigration or border policy in any substantial way. Answer other for everything else.</p>
+</blockquote>
+<p>Read them side by side before going on, because the comparison later depends on your judgment that these are two reasonable attempts at one instruction rather than a good prompt and a bad one. Prompt A is longer, gives examples, and states the rule about passing mentions. Prompt B is shorter and leaves “substantial” to the model. Either is the sort of thing a researcher writes first, and neither contains an error.</p>
+<p>The script that produced the file is in the repository at <code>R/w6_generate_llm_labels.R</code>, and the provenance, including what is and is not reproducible about it, is in <code>data/llm_labels_w6_README.md</code>. Read both before the session. The session concerns evaluation, and a measurement whose origin is undocumented cannot be evaluated at all.</p>
+</section>
+<section id="three-label-sources-one-set-of-tweets" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="three-label-sources-one-set-of-tweets"><span class="header-section-number">6.2.2</span> Three label sources, one set of tweets</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>human <span class="ot">&lt;-</span> <span class="fu">factor</span>(llm<span class="sc">$</span>human, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>llm_main <span class="ot">&lt;-</span> <span class="fu">factor</span>(llm<span class="sc">$</span>llm_main, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(nb_pred, human, <span class="at">positive =</span> <span class="st">"immigration"</span>)<span class="sc">$</span>table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Reference
+Prediction    other immigration
+  other          82           5
+  immigration    12          82</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(llm_main, human, <span class="at">positive =</span> <span class="st">"immigration"</span>)<span class="sc">$</span>table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Reference
+Prediction    other immigration
+  other          87           2
+  immigration     7          85</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">rbind</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">naive_bayes =</span> <span class="fu">confusionMatrix</span>(nb_pred, human,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">positive =</span> <span class="st">"immigration"</span>)<span class="sc">$</span>byClass[<span class="fu">c</span>(<span class="st">"Precision"</span>, <span class="st">"Recall"</span>)],</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">llm         =</span> <span class="fu">confusionMatrix</span>(llm_main, human,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">positive =</span> <span class="st">"immigration"</span>)<span class="sc">$</span>byClass[<span class="fu">c</span>(<span class="st">"Precision"</span>, <span class="st">"Recall"</span>)]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Precision Recall
+naive_bayes     0.872  0.943
+llm             0.924  0.977</code></pre>
+</div>
+</div>
+<p>The language model outperforms the classifier, and it does so having been shown no training data at all. The result is real and should be taken seriously, since it is close to what the published literature reports.</p>
+<p>However, the shape of the model’s errors tells us more than the headline figure does. Recall is much higher than precision, which means the model rarely misses an immigration tweet and fairly regularly flags one the coder did not. Rather than theorize about why, we can read the mistakes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>wrong <span class="ot">&lt;-</span> llm[llm<span class="sc">$</span>human <span class="sc">!=</span> llm<span class="sc">$</span>llm_main, <span class="fu">c</span>(<span class="st">"text"</span>, <span class="st">"human"</span>, <span class="st">"llm_main"</span>)]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(wrong)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>false_alarms <span class="ot">&lt;-</span> wrong[wrong<span class="sc">$</span>human <span class="sc">==</span> <span class="st">"other"</span>, ]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(false_alarms)) {</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"-"</span>, <span class="fu">substr</span>(false_alarms<span class="sc">$</span>text[i], <span class="dv">1</span>, <span class="dv">190</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- ....Kevin is strong on Securing the Border, #USMCA, protecting our #2A, and Loves our Vets and Military. Kevin is a true friend, and has my Complete and Total Endorsement! 
+
+- MISSISSIPPI! There is a VERY important election for Governor on November 5th. I need you to get out and VOTE for our Great Republican nominee, @TateReeves. Tate is Strong on Crime, tough on  
+
+- Senator Cindy Hyde-Smith is doing a GREAT JOB for the people of Mississippi and fully supports our #MAGA Agenda. Cindy is tough on Crime, Strong on the Border and Illegal Immigration.... 
+
+- I will be signing our 738 Billion Dollar Defense Spending Bill today. It will include 12 weeks  Paid Parental Leave, gives our troops a raise, importantly creates the SPACE FORCE, SOUTHERN B 
+
+- ..that this Administration has done. They don’t talk about the great economy, the big tax and regulation cuts, the rebuilding of the Military, “Choice” at our VA, our Vets, Judges and Suprem 
+
+- Looking forward to being in the North Carolina tomorrow night. We’re having a BIG RALLY for a great guy, Dan Bishop. Strong on Crime, Borders, your Military and our Vets, we need Dan Bishop  
+
+- I will be interviewed by Jeanine Pirro at 9:00 P.M. on @FoxNews. Watch @JesseBWatters before and @greggutfeld after. All terrific people. I am in the White House waiting for Cryin’ Chuck and </code></pre>
+</div>
+</div>
+<p>Six of these seven are the same kind of tweet. They are campaign endorsements and lists of accomplishments, in which the border appears as one item in a series: strong on crime, strong on the border, protects the Second Amendment, loves our veterans. The defense spending bill tweet is the purest case, since “SOUTHERN BORDER WALL FUNDING” sits in a list alongside parental leave, a troop pay raise, the Space Force, and the smoking age.</p>
+<p>Now recall where those tweets got their labels. The Week 4 codebook has a rule for exactly this situation: a passing mention inside a longer list is coded <code>other</code>. A second rule covers endorsement boilerplate, on the grounds that the border in such a tweet occupies one slot in a formula rather than serving as its subject. Those rules were written by one person, in an afternoon, to resolve cases the original scheme had not anticipated.</p>
+<p>So the model is not misreading English. It is reading these tweets much as you or I would, noticing that immigration is mentioned, and failing to apply a convention that a human coder invented and wrote down somewhere the model never saw. Its errors concentrate almost entirely on the cases where the codebook had to make a judgment call.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>missed <span class="ot">&lt;-</span> wrong[wrong<span class="sc">$</span>human <span class="sc">==</span> <span class="st">"immigration"</span>, ]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(missed)) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"-"</span>, <span class="fu">substr</span>(missed<span class="sc">$</span>text[i], <span class="dv">1</span>, <span class="dv">190</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- So now the Obama appointed judge on the Census case (Are you a Citizen of the United States?) won’t let the Justice Department use the lawyers  that it wants to use. Could this be a first? 
+
+- ....This will supersede USMCA. Likewise I am looking at an economic penalty for the 500 Billion Dollars in illegal DRUGS that are shipped and smuggled through Mexico and across our Southern  </code></pre>
+</div>
+</div>
+<p>The two it missed point the same way. One concerns the census citizenship question, which the codebook counts as immigration and which a reasonable person might not. The other is about drugs smuggled across the southern border, where the codebook says that drugs count only when the tweet ties them to immigrants or the border, and this tweet arguably does. Neither is a stupid mistake, and both are disagreements about a rule rather than about the tweet.</p>
+<p>Keep this in mind for Part III, because it is the hinge of the whole session. Our 95 percent is not a measure of how well the model understands immigration. It is a measure of how often it happens to apply the same conventions as one coder, and the five percent where it fails is made almost entirely of the places where those conventions were contestable.</p>
+</section>
+<section id="check-one-does-the-claim-survive-checking" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="check-one-does-the-claim-survive-checking"><span class="header-section-number">6.2.3</span> Check one, does the claim survive checking</h3>
+<p>The syllabus names three reliability checks, and the first applies whenever a model asserts something that could in principle be looked up. Ask it for a source, then verify that the source exists and says what the model says it says.</p>
+<p>Nothing in the file above bears on this, since it is not a classification problem, which makes it a workshop exercise rather than a chunk here. Use something you can actually check, and Fearon and Laitin’s 2003 article serves well, since it is on the Week 3 reading list and already in your possession:</p>
+<blockquote class="blockquote">
+<p>Ask the model what Fearon and Laitin found about the relationship between ethnic diversity and civil war onset, and then ask it for the page on which they report it. Open the article and look.</p>
+</blockquote>
+<p>Then do the same with an article you know well from another course, and then with one you have only heard of. The third is the interesting case, because it is the one where you would have believed the answer.</p>
+<p>What you are looking for is not an error of the ordinary kind. It is a reference with a plausible author, a plausible journal, a plausible year, and a page number, for an article that does not exist, or a real article that says something else. The output gives you nothing to go on, since a fabricated citation is written in exactly the same confident register as a correct one.</p>
+<p>This matters beyond the parlor trick. In Part II we treated the model’s labels as data, and the only reason we could trust them at all is that we had 181 human judgments to check them against. The moment a model asserts something you cannot check, you are relying on fluency as a proxy for accuracy, and these are separate properties of a text. Only one of them is visible without leaving the page.</p>
+</section>
+<section id="check-two-does-the-answer-survive-a-reworded-prompt" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="check-two-does-the-answer-survive-a-reworded-prompt"><span class="header-section-number">6.2.4</span> Check two, does the answer survive a reworded prompt</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>llm_reword <span class="ot">&lt;-</span> <span class="fu">factor</span>(llm<span class="sc">$</span>llm_reword, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">as_written =</span> llm_main, <span class="at">reworded =</span> llm_reword)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             reworded
+as_written    other immigration
+  other          82           7
+  immigration     0          92</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">mean</span>(llm_main <span class="sc">==</span> llm_reword), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.961</code></pre>
+</div>
+</div>
+<p>Prompt A and prompt B are both defensible, as you saw above, and the model is identical in the two runs. The only thing that changed between them is the wording of the instruction. Yet a share of the corpus is labeled differently depending on which was used, and the identity of those tweets is more instructive than their number.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>moved <span class="ot">&lt;-</span> llm[llm<span class="sc">$</span>llm_main <span class="sc">!=</span> llm<span class="sc">$</span>llm_reword, ]</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(moved)) {</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"-"</span>, <span class="fu">substr</span>(moved<span class="sc">$</span>text[i], <span class="dv">1</span>, <span class="dv">170</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- ....energy independence, manufacturing resilience, illegal immigration coming down, the Wall going up, China confronted, the caliphate defeated, NAFTA renegotiated, our m 
+
+- So now the Obama appointed judge on the Census case (Are you a Citizen of the United States?) won’t let the Justice Department use the lawyers  that it wants to use. Coul 
+
+- ....This will supersede USMCA. Likewise I am looking at an economic penalty for the 500 Billion Dollars in illegal DRUGS that are shipped and smuggled through Mexico and  
+
+- All necessary work has been completed to declare Mexican Cartels terrorist organizations. Statutorily we are ready to do so. However, at the request of a man who I like a 
+
+- “Poll shows Dems losing interest in Impeachment inquiry all across the board. These Polls are actually devastating to the Democrats. But the writing was on the wall. He’s 
+
+- It was a very bad week for the Democrats, with the GREAT economic numbers, The Virginia disaster and the State of the Union address. Now, with the terrible offers being m 
+
+- The White House will be hosting a very big and very important Social Media Summit today. Would I have become President without Social Media? Yes (probably)! At its conclu </code></pre>
+</div>
+</div>
+<p>These are the same families of tweet as the errors above. There is the long list of accomplishments with “illegal immigration coming down” buried in it, the census citizenship question again, the drug smuggling tweet again, and a poll quotation that mentions building the wall in passing. The tweets that move when the prompt moves are the tweets that were ambiguous under the codebook in the first place.</p>
+<p>That is reassuring and alarming in about equal measure. Reassuring, because the instability is not arbitrary and the model is not flailing: it is unstable exactly where a careful human coder had to stop and make a decision. Alarming, because those borderline cases are frequently the substantively interesting ones, and because a researcher who ran only one prompt would never learn that an eighth of the ambiguous cases could have gone the other way.</p>
+<p>Set that share against the error rate from the previous section. The model disagrees with the human coder on about five percent of tweets, and it disagrees with itself under rewording on about four percent. The instability introduced by a reasonable change of wording is therefore nearly as large as the measured error, which means that a paper reporting the accuracy of such a classifier without reporting its sensitivity to the prompt has reported roughly half of what the reader needs.</p>
+</section>
+<section id="check-three-does-a-second-model-agree" class="level3" data-number="6.2.5">
+<h3 data-number="6.2.5" class="anchored" data-anchor-id="check-three-does-a-second-model-agree"><span class="header-section-number">6.2.5</span> Check three, does a second model agree</h3>
+<p>Here the wording is held fixed and the model changes. Both runs use prompt A, and the second model is a larger one from the same provider, so this asks whether the measurement survives a change of instrument.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>llm_model2 <span class="ot">&lt;-</span> <span class="fu">factor</span>(llm<span class="sc">$</span>llm_model2, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"other"</span>, <span class="st">"immigration"</span>))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">prompt_A_model_1 =</span> llm_main, <span class="at">prompt_A_model_2 =</span> llm_model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                prompt_A_model_2
+prompt_A_model_1 other immigration
+     other          83           6
+     immigration     1          91</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">mean</span>(llm_main <span class="sc">==</span> llm_model2), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.961</code></pre>
+</div>
+</div>
+<p>Note what this check cannot do. The two models come from one company, trained in broadly similar ways on broadly similar text, so they are closer to two measurements with the same instrument than to two independent instruments. Agreement between them is therefore a weaker form of evidence than agreement between, say, two coders trained separately, and the next section says why that matters.</p>
+</section>
+<section id="agreement-is-not-accuracy" class="level3" data-number="6.2.6">
+<h3 data-number="6.2.6" class="anchored" data-anchor-id="agreement-is-not-accuracy"><span class="header-section-number">6.2.6</span> Agreement is not accuracy</h3>
+<p>Three numbers have now been produced, and the temptation is to read them as three measurements of the same thing. They are not, and the distinction is the most important idea in this part.</p>
+<p>Agreement between two prompts, or between two models, establishes that a measurement is <strong>reproducible</strong>. It says that the number would come out much the same if somebody else ran it, which is a real property and not a trivial one. However, it says nothing whatever about whether the number is <strong>right</strong>. Two models trained on overlapping corpora, with overlapping assumptions about what the word “border” implies, may agree with one another precisely because they share a bias, and their agreement would then be evidence of a common error rather than of a correct answer.</p>
+<p>Only the human labels speak to accuracy. Thus the comparison that matters is the first one, against <code>human</code>, and the reliability checks are supporting evidence rather than substitutes.</p>
+<p>That said, the human labels are themselves a measurement rather than the truth. They were produced by one coder applying one written codebook, and the Week 4 documentation records the four rules invented to resolve cases the scheme did not anticipate. A second coder would place some tweets differently. The honest statement of the result is therefore not that the model is 95 percent accurate, but that it agrees 95 percent of the time with one person’s application of one coding scheme to 181 tweets. Every further claim rests on that sentence, and it is a good deal weaker than the number alone suggests. On the practice of treating human judgment as the benchmark, and on what that requires, see Lowe and Benoit <span class="citation" data-cites="lowe2013">(<a href="../references.html#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span>.</p>
+</section>
+</section>
+<section id="part-iii.-why-a-good-score-can-be-the-wrong-number" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="part-iii.-why-a-good-score-can-be-the-wrong-number"><span class="header-section-number">6.3</span> Part III. Why a good score can be the wrong number</h2>
+<section id="what-the-score-is-a-score-of" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="what-the-score-is-a-score-of"><span class="header-section-number">6.3.1</span> What the score is a score of</h3>
+<p>Political scientists have a word for the problem this section is about, and it is one of the few places in this course where the discipline is ahead of computer science rather than behind it. <strong>Construct validity</strong> asks whether an instrument measures the concept it claims to measure, as distinct from measuring something adjacent, something correlated, or something merely convenient.</p>
+<p>The number in Part II is an agreement rate against a codebook. Whether it is also a measure of the aboutness of immigration depends entirely on whether the codebook captured that concept, and that codebook was the work of a single coder resolving awkward cases as they arose. Rule one of it, which sends a tweet listing ten accomplishments with “Border” seventh into the <code>other</code> category, is a judgment call that a different coder could defensibly reverse. Reverse it, and the labels change, and the model’s accuracy against the new labels changes, and nothing about the model or the tweets has moved at all.</p>
+<p>Four questions bear on any evaluation, and they are not one question asked four times. Each one can be put to our own classifier.</p>
+<p><strong>Does the measure cover the concept, or only part of it?</strong> Our scheme counts a tweet about the census citizenship question as immigration and a tweet endorsing a candidate who is “strong on the border” as not. A reader who thinks immigration politics is substantially about how politicians signal toughness on it would say we have measured the policy debate and discarded the political performance, which for many research questions is the half that matters.</p>
+<p><strong>Does it agree with an established measure of the same thing?</strong> The Comparative Agendas Project and the Manifesto Project have both coded political text for immigration content for years, using schemes refined over decades by multiple coders. Ours was the work of one person over a few hours. We never checked our labels against either, and we could have.</p>
+<p><strong>Does the measure behave as the concept should behave?</strong> Here we do reasonably well. The immigration share falls sharply after the first half of 2019, which is what anybody following the shutdown and then impeachment would expect, and a measure that showed no such movement would be suspect regardless of its agreement rate.</p>
+<p><strong>What follows from using it?</strong> Suppose this classifier were not a teaching exercise but a monitoring system, and suppose politicians learned which words triggered it. The endorsement tweets in Part II show that the border can be invoked while saying nothing about it, and a measure deployed at scale eventually changes the behavior of whoever is being measured.</p>
+<p>An evaluation that answers only the question “how often does it agree with my labels” has addressed the first of these badly and the other three not at all.</p>
+</section>
+<section id="contamination-and-leakage" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="contamination-and-leakage"><span class="header-section-number">6.3.2</span> Contamination and leakage</h3>
+<p>A score can also be too high for a reason that has nothing to do with the concept, namely that the test was not really a test.</p>
+<p>For your own pipelines the problem is <strong>leakage</strong>, and it has appeared twice already in this course. Week 2 met it as rescaling before splitting, which lets the test set influence the training set, and Week 4 met it again, more quietly, as selecting the vocabulary from the full corpus. Rather than describe it a third time, here it is.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>freq_leaky <span class="ot">&lt;-</span> <span class="fu">findFreqTerms</span>(dtm, <span class="dv">5</span>)          <span class="co"># chosen from ALL 905 tweets</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(freq_words)                            <span class="co"># training tweets only</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 651</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(freq_leaky)                            <span class="co"># the leaky version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 749</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">setdiff</span>(freq_leaky, freq_words), <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "account"     "addit"       "address"     "amaz"        "appoint"    
+ [6] "apprentic"   "assist"      "associ"      "benefit"     "biden"      
+[11] "bishop"      "black"       "bless"       "brought"     "captur"     
+[16] "center"      "condit"      "congression" "consider"    "convers"    </code></pre>
+</div>
+</div>
+<p>Those words are in the classifier’s vocabulary only because the test tweets were counted when the vocabulary was chosen. They passed the frequency threshold with help from documents the classifier is about to be graded on, and every one of them is now a feature it can use. The classifier has been told something about its own exam.</p>
+<p>The second form of leakage is easier to commit and easier to see, and we have already committed it. Part I swept the threshold from 0.1 to 0.9 and reported precision and recall at each value, every one of them computed on the test set. Suppose we had used that table to choose.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> sweep_out[<span class="fu">which.max</span>(sweep_out<span class="sc">$</span>accuracy), ]</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">at_the_default =</span> sweep_out<span class="sc">$</span>accuracy[sweep_out<span class="sc">$</span>default],</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">best_on_test   =</span> best<span class="sc">$</span>accuracy), <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>at_the_default   best_on_test 
+         0.906          0.923 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>best<span class="sc">$</span>threshold</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6</code></pre>
+</div>
+</div>
+<p>The threshold that maximizes accuracy on these 181 tweets is not 0.5, and the accuracy it delivers is the higher of the two numbers. That gap is the amount by which choosing a parameter on the test set flatters the result, and it was obtained by looking at the answers. (If the two numbers happen to come out equal, we were lucky rather than careful, and the argument is unchanged.)</p>
+<p>Reporting the better figure as an out-of-sample result would be straightforwardly false. Yet the code that produces it looks exactly like the code that produces an honest number, and there is no error message, no warning, and no trace in the output.</p>
+<p>This is the general shape of the problem. Leakage does not announce itself as a bug. It announces itself as a better result.</p>
+<p>For a commercial language model the same problem returns in a form you can neither fix nor inspect. <strong>Contamination</strong> is the possibility that the documents you are using as a test set were part of the model’s training data, and with a training corpus that is undisclosed, the correct position is that you do not know.</p>
+<p>Consider our own case rather than a hypothetical one. These are tweets by a sitting president, quoted in thousands of news articles, analyzed in academic papers, and archived in at least three public GitHub repositories, including the one this corpus was built from. If any text on the internet was in that training data, this text was. The model may therefore have encountered these exact tweets, along with contemporaneous commentary explaining what they were about, which is a good deal more than we gave it in the prompt.</p>
+<p>We cannot check this and neither can anyone outside the company. That is not a reason to abandon the method, however, but a reason to state the limitation plainly rather than to report 95 percent as though it were a clean out-of-sample result. Note also what it does to the comparison in Part II: Naive Bayes saw 724 tweets and nothing else, so the contest was never quite as fair as the table made it look.</p>
+</section>
+<section id="what-a-benchmark-number-means" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="what-a-benchmark-number-means"><span class="header-section-number">6.3.3</span> What a benchmark number means</h3>
+<p>Published evaluations of these systems are mostly benchmark scores, and three pathologies recur often enough to be recognizable. Two of them we have already committed in this handout, which is the quickest way to understand them.</p>
+<p>Benchmarks <strong>saturate</strong>. Once a test is widely used, systems are built and selected against it until the leading ones all score within a point or two of each other and of the ceiling, at which stage the test has stopped ranking the systems and started ranking the noise. The remedy is a harder test, so the cycle runs again, and the published scores across a few years of such cycles are not comparable with one another.</p>
+<p>Benchmarks are <strong>gamed</strong>, though rarely by fraud. The ordinary mechanism is the one from the previous section: we swept a threshold across our test set and could have reported the best value we found. Nobody lied, no rule was broken, and the reported figure would still have described our test set rather than the world. Scale that up to an industry in which benchmark position determines funding and procurement, and the pressure runs the same way without anybody deciding that it should.</p>
+<p>And a growing share of evaluation now uses one language model to <strong>judge</strong> the output of another, since human raters are slow and expensive. This is efficient and it is circular, for the reason Part II gave: a judge trained on much the same text as the system it grades will share its assumptions about what a good answer looks like, so agreement between them is weak evidence of quality. We saw the small version of this when two models agreed with each other more readily than either agreed with the coder.</p>
+<p>The practical conclusion is narrow, and it is the one thing from this section to carry out of the room. When a procurement document, a vendor, or a paper reports that a system is 94 percent accurate, the figure is a claim about performance on some benchmark, and the questions that matter are which one, constructed by whom, measured when, and against whose labels. None of those is a technical question, and a political scientist is as well placed to ask them as anybody.</p>
+</section>
+</section>
+<section id="part-iv.-when-the-measurement-feeds-a-regression" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="part-iv.-when-the-measurement-feeds-a-regression"><span class="header-section-number">6.4</span> Part IV. When the measurement feeds a regression</h2>
+<p>Everything so far has treated the labels as the end product. In a research project, however, they are rarely the end product: they are a variable, the variable enters an analysis, and the analysis produces the number that eventually appears in the abstract.</p>
+<p>Consider a question we can actually ask of these 181 tweets. Immigration dominated the first part of 2019, through the shutdown over wall funding and the national emergency declaration, and receded later in the year as impeachment took over. How much larger was the immigration share in the first half of the year than in the second?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>llm<span class="sc">$</span>first_half <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">substr</span>(llm<span class="sc">$</span>date, <span class="dv">6</span>, <span class="dv">7</span>) <span class="sc">&lt;=</span> <span class="st">"06"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>sources <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">human =</span> <span class="st">"human"</span>, <span class="at">llm =</span> <span class="st">"llm_main"</span>, <span class="at">llm_reworded =</span> <span class="st">"llm_reword"</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nm <span class="cf">in</span> <span class="fu">names</span>(sources)) {</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(llm[[sources[nm]]] <span class="sc">==</span> <span class="st">"immigration"</span>)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> llm<span class="sc">$</span>first_half)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(fit)[<span class="dv">2</span>, ]</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results,</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">data.frame</span>(<span class="at">labels =</span> nm,</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">estimate =</span> <span class="fu">unname</span>(<span class="fu">coef</span>(fit)[<span class="dv">2</span>]),</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>                              <span class="at">lower =</span> ci[<span class="dv">1</span>], <span class="at">upper =</span> ci[<span class="dv">2</span>]))</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(results[, <span class="sc">-</span><span class="dv">1</span>], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       estimate lower upper
+2.5 %     0.364 0.226 0.501
+2.5 %1    0.304 0.163 0.445
+2.5 %2    0.265 0.123 0.407</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>labels <span class="ot">&lt;-</span> <span class="fu">factor</span>(results<span class="sc">$</span>labels, <span class="at">levels =</span> <span class="fu">rev</span>(results<span class="sc">$</span>labels))</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(estimate, labels)) <span class="sc">+</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> results<span class="sc">$</span>estimate[<span class="dv">1</span>], <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> lower, <span class="at">xmax =</span> upper), <span class="at">height =</span> <span class="fl">0.15</span>,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"maroon"</span>) <span class="sc">+</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"estimated difference in immigration share, first half minus second"</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"The same question, answered with three sets of labels"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `geom_errorbarh()` was deprecated in ggplot2 4.0.0.
+ℹ Please use the `orientation` argument of `geom_errorbar()` instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`height` was translated to `width`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="w06-evaluation_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The hand labels put the difference at roughly 36 percentage points, the model’s labels at roughly 30, and the reworded prompt at roughly 27. A classifier that is right 95 percent of the time has therefore understated a substantively central quantity by something between a sixth and a quarter.</p>
+<p>The mechanism generalizes beyond this example, so it repays following. The model over-flags, as Part II established, and over-flagging adds spurious immigration tweets in both halves of the year. In the second half, where genuine immigration tweets are scarce, those additions make up a much larger share of the total. The second-half estimate is therefore inflated more than the first-half estimate, the gap between them shrinks, and the effect is attenuated toward zero.</p>
+<p>Three features of this make it a good deal worse than ordinary measurement error. First, the bias does not disappear as the sample grows, because it is not noise, and a larger corpus labeled the same way therefore produces a more precise estimate of the wrong number. Second, the confidence intervals above are computed as though the labels were perfect, so they are narrower than honesty allows and a hypothesis test built on them is not doing what it claims. Third, and least comfortable, nothing in the output signals any of this. The regression runs, the standard errors look ordinary, and the table is publishable.</p>
+<p>Egami and colleagues <span class="citation" data-cites="egami2023">(<a href="../references.html#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span> report exactly this, showing that surrogate labels of 80 to 90 percent accuracy produce substantial bias and invalid confidence intervals in downstream analysis, and who propose an estimator that corrects for it using a hand-coded subset. Our 95 percent sits above the range they examine, and the attenuation is plainly visible anyway.</p>
+<section id="what-to-do-about-it" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="what-to-do-about-it"><span class="header-section-number">6.4.1</span> What to do about it</h3>
+<p>The correction they propose requires more statistics than this course carries, but the practice that makes it possible does not, and it is the reason your Type B projects were told to hand-code a validation sample.</p>
+<p>Hand-code a random sample of your corpus before you look at what the model produced. Report the agreement rate, and report what the disagreements look like rather than only how many there are, since a systematic direction of error is far more damaging than a symmetric one. Then, when you state your substantive result, state it alongside the quality of the labels it rests on. A reader can discount an estimate from imperfect labels when told how imperfect they are, and cannot do anything at all with an estimate whose labels are undescribed.</p>
+</section>
+</section>
+<section id="the-politics-of-who-may-audit" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="the-politics-of-who-may-audit"><span class="header-section-number">6.5</span> The politics of who may audit</h2>
+<p>Everything in this session has been possible because we hold the labels, the corpus, the code, and the output. That is an unusual position, and very little of it generalizes.</p>
+<p>A researcher wishing to evaluate a deployed system almost never has any of those things. The training data is undisclosed, so contamination cannot be checked. The weights are inaccessible, so the system can be probed only from outside, one query at a time, under terms of service that frequently prohibit exactly the systematic probing an audit requires. The model can be changed or withdrawn between the measurement and its publication. And the organization with the most complete access to the system is the one with the strongest interest in the answer.</p>
+<p>For these reasons the question of who may audit has become a regulatory one rather than a technical one, and proposals for legal safe harbor, protecting good-faith independent evaluation from liability, are now a live issue. Black-box access is not sufficient for a rigorous audit, and arranging for something better is a matter of law and institutional design.</p>
+<p>Week 2 asked who defines similarity, Week 3 who sets the threshold, Week 4 who writes the codebook, and Week 5 who owns the classifier. The question here is narrower and harder. <strong>Who is allowed to check?</strong> By the time a system is deployed at scale, the answer is usually settled, and it is usually settled in favor of the party being evaluated.</p>
+</section>
+<section id="reading" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="reading"><span class="header-section-number">6.6</span> Reading</h2>
+<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="../references.html#ref-grimmer2013" role="doc-biblioref">Grimmer and Stewart 2013</a>)</span></p>
+<p>Assigned in Week 4 and returned to here for its central claim, that validation is not optional and cannot be replaced by a well-chosen metric. Read their discussion of validation against what we did in Part II, and ask which of their recommendations our procedure actually satisfies.</p>
+<p>Lowe, W., and Benoit, K. 2013. “Validating Estimates of Latent Traits from Textual Data Using Human Judgment as a Benchmark.” <em>Political Analysis</em> 21(3): 298–313. <span class="citation" data-cites="lowe2013">(<a href="../references.html#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span></p>
+<p>Published immediately after Grimmer and Stewart in the same issue, and the more useful of the two for this week. Their subject is precisely the move we made in Part II, treating human coders as the standard against which an automated measure is judged, and their contribution is to take seriously that human judgment is itself variable and must be modeled rather than assumed.</p>
+<p>Egami, N., Hinck, M., Stewart, B. M., and Wei, H. 2023. “Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models.” <em>Advances in Neural Information Processing Systems</em> 36. <span class="citation" data-cites="egami2023">(<a href="../references.html#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span></p>
+<p>The source of Part IV. The paper is technical and the estimator is beyond us, but the demonstration in its opening pages is not, and it is the single most important thing in this week’s reading for anybody whose project will use model-generated labels. Read it for the result rather than the proof.</p>
+</section>
+<section id="before-the-workshop" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">6.7</span> Before the workshop</h2>
+<p>Run the whole handout once. Nothing in it makes an API call, so it needs no key and no credit, and the only new packages are ones you already have.</p>
+<p>Read <code>data/llm_labels_w6_README.md</code> in the course repository, particularly the section on what prevents exact reproduction. Assignment 3 assumes you have.</p>
+<p>Bring one factual question in your own area of interest, specific enough that a wrong answer would be recognizable to you. You will need it for the first reliability check.</p>
+</section>
+<section id="questions-for-the-session" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="questions-for-the-session"><span class="header-section-number">6.8</span> Questions for the session</h2>
+<p>Come with a view on at least two of these.</p>
+<ol type="1">
+<li><p>The language model beat a classifier trained on 724 hand-labeled examples, having seen none. Give the strongest argument you can that Week 4 was nonetheless worth doing, and then give the strongest argument against yourself.</p></li>
+<li><p>Two prompts, each of which a competent researcher might have written first, label about four percent of the corpus differently. What should a journal require an author to report about this, and what would it cost the author to comply?</p></li>
+<li><p>Part II insisted that agreement between two models is not evidence of accuracy. Construct a case in which two independent models agree closely and are both substantially wrong, and say what you would need in order to detect it.</p></li>
+<li><p>Our accuracy figure measures agreement with one coder’s application of one codebook. Suppose a second coder had labeled the same tweets and agreed with the first on 90 percent of them. What is the most the model’s 95 percent can now mean?</p></li>
+<li><p>The attenuation in Part IV went in a predictable direction once the mechanism was understood. Describe a research question where the same kind of error would bias an estimate <em>upward</em> instead, and explain why.</p></li>
+<li><p>You are advising a ministry considering a system that its vendor reports as 94 percent accurate. List, in order, the questions you would ask before the contract is signed, and mark which of them the vendor is likely to refuse to answer.</p></li>
+</ol>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-egami2023" class="csl-entry" role="listitem">
+Egami, Naoki, Musashi Hinck, Brandon M. Stewart, and Hanying Wei. 2023. <span>“Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models.”</span> <em>Advances in Neural Information Processing Systems</em> 36.
+</div>
+<div id="ref-grimmer2013" class="csl-entry" role="listitem">
+Grimmer, Justin, and Brandon M. Stewart. 2013. <span>“Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.”</span> <em>Political Analysis</em> 21 (3): 267–97. <a href="https://doi.org/10.1093/pan/mps028">https://doi.org/10.1093/pan/mps028</a>.
+</div>
+<div id="ref-lowe2013" class="csl-entry" role="listitem">
+Lowe, Will, and Kenneth Benoit. 2013. <span>“Validating Estimates of Latent Traits from Textual Data Using Human Judgment as a Benchmark.”</span> <em>Political Analysis</em> 21 (3): 298–313. <a href="https://doi.org/10.1093/pan/mpt002">https://doi.org/10.1093/pan/mpt002</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
