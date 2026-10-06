@@ -25,7 +25,9 @@ url <- paste0("https://raw.githubusercontent.com/babakrezaee/",
               "AppliedAI-PoliSci/refs/heads/main/data/",
               "trump_immigration_2019.csv")
 
-tweets <- read.csv(url, stringsAsFactors = FALSE)
+tweets <- read.csv(url, stringsAsFactors = FALSE,
+                   colClasses = c(id = "character"))  # IDs are 19 digits:
+                                                      # never read them as numbers
 
 # The Week 4 split, reproduced exactly. Do not change this: the handout
 # compares the model against Naive Bayes on the SAME held-out tweets.
