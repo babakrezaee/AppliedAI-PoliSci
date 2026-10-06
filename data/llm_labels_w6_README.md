@@ -68,16 +68,33 @@ cents of API credit.
 You will not get this file back. You should get something close to it, and the
 gap between "close" and "identical" is the point of the exercise.
 
-**Run details. Record these for your own project.**
+**Run details.**
 
 | | |
 |---|---|
-| Date run | TO BE COMPLETED |
-| Model, `llm_main` and `llm_reword` | TO BE COMPLETED |
-| Model, `llm_model2` | TO BE COMPLETED |
-| `ellmer` version | TO BE COMPLETED |
-| Temperature | provider default, not set explicitly |
-| Seed | not set; the API offers no reliable one |
+| Date run | 5 October 2026 |
+| Model identifiers | Set at the top of `R/w6_generate_llm_labels.R`, as `model_small` and `model_large`. The script in the repository is the one that produced this file, so those two lines are the record. |
+| `llm_main`, `llm_reword` | `model_small`, the smaller and cheaper of the two |
+| `llm_model2` | `model_large` |
+| Temperature | Provider default. Not set explicitly, which is itself a choice and not a good one. |
+| Seed | Not set. The API offers no seed that reliably fixes the output. |
+| `ellmer` version | See the `sessionInfo()` note below |
+
+The model identifiers live in the script rather than being copied here on purpose.
+Duplicating them would create two records that can disagree, and the one students
+can actually run is the script. If you change the models, change them there and this
+file stays true.
+
+**What is still missing from this record, and why that matters.** The `ellmer`
+version used for the run is not recorded anywhere, and neither is the exact
+version of each model behind those identifiers, because the provider does not
+expose it. A model name is not a version number: the same name can point at
+different weights in March and in September. This is the weakest part of the
+provenance here, it is typical of work using commercial APIs, and it is the
+reason the next section says you will not reproduce this file exactly.
+
+For your own project, do better than we did. Run `sessionInfo()` at the end of
+your script and save the output alongside your results.
 
 The prompts are reproduced verbatim in the script, which matters more than any
 of the above. A description of a prompt is not a prompt.
