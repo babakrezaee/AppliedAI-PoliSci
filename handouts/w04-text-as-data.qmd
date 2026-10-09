@@ -31,7 +31,7 @@ Before everything else, make sure the necessary packages are installed:
 
 ```{r, eval=FALSE}
 install.packages(c("tm", "SnowballC", "wordcloud", "e1071",
-                   "caret", "ggplot2"))
+                   "caret", "ggplot2", "naivebayes"))
 ```
 
 ```{r, message=FALSE, warning=FALSE}
@@ -488,6 +488,60 @@ Dropping the `head()` prints the remaining eleven, and two of them are worth the
 
 Each family points to a different repair: word pairs rather than single words for *Wall Street*, keeping handles for the CBP tweet, and, for the endorsement boilerplate, nothing that a bag of words can do at all.
 
+### The same model in `caret`
+
+Everything above was written out by hand, because a model that consists of nothing but counting is worth seeing as counting. In your own work you will not write it out. You will reach for a package, and in this course that package is `caret`, which fitted the forest in Week 3 and returns in Week 6.
+
+Naive Bayes arrives there as `method = "naive_bayes"`, which calls the `naivebayes` package underneath and therefore needs it installed.
+
+```{r, eval=FALSE}
+install.packages("naivebayes")
+```
+
+One change to the data comes first, and it is the same point as the note above. Handed a column of numbers, these functions assume the numbers are normally distributed within each class, which is badly wrong for word counts that are zero nine times in ten. So we give `caret` the words as two-level factors instead: did this word occur in this tweet, yes or no.
+
+```{r}
+as_yes_no <- function(counts) {
+  out <- as.data.frame(counts > 0)
+  out[] <- lapply(out, function(x) {
+    factor(x, levels = c(FALSE, TRUE), labels = c("No", "Yes"))
+  })
+  out
+}
+
+X_train <- as_yes_no(counts_train)
+X_test  <- as_yes_no(counts_test)
+
+X_train[1:3, 1:5]
+```
+
+The levels are set explicitly rather than left to `factor()` to work out. A word that happens never to occur in the test set would otherwise arrive with one level instead of two, and `predict()` would refuse it.
+
+```{r, message=FALSE, warning=FALSE}
+set.seed(7)
+
+nb_caret <- train(x = X_train, y = y_train,
+                  method    = "naive_bayes",
+                  trControl = trainControl(method = "cv", number = 5),
+                  tuneGrid  = expand.grid(laplace   = c(0, 1),
+                                          usekernel = FALSE,
+                                          adjust    = 1))
+
+nb_caret
+```
+
+That is the whole fit, and it is Week 3's call with one string changed: a formula or an `x` and a `y`, a resampling scheme, and a grid of values to try. Note what has happened to the smoothing. We asserted `laplace = 1` by hand a few pages ago; here it has become a tuning parameter, and cross-validation chooses between 0 and 1 using the training data alone.
+
+```{r}
+pred_caret <- predict(nb_caret, X_test)
+
+confusionMatrix(pred_caret, y_test, positive = "immigration")
+```
+
+The accuracy lands a little below the model we built by hand, and the reason is in the features rather than in the software. `caret` has been given presence and absence, so it is asking whether *border* appears in a tweet. Our own model was given counts, so it asked how many times — and a tweet using *border* four times contributed four times the evidence. On tweets that difference is small, since a document of forty words rarely repeats anything. On longer documents it would not be small at all.
+
+What the three lines buy is cross-validation, a tuning grid, and the same interface as every other model in the course. What they cost is the thing Part II was built around: `nb_caret` is an object you query, not a table of word rates you can read. The arithmetic has not changed, and it has stopped being visible.
+
 ## The politics of classification
 
 Every model this term has been an instrument for sorting cases into categories, and text classifiers are distinctive only in that the categories are usually categories of speech.
@@ -524,7 +578,7 @@ Worth reading for one argument that cuts against the whole framing of this week.
 
 ## Before the workshop
 
-Install `tm`, `SnowballC`, `wordcloud`, `caret`, and `e1071`, and run every chunk in this handout once. Nothing here takes more than a few seconds, and the entire pipeline runs in well under a minute, which is a pleasant change from last week. `e1071` is not called directly anywhere below, but `caret` needs it installed in order to report the confusion matrix.
+Install `tm`, `SnowballC`, `wordcloud`, `caret`, `e1071`, and `naivebayes`, and run every chunk in this handout once. Nothing here takes more than a few seconds, and the entire pipeline runs in well under a minute, which is a pleasant change from last week. `e1071` is not called directly anywhere below, but `caret` needs it installed in order to report the confusion matrix.
 
 Read the data README, at `data/trump_immigration_2019_README.md` in the course repository, and in particular the coding scheme and the four rules for hard cases. It also carries a content warning that is worth taking seriously: these tweets make disputed empirical claims about immigrants, and some of the language is ugly. They are reproduced unedited because editing them would corrupt the corpus.
 

@@ -336,6 +336,7 @@ window.Quarto = {
   <li><a href="#the-confusion-matrix" id="toc-the-confusion-matrix" class="nav-link" data-scroll-target="#the-confusion-matrix"><span class="header-section-number">4.4.6</span> The confusion matrix</a></li>
   <li><a href="#the-most-informative-words" id="toc-the-most-informative-words" class="nav-link" data-scroll-target="#the-most-informative-words"><span class="header-section-number">4.4.7</span> The most informative words</a></li>
   <li><a href="#reading-the-errors" id="toc-reading-the-errors" class="nav-link" data-scroll-target="#reading-the-errors"><span class="header-section-number">4.4.8</span> Reading the errors</a></li>
+  <li><a href="#the-same-model-in-caret" id="toc-the-same-model-in-caret" class="nav-link" data-scroll-target="#the-same-model-in-caret"><span class="header-section-number">4.4.9</span> The same model in <code>caret</code></a></li>
   </ul></li>
   <li><a href="#the-politics-of-classification" id="toc-the-politics-of-classification" class="nav-link" data-scroll-target="#the-politics-of-classification"><span class="header-section-number">4.5</span> The politics of classification</a></li>
   <li><a href="#reading" id="toc-reading" class="nav-link" data-scroll-target="#reading"><span class="header-section-number">4.6</span> Reading</a></li>
@@ -389,7 +390,7 @@ window.Quarto = {
 <p>Before everything else, make sure the necessary packages are installed:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tm"</span>, <span class="st">"SnowballC"</span>, <span class="st">"wordcloud"</span>, <span class="st">"e1071"</span>,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>, <span class="st">"naivebayes"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
@@ -980,6 +981,108 @@ actual: other | predicted: immigration
 <p>Dropping the <code>head()</code> prints the remaining eleven, and two of them are worth the look. One is an endorsement of Senator Cindy Hyde-Smith, described as strong on the border and illegal immigration. The coding scheme says endorsement boilerplate is <code>other</code>, on the grounds that the border is one slot in a formula rather than the subject of the tweet, and the model, having no notion of the difference, disagrees. Here the model is not making an error about the world; it is failing to reproduce a coding rule that could defensibly have gone the other way. The second is a tweet thanking <code>@DHSgov</code>, <code>@CBP</code>, and <code>@ICEgov</code>, labeled <code>immigration</code>, that the model called <code>other</code> because after the third line of our cleaning pipeline there was almost nothing left of it but the words <em>thank you</em>.</p>
 <p>Each family points to a different repair: word pairs rather than single words for <em>Wall Street</em>, keeping handles for the CBP tweet, and, for the endorsement boilerplate, nothing that a bag of words can do at all.</p>
 </section>
+<section id="the-same-model-in-caret" class="level3" data-number="4.4.9">
+<h3 data-number="4.4.9" class="anchored" data-anchor-id="the-same-model-in-caret"><span class="header-section-number">4.4.9</span> The same model in <code>caret</code></h3>
+<p>Everything above was written out by hand, because a model that consists of nothing but counting is worth seeing as counting. In your own work you will not write it out. You will reach for a package, and in this course that package is <code>caret</code>, which fitted the forest in Week 3 and returns in Week 6.</p>
+<p>Naive Bayes arrives there as <code>method = "naive_bayes"</code>, which calls the <code>naivebayes</code> package underneath and therefore needs it installed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"naivebayes"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>One change to the data comes first, and it is the same point as the note above. Handed a column of numbers, these functions assume the numbers are normally distributed within each class, which is badly wrong for word counts that are zero nine times in ten. So we give <code>caret</code> the words as two-level factors instead: did this word occur in this tweet, yes or no.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>as_yes_no <span class="ot">&lt;-</span> <span class="cf">function</span>(counts) {</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(counts <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  out[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(out, <span class="cf">function</span>(x) {</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(x, <span class="at">levels =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Yes"</span>))</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> <span class="fu">as_yes_no</span>(counts_train)</span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>X_test  <span class="ot">&lt;-</span> <span class="fu">as_yes_no</span>(counts_test)</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>X_train[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  abl absolut abus act action
+1  No      No   No  No     No
+2  No      No   No  No     No
+3  No      No   No  No     No</code></pre>
+</div>
+</div>
+<p>The levels are set explicitly rather than left to <code>factor()</code> to work out. A word that happens never to occur in the test set would otherwise arrive with one level instead of two, and <code>predict()</code> would refuse it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>nb_caret <span class="ot">&lt;-</span> <span class="fu">train</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train,</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method    =</span> <span class="st">"naive_bayes"</span>,</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">trControl =</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">5</span>),</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">tuneGrid  =</span> <span class="fu">expand.grid</span>(<span class="at">laplace   =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">usekernel =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">adjust    =</span> <span class="dv">1</span>))</span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>nb_caret</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Naive Bayes 
+
+724 samples
+651 predictors
+  2 classes: 'other', 'immigration' 
+
+No pre-processing
+Resampling: Cross-Validated (5 fold) 
+Summary of sample sizes: 579, 579, 579, 579, 580 
+Resampling results across tuning parameters:
+
+  laplace  Accuracy   Kappa    
+  0        0.9019540  0.7915019
+  1        0.9019732  0.7921890
+
+Tuning parameter 'usekernel' was held constant at a value of FALSE
+
+Tuning parameter 'adjust' was held constant at a value of 1
+Accuracy was used to select the optimal model using the largest value.
+The final values used for the model were laplace = 1, usekernel = FALSE
+ and adjust = 1.</code></pre>
+</div>
+</div>
+<p>That is the whole fit, and it is Week 3’s call with one string changed: a formula or an <code>x</code> and a <code>y</code>, a resampling scheme, and a grid of values to try. Note what has happened to the smoothing. We asserted <code>laplace = 1</code> by hand a few pages ago; here it has become a tuning parameter, and cross-validation chooses between 0 and 1 using the training data alone.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>pred_caret <span class="ot">&lt;-</span> <span class="fu">predict</span>(nb_caret, X_test)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(pred_caret, y_test, <span class="at">positive =</span> <span class="st">"immigration"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+             Reference
+Prediction    other immigration
+  other          83           8
+  immigration    11          79
+                                             
+               Accuracy : 0.895              
+                 95% CI : (0.8409, 0.9356)   
+    No Information Rate : 0.5193             
+    P-Value [Acc &gt; NIR] : &lt;0.0000000000000002
+                                             
+                  Kappa : 0.79               
+                                             
+ Mcnemar's Test P-Value : 0.6464             
+                                             
+            Sensitivity : 0.9080             
+            Specificity : 0.8830             
+         Pos Pred Value : 0.8778             
+         Neg Pred Value : 0.9121             
+             Prevalence : 0.4807             
+         Detection Rate : 0.4365             
+   Detection Prevalence : 0.4972             
+      Balanced Accuracy : 0.8955             
+                                             
+       'Positive' Class : immigration        
+                                             </code></pre>
+</div>
+</div>
+<p>The accuracy lands a little below the model we built by hand, and the reason is in the features rather than in the software. <code>caret</code> has been given presence and absence, so it is asking whether <em>border</em> appears in a tweet. Our own model was given counts, so it asked how many times — and a tweet using <em>border</em> four times contributed four times the evidence. On tweets that difference is small, since a document of forty words rarely repeats anything. On longer documents it would not be small at all.</p>
+<p>What the three lines buy is cross-validation, a tuning grid, and the same interface as every other model in the course. What they cost is the thing Part II was built around: <code>nb_caret</code> is an object you query, not a table of word rates you can read. The arithmetic has not changed, and it has stopped being visible.</p>
+</section>
 </section>
 <section id="the-politics-of-classification" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="the-politics-of-classification"><span class="header-section-number">4.5</span> The politics of classification</h2>
@@ -1004,7 +1107,7 @@ actual: other | predicted: immigration
 </section>
 <section id="before-the-workshop" class="level2" data-number="4.7">
 <h2 data-number="4.7" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">4.7</span> Before the workshop</h2>
-<p>Install <code>tm</code>, <code>SnowballC</code>, <code>wordcloud</code>, <code>caret</code>, and <code>e1071</code>, and run every chunk in this handout once. Nothing here takes more than a few seconds, and the entire pipeline runs in well under a minute, which is a pleasant change from last week. <code>e1071</code> is not called directly anywhere below, but <code>caret</code> needs it installed in order to report the confusion matrix.</p>
+<p>Install <code>tm</code>, <code>SnowballC</code>, <code>wordcloud</code>, <code>caret</code>, <code>e1071</code>, and <code>naivebayes</code>, and run every chunk in this handout once. Nothing here takes more than a few seconds, and the entire pipeline runs in well under a minute, which is a pleasant change from last week. <code>e1071</code> is not called directly anywhere below, but <code>caret</code> needs it installed in order to report the confusion matrix.</p>
 <p>Read the data README, at <code>data/trump_immigration_2019_README.md</code> in the course repository, and in particular the coding scheme and the four rules for hard cases. It also carries a content warning that is worth taking seriously: these tweets make disputed empirical claims about immigrants, and some of the language is ugly. They are reproduced unedited because editing them would corrupt the corpus.</p>
 </section>
 <section id="questions-for-the-session" class="level2" data-number="4.8">
