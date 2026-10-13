@@ -273,7 +273,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../handouts/w04-text-as-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Text as Data: Naive Bayes</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -368,26 +368,26 @@ window.Quarto = {
 
 
 <p><em>Week 2, 9 September</em></p>
-<p>Last week we separated four research goals and left prediction as a promise. This week we keep it. The method we start with, <span class="math inline">\(K\)</span>-nearest neighbors, was chosen for one reason above all others: it can be drawn. There is no probability theory to follow, no optimization procedure running out of sight, and no coefficients to interpret. Everything the algorithm does can be seen in a picture, which means that when it goes wrong, you can see that too.</p>
-<p>That is worth more at this stage than a method with better performance. You are going to spend the rest of the block working with models whose internals are progressively harder to inspect. It helps to have one case where nothing is hidden.</p>
-<p>There is code in this handout, and you should run it rather than read it. The workshop assumes you have.</p>
+<p>Last week we distinguished four research goals. This week we begin working with prediction. We start with <span class="math inline">\(K\)</span>-nearest neighbors because we can draw what it does. There is no probability theory or hidden optimization procedure to follow, and no coefficients to interpret. A picture lets us see how it produces predictions and where it runs into difficulty.</p>
+<p>That visibility is useful while you are learning. Later in the block, the models will be harder to inspect. This first example gives us something concrete to compare them with.</p>
+<p>Run the code as you work through the handout. We will assume it has run on your machine when we meet in the workshop.</p>
 <section id="fitting-a-function-without-assuming-its-shape" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="fitting-a-function-without-assuming-its-shape"><span class="header-section-number">2.1</span> Fitting a function without assuming its shape</h2>
-<p>We usually want to know how an outcome varies with something else: how <span class="math inline">\(Y\)</span> behaves conditional on <span class="math inline">\(X\)</span>, written <span class="math inline">\(P(Y=y \mid X=x)\)</span>.</p>
-<p>The most familiar strategy is to assume a shape for that relationship and then estimate the parameters of the assumed shape. Ordinary least squares assumes a line. Logit and probit assume particular shapes for binary outcomes. These are <strong>parametric</strong> models, and the assumption is doing a great deal of work.</p>
-<p>Assuming a shape buys you real things. You get coefficients you can interpret substantively, standard errors, a compact summary you can put in a table, and a direct connection between a theoretical claim and a quantity you can estimate. Most of what you have done in your other courses relies on this.</p>
-<p>It also costs something. If the true relationship is not the shape you assumed, the model is wrong in a way that more data will not fix. Collecting a thousand more observations does not rescue a straight line drawn through a curve.</p>
-<p>When the assumption looks doubtful, there are two responses. The first is to stay inside the parametric framework and repair the model: transform a variable, add an interaction, take logarithms. The second is to use a <strong>non-parametric</strong> method, which assumes much less about the shape and lets the data determine it.</p>
-<p><span class="math inline">\(K\)</span>-nearest neighbors is the simplest non-parametric method there is. Here is the entire algorithm:</p>
+<p>We often ask how an outcome varies with another variable: how <span class="math inline">\(Y\)</span> behaves conditional on <span class="math inline">\(X\)</span>, written <span class="math inline">\(P(Y=y \mid X=x)\)</span>.</p>
+<p>One familiar approach is to assume a shape for the relationship and estimate its parameters. Ordinary least squares assumes a line; logit and probit assume particular shapes for binary outcomes. These are <strong>parametric</strong> models. Their usefulness depends partly on how well the assumed shape describes the relationship.</p>
+<p>This approach gives us interpretable coefficients, standard errors, and a compact summary for a table. It also connects theoretical claims to quantities we can estimate. Much of the analysis in your other courses uses this framework.</p>
+<p>The limitation is that more data will not fix an unsuitable shape. If the relationship curves, fitting a straight line to a thousand more observations still leaves us with a straight line.</p>
+<p>We can respond by adapting the parametric model, perhaps through transformations, interactions, or logarithms. Alternatively, we can use a <strong>non-parametric</strong> method that makes fewer assumptions about the shape and lets the data play a larger role in determining it.</p>
+<p><span class="math inline">\(K\)</span>-nearest neighbors is a simple example. Its prediction rule is:</p>
 <blockquote class="blockquote">
 <p>To predict the outcome for a case, find the <span class="math inline">\(k\)</span> cases in your data most similar to it, and average their outcomes. If the outcome is a category rather than a number, take the majority vote instead of the average.</p>
 </blockquote>
-<p>There is nothing else. No estimation step, no parameters, no fitting in the usual sense. The model is the data.</p>
+<p>There is no separate estimation step or set of fitted parameters in the usual sense. To make predictions, the model keeps and uses the data themselves.</p>
 </section>
 <section id="drawing-it-development-and-infant-mortality" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="drawing-it-development-and-infant-mortality"><span class="header-section-number">2.2</span> Drawing it: development and infant mortality</h2>
-<p>Last week’s running example was the association between economic development and political development, and we stopped at the point where the correlation was clear and the direction of the arrow was not. Set the arrow aside for the moment. We are asking a prediction question now, and prediction does not require us to settle it.</p>
-<p>We will use national development indicators for 199 countries, which ship with the <code>carData</code> package.</p>
+<p>Last week’s example concerned economic and political development. We established an association without settling its causal direction. We can set that causal question aside here, because prediction asks a different question.</p>
+<p>Our dataset contains national development indicators for 199 countries and comes with the <code>carData</code> package.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"carData"</span>, <span class="st">"kknn"</span>, <span class="st">"caret"</span>, <span class="st">"scatterplot3d"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -420,9 +420,9 @@ Argentina   9.1621          12.337     2.172       93    79.89  other
 Armenia     3.0307          24.272     1.735       64    77.33  other</code></pre>
 </div>
 </div>
-<p><code>ppgdp</code> is per capita gross domestic product and <code>infantMortality</code> is deaths per thousand live births.</p>
-<p>Two small things in that chunk. <code>options(scipen = 999)</code> tells R to print numbers in full rather than in scientific notation, so that a hundred thousand appears as <code>100000</code> and not as <code>1e+05</code>. And we divide per capita GDP by a thousand, so it is measured in thousands of dollars. That second step is cosmetic as far as the model is concerned, since dividing every value by the same constant cannot change which countries are nearest to which, but it keeps every axis in this handout readable. Nobody reports per capita GDP to the nearest dollar anyway.</p>
-<p>Start by looking at the data.</p>
+<p><code>ppgdp</code> records gross domestic product per capita, and <code>infantMortality</code> records deaths per thousand live births.</p>
+<p>There are two small adjustments in this chunk. <code>options(scipen = 999)</code> makes R print numbers in full, such as <code>100000</code> rather than <code>1e+05</code>. Dividing per capita GDP by a thousand keeps the axes readable. With this single predictor, changing the units cannot change which countries are nearest to one another, so it does not affect the model.</p>
+<p>First, look at the data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
@@ -436,8 +436,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>The shape is the point. Infant mortality falls very steeply across the poorest range and then flattens out almost completely. The difference between a country at $500 and a country at $2,000 is enormous. The difference between $30,000 and $40,000 is close to nothing.</p>
-<p>Now put a straight line through it.</p>
+<p>Infant mortality falls steeply among the poorest countries and then levels off. Compare the difference between countries at $500 and $2,000 with the difference between those at $30,000 and $40,000.</p>
+<p>Now fit a straight line.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray45"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
@@ -454,9 +454,9 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>The line is not a small approximation to the truth here. It is systematically wrong in a patterned way: too low for the poorest countries, too high through the middle, and it eventually predicts negative infant mortality, which is not a quantity that exists.</p>
-<p>You could repair this without leaving the parametric framework, and in a paper you probably would. Taking the logarithm of per capita GDP would straighten most of the curve, and that transformation has a defensible substantive reading: what matters for infant mortality is proportional differences in income, not absolute ones. That is a real modeling decision and a good one.</p>
-<p>The point of this week is that <span class="math inline">\(K\)</span>-nearest neighbors requires no such decision. It does not need to be told the shape.</p>
+<p>The line misses the pattern systematically. It is too low for the poorest countries, too high in the middle, and eventually predicts negative infant mortality.</p>
+<p>In a paper, we might address this within the parametric framework. Taking the logarithm of GDP per capita would straighten much of the curve. It also has a substantive interpretation: proportional differences in income may matter more than absolute differences.</p>
+<p>Here we will use <span class="math inline">\(K\)</span>-nearest neighbors, which does not require us to choose that shape in advance.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ppgdp =</span> <span class="fu">sort</span>(countries<span class="sc">$</span>ppgdp))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -479,17 +479,17 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>The argument <code>kernel = "rectangular"</code> means that all <span class="math inline">\(k\)</span> neighbors count equally. Other choices give closer neighbors more weight. Rectangular is the plain version of the algorithm, and it is the one described above.</p>
+<p><code>kernel = "rectangular"</code> gives all <span class="math inline">\(k\)</span> neighbors equal weight. Other kernels give more weight to closer neighbors. We use the rectangular kernel because it matches the prediction rule described above.</p>
 <section id="what-the-algorithm-actually-did" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="what-the-algorithm-actually-did"><span class="header-section-number">2.2.1</span> What the algorithm actually did</h3>
-<p>Take one point on that curve. To produce a prediction for a country with a per capita GDP of $2,000, the algorithm found the fifteen countries in the data closest to $2,000 on that axis and averaged their infant mortality. To produce the prediction at $3,000, it did the same thing with a neighborhood that had shifted slightly to the right, dropping some countries and picking up others.</p>
-<p>The curve is the trace left behind by that moving neighborhood. It is not a formula, and it cannot be written as one. It is a record of what the neighbors did.</p>
-<p>This is also why the curve wobbles where the data are sparse. On the right-hand side there are few countries, so the fifteen nearest neighbors of a rich country may be spread across a very wide range of incomes. The algorithm still returns an answer. It does not warn you that the answer came from a neighborhood stretching across $40,000.</p>
+<p>For a country with GDP per capita of $2,000, the algorithm finds the fifteen countries closest to $2,000 and averages their infant mortality. At $3,000, it repeats the calculation with a slightly different set of neighbors.</p>
+<p>The curve traces these moving averages. It depends on the observed neighbors rather than a separately estimated formula for the relationship.</p>
+<p>This helps explain the wobbles where the data are sparse. There are few rich countries in the dataset, so their fifteen nearest neighbors may span a wide income range. The algorithm still produces a prediction, without warning us that the neighborhood may stretch across $40,000.</p>
 </section>
 </section>
 <section id="the-choice-of-k" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="the-choice-of-k"><span class="header-section-number">2.3</span> The choice of k</h2>
-<p>Nothing so far told us to use fifteen. Try several values.</p>
+<p>We chose fifteen neighbors without yet justifying that choice. Try several alternatives.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(countries<span class="sc">$</span>ppgdp, countries<span class="sc">$</span>infantMortality,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"gray75"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.7</span>,</span>
@@ -517,18 +517,18 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>At <span class="math inline">\(k=3\)</span> the curve is jagged. It follows every local fluctuation, including fluctuations produced by the fact that we happen to have these 199 countries rather than some other set. At <span class="math inline">\(k=150\)</span> the curve is nearly flat, close to the overall average, and it has erased a difference between rich and poor countries that is obviously real.</p>
-<p>Both failures are informative, and they are opposite failures.</p>
-<p>A small <span class="math inline">\(k\)</span> takes every wiggle in the data seriously. Some of those wiggles are the relationship we want. Others are noise. A model flexible enough to reproduce the training data exactly has reproduced the noise along with the signal, and the noise will not be there next time.</p>
-<p>We can state this in one line. Write the outcome as</p>
+<p>At <span class="math inline">\(k=3\)</span>, the curve follows local fluctuations closely. Some reflect the particular 199 countries in the dataset. At <span class="math inline">\(k=150\)</span>, the curve is almost flat: averaging so broadly removes much of the observed difference between rich and poor countries.</p>
+<p>These examples show two different ways a model can perform poorly.</p>
+<p>A small <span class="math inline">\(k\)</span> follows small changes in the data. Some carry information about the relationship; others are noise. A model that reproduces the training data exactly also reproduces their noise, which need not recur in new cases.</p>
+<p>We can express this by writing the outcome as</p>
 <p><span class="math display">\[Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}\]</span></p>
-<p>What we want is <span class="math inline">\(f\)</span>. The term <span class="math inline">\(\varepsilon\)</span> is whatever is left over: measurement error, idiosyncrasy, the particular history of the particular countries in this dataset. It is not a stable feature of the world, and a model that has learned it has learned something that will not recur.</p>
-<p>So here is the sentence to take away from this week. <strong>A model that fits your data perfectly has told you nothing, because all it has done is recite back the data you already had.</strong> This is the opposite of the instinct most people arrive with, which is that a closer fit is a better model.</p>
-<p>A large <span class="math inline">\(k\)</span> fails in the other direction. It averages across countries that are not comparable, and it produces a model too rigid to represent a relationship that genuinely exists.</p>
+<p>We want to recover <span class="math inline">\(f\)</span>. The term <span class="math inline">\(\varepsilon\)</span> includes measurement error, idiosyncrasy, and the particular histories of the countries observed here. Learning those details does not necessarily help us predict another sample.</p>
+<p>The important distinction is between fitting the observations we already have and predicting new ones. <strong>A perfect fit to the training data does not establish that a model will predict well.</strong></p>
+<p>A large <span class="math inline">\(k\)</span> has the opposite problem. It averages over countries that differ substantially and can smooth away a relationship we want to retain.</p>
 </section>
 <section id="why-a-perfect-fit-should-worry-you" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="why-a-perfect-fit-should-worry-you"><span class="header-section-number">2.4</span> Why a perfect fit should worry you</h2>
-<p>To choose between these we need to stop grading the model on the data it was built from. Split the data in two: fit on one part, evaluate on the other.</p>
+<p>To choose between these models, we need to evaluate them on observations excluded from fitting. We will split the data into a training set and a test set.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -547,10 +547,10 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <pre><code>[1] 58</code></pre>
 </div>
 </div>
-<p><code>set.seed()</code> fixes the random draw so that you and I get the same split. Use it every time you do anything random. Without it your results change on every run and neither you nor anyone else can reproduce them.</p>
-<p>Now measure the error. For a continuous outcome the usual summary is the root mean squared error,</p>
+<p><code>set.seed()</code> fixes the random draw, so you and I obtain the same split. Use it for random operations so that you can reproduce the analysis later and others can follow it.</p>
+<p>For a continuous outcome, a common measure of prediction error is the root mean squared error:</p>
 <p><span class="math display">\[\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left[y_i - \hat{f}(x_i)\right]^2},\]</span></p>
-<p>which is roughly the size of a typical prediction error, in the units of the outcome. Here that means deaths per thousand live births, so an RMSE of 15 means the model is typically off by about fifteen deaths per thousand.</p>
+<p>RMSE gives a sense of the size of prediction errors in the outcome’s units. Here those units are deaths per thousand live births. An RMSE of 15 means errors are typically around fifteen deaths per thousand.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rmse <span class="ot">&lt;-</span> <span class="cf">function</span>(y, yhat) <span class="fu">sqrt</span>(<span class="fu">mean</span>((y <span class="sc">-</span> yhat)<span class="sc">^</span><span class="dv">2</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -589,14 +589,14 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <pre><code>[1] 17</code></pre>
 </div>
 </div>
-<p>Read the two curves against each other, because the comparison is the lesson.</p>
-<p>The training error keeps falling as <span class="math inline">\(k\)</span> gets smaller. It is lowest at the far left, where the model is most flexible. If you had only this curve, you would conclude that the best model is the most complicated one available, and you would conclude that every single time, on every dataset, regardless of the truth.</p>
-<p>The test error does something different. It falls, reaches a minimum, and then rises again. Past that minimum the model is no longer learning the relationship. It is learning the training countries.</p>
-<p>One caution before you go looking for the best <span class="math inline">\(k\)</span>. Change the seed and rerun the code. The U shape will still be there; the exact location of the minimum will move. The shape is a property of the problem. The precise minimum is a property of one arbitrary split. Do not report “the optimal <span class="math inline">\(k\)</span> is 11” as though you had discovered something about infant mortality. We will fix this properly in a moment.</p>
+<p>Compare the training and test curves.</p>
+<p>Training error falls as <span class="math inline">\(k\)</span> gets smaller and is lowest on the left, where the model is most flexible. Choosing from training error alone would favor the most flexible model in this comparison.</p>
+<p>Test error initially falls, reaches a minimum, and rises again. Beyond that minimum, the model is fitting details of the training countries that do not help with the test countries.</p>
+<p>Before choosing <span class="math inline">\(k\)</span>, change the seed and rerun the code. The broad U shape remains, but the minimum moves. Avoid treating “the optimal <span class="math inline">\(k\)</span> is 11” as a substantive finding about infant mortality: it depends on the split. We will use cross-validation to make the choice less dependent on one draw.</p>
 <section id="the-same-picture-drawn-the-conventional-way" class="level3" data-number="2.4.1">
 <h3 data-number="2.4.1" class="anchored" data-anchor-id="the-same-picture-drawn-the-conventional-way"><span class="header-section-number">2.4.1</span> The same picture, drawn the conventional way</h3>
-<p>That plot has an awkward feature: its horizontal axis runs backwards. A large <span class="math inline">\(k\)</span> is a <em>simple</em> model, so complexity increases as you move to the <em>left</em>, which is the opposite of how you will see this drawn everywhere else.</p>
-<p>The usual fix is to plot against <span class="math inline">\(\log(1/k)\)</span>, which increases as the model gets more flexible.</p>
+<p>The horizontal axis makes this plot a little awkward. A large <span class="math inline">\(k\)</span> gives a <em>simpler</em> model, so complexity increases toward the <em>left</em>. Textbooks usually draw complexity increasing to the right.</p>
+<p>Plotting against <span class="math inline">\(\log(1/k)\)</span> gives us that orientation, since it increases with model flexibility.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">/</span> kseq), err_test, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">lwd =</span> <span class="fl">2.5</span>,</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">range</span>(<span class="fu">c</span>(err_test, err_train)),</span>
@@ -618,30 +618,30 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>Identical numbers, identical conclusion, drawn so that “further right” means “more flexible model.” Every version of this figure you meet from now on, in any textbook and for any method, has this orientation, and the two curves always behave this way: the training curve slides downward forever, and the test curve turns around.</p>
+<p>The numbers and conclusion are unchanged. We have simply redrawn them so that moving right means a more flexible model. This is the conventional picture: training error falls with complexity, while test error eventually turns upward.</p>
 </section>
 </section>
 <section id="bias-and-variance" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="bias-and-variance"><span class="header-section-number">2.5</span> Bias and variance</h2>
-<p>We now have the picture. The vocabulary for it is worth learning, because it is how everyone else in this literature talks, and because the two failures it names are genuinely different failures.</p>
-<p>Return to the decomposition from earlier:</p>
+<p>The terms <strong>bias</strong> and <strong>variance</strong> help us describe the two problems in this picture. You will encounter them throughout the statistical-learning literature.</p>
+<p>Return to our earlier decomposition:</p>
 <p><span class="math display">\[Y = \underbrace{f(X)}_{\text{signal}} + \underbrace{\varepsilon}_{\text{noise}}\]</span></p>
-<p>A model can be wrong about <span class="math inline">\(f\)</span> in two ways.</p>
-<p><strong>Bias</strong> is systematic error. The model is too rigid to represent the shape of <span class="math inline">\(f\)</span>, so it is wrong in the same direction every time, and it would still be wrong if you handed it a million more countries. The straight line we drew through the infant mortality data has high bias. So does <span class="math inline">\(K\)</span>-nearest neighbors at <span class="math inline">\(k=150\)</span>, which flattens a real curve into something close to a horizontal line.</p>
-<p><strong>Variance</strong> is instability. The model is flexible enough to represent <span class="math inline">\(f\)</span>, but it responds so eagerly to the particular cases in front of it that a different sample would have produced a noticeably different answer. It is not systematically wrong. It is just not reliable, and the specific answer you got is partly an accident of the data you happen to hold.</p>
-<p>The trade-off is that reducing one usually increases the other, which is what produces the U.</p>
+<p>There are two ways our estimate of <span class="math inline">\(f\)</span> can go wrong.</p>
+<p><strong>Bias</strong> is systematic error. A model may be too rigid to capture the shape of <span class="math inline">\(f\)</span>, so additional observations do not resolve the problem. Our straight line through the infant mortality data is an example. So is <span class="math inline">\(K\)</span>-nearest neighbors at <span class="math inline">\(k=150\)</span>, which smooths the curve into something almost horizontal.</p>
+<p><strong>Variance</strong> concerns how much the fitted model changes across samples. A model flexible enough to represent <span class="math inline">\(f\)</span> may follow the observations so closely that another sample gives a noticeably different fit. The answer from one sample can then be unreliable even without systematic error in one direction.</p>
+<p>Reducing one often increases the other. This trade-off helps explain the U-shaped test-error curve.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/bias-variance-tradeoff.png" class="img-fluid figure-img"></p>
 <figcaption>Test and training error as a function of model complexity. Reproduced from Hastie, T., Tibshirani, R., and Friedman, J., <em>The Elements of Statistical Learning</em>, 2nd edition, Springer, 2009.</figcaption>
 </figure>
 </div>
-<p>This is a schematic, not a fit to anything. It is the shape you just produced from real data, and the shape you will produce from almost any dataset with almost any flexible method.</p>
-<p>Read the two arrows at the top. Moving left, the model gets simpler: variance falls, bias rises, and eventually the model is too rigid to represent what is there. Moving right, the model gets more flexible: bias falls, variance rises, and eventually the model is chasing noise. The training curve slides downward the whole way and never turns, which is why it cannot be used to choose anything. The test curve has a minimum, and finding it is the entire problem.</p>
+<p>This figure is a schematic rather than an analysis of a particular dataset. It illustrates the pattern we have just examined.</p>
+<p>The arrows show the trade-off. Moving left gives simpler models, generally reducing variance but increasing bias. Moving right gives more flexible models, generally reducing bias but increasing variance. Training error falls throughout, so it does not help us locate the minimum of test error.</p>
 <section id="seeing-variance-directly" class="level3" data-number="2.5.1">
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="seeing-variance-directly"><span class="header-section-number">2.5.1</span> Seeing variance directly</h3>
-<p>Bias and variance are hard to separate with real data, for a simple reason: you would need to know the true <span class="math inline">\(f\)</span> in order to say how far the model sits from it, and if you knew <span class="math inline">\(f\)</span> you would not be modeling.</p>
-<p>So we simulate. We invent a function, add noise to it, draw many samples from it, and fit a model to each. Because we wrote down the truth ourselves, we can measure exactly how far off each fit lands.</p>
+<p>With real data, separating bias from variance is difficult because we do not know the true <span class="math inline">\(f\)</span>. We cannot directly measure how far each fitted model is from <span class="math inline">\(f\)</span>.</p>
+<p>Simulation lets us examine this. We choose a function, add noise, draw repeated samples, and fit a model to each. Since we know the function, we can compare every fit with it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1364</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -692,30 +692,30 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>Thirty samples, three values of <span class="math inline">\(k\)</span>, and the same underlying truth throughout. The red line in the lower row marks the correct answer at the point we are watching.</p>
-<p>At <span class="math inline">\(k=5\)</span> the fitted curves scatter all over the plot. Each one is chasing its own two hundred observations. The predictions center roughly on the truth, so the bias is small, but any single one of them could be well off. That is variance.</p>
-<p>At <span class="math inline">\(k=150\)</span> the curves lie almost on top of one another. Run the study again and you would get essentially the same answer, which sounds like a virtue until you notice where that answer sits: the box is nowhere near the red line. The model is stable and consistently wrong. That is bias.</p>
-<p>At <span class="math inline">\(k=40\)</span> the box is both reasonably tight and reasonably close. That is the whole idea.</p>
-<p>Notice what this means for how you read a result. A model with high variance can be badly wrong without giving any sign of it, because the fit to the data in front of you looks excellent. Nothing in the output announces that a different sample would have said something else.</p>
+<p>These plots use thirty samples and three values of <span class="math inline">\(k\)</span>, all drawn from the same underlying function. The red line in the lower row marks the true value at the point being examined.</p>
+<p>At <span class="math inline">\(k=5\)</span>, the fitted curves vary widely across samples. Their predictions are centered roughly on the true value, so bias is small, but an individual prediction may be far away. This is high variance.</p>
+<p>At <span class="math inline">\(k=150\)</span>, the curves are very similar across samples. The estimates are stable, but the box lies far from the red line: they are consistently missing the true value. This is high bias.</p>
+<p>At <span class="math inline">\(k=40\)</span>, the predictions are both reasonably concentrated and close to the true value, giving a better balance in this example.</p>
+<p>Keep this in mind when reading a fitted model. A high-variance model may look convincing on the data used to fit it, without showing how much the result would change in another sample.</p>
 </section>
 </section>
 <section id="cross-validation" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="cross-validation"><span class="header-section-number">2.6</span> Cross-validation</h2>
-<p>Now back to the problem we left hanging. We chose <span class="math inline">\(k\)</span> using one train and test split, and the choice moved when the seed moved. Two complaints about the single split, both fair:</p>
+<p>Our choice of <span class="math inline">\(k\)</span> depended on a single training/test split and moved when we changed the seed. There are two limitations to that approach:</p>
 <ol type="1">
-<li>The answer depends on which split we happened to draw, which is exactly the instability we just spent a section learning to distrust.</li>
-<li>We set aside thirty percent of the countries and never trained on them. With 199 cases that is a real loss of information.</li>
+<li>The choice depends on which observations happen to be in each set.</li>
+<li>We exclude thirty percent of the countries from training. With only 199 cases, that is a substantial amount of information.</li>
 </ol>
-<p><strong>Cross-validation</strong> addresses both by rotating the role of the held-out set.</p>
+<p><strong>Cross-validation</strong> addresses these limitations by rotating which observations are held out.</p>
 <section id="leave-one-out" class="level3" data-number="2.6.1">
 <h3 data-number="2.6.1" class="anchored" data-anchor-id="leave-one-out"><span class="header-section-number">2.6.1</span> Leave-one-out</h3>
-<p>Set aside a single observation, train on the remaining <span class="math inline">\(n-1\)</span>, predict the one you left out, and record the error. Do it again with the next observation. Repeat <span class="math inline">\(n\)</span> times and average.</p>
+<p>Leave one observation out, train on the remaining <span class="math inline">\(n-1\)</span>, predict the omitted case, and record its error. Repeat this <span class="math inline">\(n\)</span> times, then combine the errors.</p>
 <p><span class="math display">\[\text{RMSE}_{\text{LOO}} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i - \hat{y}_i\right)^2}\]</span></p>
-<p>Every case gets used for training almost every time and for testing exactly once. Nothing is wasted, and there is no arbitrary split to be at the mercy of. The cost is that you have to fit the model <span class="math inline">\(n\)</span> times.</p>
+<p>Each case is used for testing once and for training in all the other fits. This removes dependence on one arbitrary split, but requires fitting the model <span class="math inline">\(n\)</span> times.</p>
 </section>
 <section id="k-fold" class="level3" data-number="2.6.2">
 <h3 data-number="2.6.2" class="anchored" data-anchor-id="k-fold"><span class="header-section-number">2.6.2</span> k-fold</h3>
-<p>The practical compromise is to hold out a group instead of a single case. Split the data at random into a number of roughly equal folds. Hold out the first fold, train on the rest, and record the error on the fold you held out. Then hold out the second fold, and so on, until every fold has served once as the test set. Average the results.</p>
+<p>In k-fold cross-validation, we hold out groups rather than individual observations. Divide the data randomly into roughly equal folds. Train on all but the first fold and evaluate on that fold, then repeat with each of the others. Combine the errors after every fold has been used for testing.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -726,7 +726,7 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 <p><span class="math display">\[\text{CV RMSE} = \sqrt{\frac{1}{\text{nfold}}\sum_{f=1}^{\text{nfold}} \text{MSE}_f}\]</span></p>
-<p><strong>One warning about names before the code.</strong> The <span class="math inline">\(k\)</span> in “<span class="math inline">\(k\)</span>-fold” has nothing whatever to do with the <span class="math inline">\(k\)</span> in “<span class="math inline">\(K\)</span>-nearest neighbors.” They are two unrelated numbers that unfortunately share a letter, and we are about to choose one of them using the other. To keep them apart, the code below calls the number of folds <code>nfold</code> and never <code>k</code>.</p>
+<p><strong>Watch the two uses of the letter <span class="math inline">\(k\)</span>.</strong> The number in “<span class="math inline">\(k\)</span>-fold” is unrelated to the <span class="math inline">\(k\)</span> in “<span class="math inline">\(K\)</span>-nearest neighbors.” We will use one to choose the other, so the code calls the fold count <code>nfold</code> to keep them apart.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cv_knn <span class="ot">&lt;-</span> <span class="cf">function</span>(data, kvals, <span class="at">nfold =</span> <span class="dv">10</span>, <span class="at">seed =</span> <span class="dv">7</span>) {</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -752,7 +752,7 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  out</span>
 <span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You are not expected to be able to write that from scratch. You are expected to be able to read it and say in words what it does, which is the standard this course applies to code generally.</p>
+<p>You do not need to write this loop from scratch. You should be able to read it and explain what it does. That is the general expectation for code in this course.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>kseq2  <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">60</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -786,13 +786,13 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 <pre><code>[1] 27</code></pre>
 </div>
 </div>
-<p>Compare this curve with the single-split version. It is smoother, because each point averages several held-out sets rather than resting on one, and the two fold counts broadly agree with each other. That agreement is the reassurance we were missing before.</p>
-<p>It does not make the choice of <span class="math inline">\(k\)</span> objective. Cross-validation still leaves you with a range of values that perform about equally well, and picking the exact minimum of a flat curve is reading precision into noise. Report the range, say what you chose, and say why.</p>
+<p>Compared with the single-split curve, this one is smoother because each point combines errors from several held-out sets. The two fold counts also give broadly similar results.</p>
+<p>Cross-validation does not identify a uniquely correct <span class="math inline">\(k\)</span>. Several values may perform similarly, and the exact minimum of a flat curve can reflect noise. Report the range of plausible choices, the value you selected, and your reason for selecting it.</p>
 </section>
 <section id="the-same-thing-with-caret" class="level3" data-number="2.6.3">
 <h3 data-number="2.6.3" class="anchored" data-anchor-id="the-same-thing-with-caret"><span class="header-section-number">2.6.3</span> The same thing, with caret</h3>
-<p>Nobody writes that loop in practice. Now that you know what cross-validation does, here is the tool you will actually use for it, and use for the rest of this course.</p>
-<p><code>caret</code> is the standard R package for fitting and comparing predictive models through a single interface. It is worth installing now, because Week 6 uses it again for evaluation.</p>
+<p>In practice, a package can handle this loop. Now that we have worked through cross-validation, we will use <code>caret</code> to implement it.</p>
+<p><code>caret</code> provides a common R interface for fitting and comparing predictive models. Install it now; we will use it again in Week 6.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"caret"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -824,22 +824,22 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>Four arguments carry the work, and each corresponds to something we did by hand.</p>
-<p><code>method = "knn"</code> picks the algorithm. <code>caret</code> supports well over a hundred, and swapping this one string is how you will fit a random forest next week.</p>
-<p><code>trControl = trainControl(method = "cv", number = 10)</code> is the cross-validation. <code>number</code> is the fold count, our <code>nfold</code>. Set <code>method = "LOOCV"</code> here and you get leave-one-out instead.</p>
-<p><code>tuneGrid = data.frame(k = kseq2)</code> gives it the values of <span class="math inline">\(k\)</span> to try, the same sequence we looped over. Leave this out and <code>caret</code> quietly tries three values of its own choosing, which is almost never what you want.</p>
-<p><code>preProcess = c("range")</code> rescales the features to lie between zero and one, which is the first of the two formulas from the previous section. <strong>This is not the default.</strong> Omit it and <code>caret</code> uses the raw units.</p>
-<p>One honest caveat about that last point here. With a single predictor, rescaling makes no difference at all: stretching one axis cannot change which countries are nearest to which. It is in the argument above because it becomes essential the moment we add a second feature, and because a habit formed on the easy case is one you still have on the hard one.</p>
-<p>The answer should land close to what the loop produced, though not necessarily identical, since <code>caret</code> draws its own folds. If the two disagree by more than a few units of <span class="math inline">\(k\)</span> on a curve this flat, that is the flatness talking rather than a real disagreement.</p>
-<p>Week 6 returns to evaluation and takes it further, into the metrics that matter when the outcome is rare and accuracy stops being informative.</p>
+<p>Four arguments correspond to the steps we carried out by hand.</p>
+<p><code>method = "knn"</code> selects the algorithm. <code>caret</code> supports well over a hundred methods. Next week, we will change this argument to fit a random forest.</p>
+<p><code>trControl = trainControl(method = "cv", number = 10)</code> specifies cross-validation. <code>number</code> is the fold count, which we called <code>nfold</code>. Setting <code>method = "LOOCV"</code> requests leave-one-out cross-validation instead.</p>
+<p><code>tuneGrid = data.frame(k = kseq2)</code> supplies the values of <span class="math inline">\(k\)</span> to compare. Without it, <code>caret</code> tries three values of its own choosing, which may not cover the range we want.</p>
+<p><code>preProcess = c("range")</code> rescales features to lie between zero and one, using the first of the two formulas from the previous section. You must request this explicitly; otherwise <code>caret</code> uses the raw units.</p>
+<p>With one predictor, this rescaling does not change which countries are nearest to one another. We include it because scaling becomes important once we add a second feature, and it is useful to establish the habit now.</p>
+<p>The result should be close to the loop’s choice, though <code>caret</code> draws its own folds. If the choices differ by a few units of <span class="math inline">\(k\)</span> on a flat curve, that need not indicate a substantive disagreement.</p>
+<p>Week 6 extends evaluation to rare outcomes, where accuracy can be misleading and we need other metrics.</p>
 </section>
 </section>
 <section id="more-than-one-feature-and-the-problem-of-units" class="level2" data-number="2.7">
 <h2 data-number="2.7" class="anchored" data-anchor-id="more-than-one-feature-and-the-problem-of-units"><span class="header-section-number">2.7</span> More than one feature, and the problem of units</h2>
-<p>So far similarity has meant closeness on a single axis, which is easy. With several features we need a general definition of distance, and the usual one is Euclidean distance. For a case <span class="math inline">\(f\)</span> with features <span class="math inline">\((x_{f1}, \dots, x_{fp})\)</span> and a case <span class="math inline">\(i\)</span> in the training data,</p>
+<p>With multiple features, similarity needs a definition of distance. A common choice is Euclidean distance. For a case <span class="math inline">\(f\)</span> with features <span class="math inline">\((x_{f1}, \dots, x_{fp})\)</span> and a training case <span class="math inline">\(i\)</span>, it is</p>
 <p><span class="math display">\[d_{if} = \sqrt{\sum_{j=1}^{p}\left(x_{fj} - x_{ij}\right)^2}.\]</span></p>
-<p>This is the straight-line distance you already know, extended to more than two dimensions. And it introduces a problem that is easy to miss and consequential when you do.</p>
-<p>Our features are measured on very different scales. Per capita GDP runs from well under one up to about a hundred, in thousands of dollars. Percent urban runs from zero to a hundred. Fertility runs from about one to about seven, and female life expectancy from the high forties to the high eighties.</p>
+<p>This extends straight-line distance to more than two dimensions. It also makes the units of our features important.</p>
+<p>GDP per capita ranges from well under one to about a hundred, measured in thousands of dollars. Percent urban ranges from zero to a hundred, fertility from about one to seven, and female life expectancy from the high forties to the high eighties.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(countries[, <span class="fu">c</span>(<span class="st">"ppgdp"</span>, <span class="st">"pctUrban"</span>, <span class="st">"fertility"</span>, <span class="st">"lifeExpF"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -852,8 +852,8 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
  Max.   :105.0954   Max.   :100.0   Max.   :6.925   Max.   :87.12  </code></pre>
 </div>
 </div>
-<p>Put those into the distance formula unchanged and the two wide-ranging features decide everything. A difference of fifty between two countries on per capita GDP contributes two and a half thousand to the sum under the square root. The entire possible range of fertility, from one child per woman to seven, contributes about thirty-five. Fertility is not being weighted lightly here. For practical purposes it is not in the model at all, and neither is anything else measured on a small scale.</p>
-<p>The standard fix is to put all features on a common scale first, either</p>
+<p>Using these raw units gives the wide-ranging features much more influence on distance. An income difference of fifty contributes two and a half thousand to the sum under the square root. The full fertility range contributes only about thirty-five. Features measured on smaller scales have very little influence, even if they are substantively relevant.</p>
+<p>We can put features on a common scale using either of these transformations:</p>
 <p><span class="math display">\[\tilde{x} = \frac{x - \min(x)}{\max(x) - \min(x)} \qquad \text{or} \qquad \tilde{x} = \frac{x - \bar{x}}{\sigma_x}.\]</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rescale <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span>
@@ -874,7 +874,7 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
  Max.   :1.00000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  </code></pre>
 </div>
 </div>
-<p>The first thing to establish is that this is a harmless operation. Rescaling does not change the relationship between any feature and the outcome. Look at two features before and after.</p>
+<p>First, compare each feature with the outcome before and after rescaling. The transformation preserves that relationship.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -900,11 +900,11 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>The clouds of points are identical in shape. Only the numbers on the horizontal axis have moved. Nothing about the association between any feature and the outcome has been altered.</p>
-<p>What has changed is invisible in these plots, because it is not about any single feature. It is about the space the features jointly define.</p>
+<p>The shapes of the point clouds are unchanged. Only the horizontal-axis numbers differ.</p>
+<p>The change that matters for the model concerns the joint feature space, which these separate plots do not show.</p>
 <section id="what-the-algorithm-now-sees" class="level3" data-number="2.7.1">
 <h3 data-number="2.7.1" class="anchored" data-anchor-id="what-the-algorithm-now-sees"><span class="header-section-number">2.7.1</span> What the algorithm now sees</h3>
-<p>With two features rather than one, cases no longer sit along a line. They sit in a plane, and the outcome rises above it.</p>
+<p>With two features, countries sit in a plane rather than on a line, and we can plot the outcome above that plane.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -921,11 +921,11 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>Add a third feature and the picture cannot be drawn at all, which is the last point in this course at which you can see the space a model is working in. From Week 3 onward you will have to reason about it rather than look at it. The arithmetic does not care: the distance formula extends to any number of features without complaint, and it is only our eyes that stop at three.</p>
+<p>Adding a third feature makes this picture harder to draw, because the outcome would require another dimension. The distance formula still works with any number of features. For more complex models, we will need to reason about spaces we cannot visualize directly.</p>
 </section>
 <section id="what-the-neighborhood-looks-like" class="level3" data-number="2.7.2">
 <h3 data-number="2.7.2" class="anchored" data-anchor-id="what-the-neighborhood-looks-like"><span class="header-section-number">2.7.2</span> What the neighborhood looks like</h3>
-<p>Now the thing worth seeing. Pick a country, and ask which twenty-five countries the algorithm considers its neighbors. We do it twice, once in raw units and once rescaled, using the same country both times.</p>
+<p>Choose a country and compare the twenty-five neighbors selected using raw units with those selected after rescaling.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>target_raw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries<span class="sc">$</span>ppgdp),   <span class="fu">median</span>(countries<span class="sc">$</span>fertility))</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>target_s   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">median</span>(countries_s<span class="sc">$</span>ppgdp), <span class="fu">median</span>(countries_s<span class="sc">$</span>fertility))</span>
@@ -963,39 +963,39 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </div>
 </div>
 </div>
-<p>The filled red point is the country we are predicting for. The circled points are the twenty-five the algorithm chose as most similar to it.</p>
-<p>On the right, with both features on a common scale, the neighborhood is roughly a disc around the target. Both features contributed to picking it, which is what we asked for.</p>
-<p>On the left it is a narrow vertical band. The selected countries share almost exactly the target’s income and are spread across nearly the whole range of fertility, from around one child per woman to well above the average. Per capita GDP spans about a hundred units on this scale and fertility spans about six, so a difference of a few units of income outweighs the entire fertility axis. The algorithm did not ignore fertility because anybody judged it unimportant. It ignored it because of the units it happens to be measured in.</p>
-<p>Note also what the model would have reported. Both versions return predictions. Neither prints a warning. The left-hand model would have gone into a paper as a two-feature model, and the fact that it was a one-feature model in disguise would appear nowhere in the output.</p>
-<p>Stay with that, because it is not a technical footnote. The algorithm’s entire operation rests on its definition of “similar,” and that definition was just set by two choices: which features we included, and how we scaled them. Neither choice required anyone to make a claim about the world. Had we left the units alone, the model would have decided that countries are similar when their incomes are similar, and it would have reported that decision as a finding rather than as an artifact of the fact that GDP happens to be counted in dollars.</p>
+<p>The filled red point is our target country. The circled points are the twenty-five countries selected as its neighbors.</p>
+<p>On the right, the rescaled features produce a roughly disc-shaped neighborhood. Both features contribute to the selection.</p>
+<p>On the left, the neighbors form a narrow vertical band. They have incomes close to the target’s but span much of the fertility range. Income ranges over about a hundred units while fertility ranges over about six, so a small income difference can outweigh a large fertility difference. The units give income most of the influence without any explicit judgment that fertility matters less.</p>
+<p>Both models return predictions without warnings. We could report the raw-unit version as a two-feature model even though one feature contributes very little. To notice that, we need to inspect the neighborhood.</p>
+<p>This matters beyond the calculation. The model’s definition of similarity depends on which features we include and how we scale them. Leaving the raw units in place gives income much more influence. That is a consequence of our setup, even if we never explicitly intended to define similarity that way.</p>
 </section>
 </section>
 <section id="what-this-model-cannot-tell-you" class="level2" data-number="2.8">
 <h2 data-number="2.8" class="anchored" data-anchor-id="what-this-model-cannot-tell-you"><span class="header-section-number">2.8</span> What this model cannot tell you</h2>
-<p>The model has no coefficients. There is no number to report saying how much per capita GDP matters, no standard error, no statement of the form “a one-unit increase in <span class="math inline">\(X\)</span> is associated with a change in <span class="math inline">\(Y\)</span>.” The model cannot be written down apart from the data it holds.</p>
-<p>More importantly, it has said nothing about <em>why</em> infant mortality is lower in richer countries. It has found that countries with similar incomes tend to have similar infant mortality, and it can use that to predict. That is a prediction, in exactly the sense we distinguished last week, and it does not become an explanation by performing well.</p>
-<p>There is a second limit, and the neighborhood figures above showed it. A model of this kind answers every question put to it, at the same apparent level of confidence, whether the case sits in a crowded part of the data or alone at the edge of it. The richest country in this dataset gets a prediction assembled from neighbors spread across tens of thousands of dollars of income. That prediction is printed in the same format, to the same number of decimal places, as one built from twenty-five genuinely similar cases. Nothing in the output distinguishes them.</p>
+<p>There are no coefficients or standard errors to summarize this model, and no statement such as “a one-unit increase in <span class="math inline">\(X\)</span> is associated with a change in <span class="math inline">\(Y\)</span>.” Its predictions depend on the data it retains.</p>
+<p>The model also does not explain <em>why</em> richer countries have lower infant mortality. It uses the association between income and mortality to predict, as we discussed last week. Predicting well does not turn that association into an explanation.</p>
+<p>Another limitation appeared in the neighborhood plots. The model returns predictions in the same format whether a case has many close neighbors or lies at the edge of the data. For the richest country, the neighbors may span tens of thousands of dollars in income. The output alone does not distinguish that prediction from one based on twenty-five closely comparable countries.</p>
 </section>
 <section id="the-politics-of-similarity" class="level2" data-number="2.9">
 <h2 data-number="2.9" class="anchored" data-anchor-id="the-politics-of-similarity"><span class="header-section-number">2.9</span> The politics of similarity</h2>
-<p>The rule at the center of this week is that cases similar to past cases receive what those past cases received.</p>
-<p>That is also a fair description of precedent in law, of case-based reasoning in administration, and of the Weberian bureaucratic ideal we discussed last week, in which similar cases are treated alike regardless of who happens to be at the desk. Consistency of this kind is not a defect. It is one of the oldest arguments for rule-bound government, and part of what makes an administration predictable enough to be held to account.</p>
-<p>What changes when the rule is a fitted model is who defines similarity, and how visibly. In <span class="math inline">\(K\)</span>-nearest neighbors that definition came from feature selection and rescaling, decisions made early, made quietly, and almost never revisited or documented once the system is running. Nobody writes them down as a policy, because they do not look like a policy.</p>
-<p>And a model of this kind can only reproduce the pattern in the cases it was given. If the treatment recorded in those cases was unjust, then similarity to past cases carries the injustice forward, and it does so with the appearance of perfect consistency. The system is not malfunctioning when this happens. It is doing precisely what it was built to do.</p>
+<p>The model applies a simple rule: cases similar to past cases receive outcomes based on those past cases.</p>
+<p>This resembles precedent in law, case-based administrative reasoning, and the Weberian ideal of treating similar cases alike. Consistency can support predictable, accountable administration, regardless of who handles a case.</p>
+<p>With a fitted model, we should ask who defines similarity and how visible that definition is. In <span class="math inline">\(K\)</span>-nearest neighbors, feature selection and rescaling determine it. These early technical decisions may receive little documentation or attention once a system is running, even though they shape its treatment of cases.</p>
+<p>The model also reproduces patterns in the cases it was given. If those cases record unjust treatment, the model can carry that treatment forward while appearing consistent. This can happen even when the system operates as designed.</p>
 </section>
 <section id="reading" class="level2" data-number="2.10">
 <h2 data-number="2.10" class="anchored" data-anchor-id="reading"><span class="header-section-number">2.10</span> Reading</h2>
-<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="../references.html#ref-james2021" role="doc-biblioref">James et al. 2021</a>)</span>.</p>
-<p>Read Section 2.2 for the figures rather than the derivations. The pictures of training error against test error, and of the bias-variance decomposition, are the same pictures you produced above, and seeing them drawn by someone else is a useful check on whether you understood what you made. Section 5.1 covers cross-validation and is short.</p>
+<p>James, G., Witten, D., Hastie, T., and Tibshirani, R. <em>An Introduction to Statistical Learning</em>. Sections 2.1 and 2.2, Section 3.5, and Section 5.1. Freely available at <a href="https://www.statlearning.com/">statlearning.com</a> <span class="citation" data-cites="james2021">(<a href="#ref-james2021" role="doc-biblioref">James et al. 2021</a>)</span>.</p>
+<p>Read Section 2.2 with particular attention to the figures. Compare its training/test error and bias-variance pictures with the ones you produced here. Section 5.1 gives a short explanation of cross-validation.</p>
 </section>
 <section id="before-the-workshop" class="level2" data-number="2.11">
 <h2 data-number="2.11" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">2.11</span> Before the workshop</h2>
-<p>Install <code>carData</code>, <code>kknn</code>, <code>caret</code>, and <code>scatterplot3d</code>, run every chunk in this handout once, and bring a charged laptop. The workshop begins from the assumption that the code above ran on your machine, and the first part of a three-hour session is not the place to discover an installation problem.</p>
-<p>If something failed, say so at the start rather than at the end.</p>
+<p>Install <code>carData</code>, <code>kknn</code>, <code>caret</code>, and <code>scatterplot3d</code>, run every chunk, and bring a charged laptop. Please check installation at home so we can use the three-hour workshop for the material itself.</p>
+<p>If something does not run, let me know at the start of the session so we can address it.</p>
 </section>
 <section id="questions-for-the-session" class="level2" data-number="2.12">
 <h2 data-number="2.12" class="anchored" data-anchor-id="questions-for-the-session"><span class="header-section-number">2.12</span> Questions for the session</h2>
-<p>Come with a view on at least two of these. They will structure the first part of the session.</p>
+<p>Prepare an answer to at least two questions. We will use them to begin the session.</p>
 <ol type="1">
 <li><p><span class="math inline">\(K\)</span>-nearest neighbors has no coefficients and makes no claim about mechanism. Is it therefore useless for political science, or is that the wrong test to apply to it? Last week’s reading is relevant here.</p></li>
 <li><p>The choice of <span class="math inline">\(k\)</span> has no correct answer that can be read off the data alone. What does it mean that a central decision in a model is made by the researcher rather than discovered?</p></li>
@@ -1006,7 +1006,7 @@ Armenia     3.0307          24.272     1.735       64    77.33  other</code></pr
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-james2021" class="csl-entry" role="listitem">
 James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: With Applications in <span>R</span></em>. 2nd ed. Springer.
 </div>

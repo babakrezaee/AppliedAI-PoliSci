@@ -364,26 +364,26 @@ window.Quarto = {
 
 
 <p><em>Week 3, 16 September</em></p>
-<p>Last week’s method concealed nothing, in the sense that every prediction <span class="math inline">\(K\)</span>-nearest neighbors produced could be traced back to a small set of countries that could be located on a scatterplot. This week begins from the same premise, with a model that can be drawn on a whiteboard and read aloud as a sequence of rules, and then abandons that transparency deliberately, in exchange for a considerably better model.</p>
-<p>The session therefore stages a tension that runs through much of contemporary machine learning. On the one hand, a model whose reasoning can be inspected is easier to defend, to audit, and to explain to somebody who has to act on its output. On the other hand, the models that predict best are frequently the ones whose reasoning cannot be inspected at all. Trees and forests are unusually well suited to examining this tension, because the movement from the first situation to the second occurs within a single family of methods and can be observed at each step.</p>
+<p>Last week, we could trace each <span class="math inline">\(K\)</span>-nearest neighbors prediction to a set of countries on a scatterplot. We begin this week with another model we can draw and explain: a decision tree. We then move to random forests, which trade some of that transparency for better predictive performance.</p>
+<p>This comparison raises a question we will return to throughout the course. A model we can inspect is easier to explain and audit, but strong predictive performance often comes from models that are harder to interpret. Trees and forests let us examine this trade-off within one family of methods.</p>
 <section id="what-trees-are-good-at-and-what-they-are-not" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="what-trees-are-good-at-and-what-they-are-not"><span class="header-section-number">3.1</span> What trees are good at, and what they are not</h2>
-<p>Tree models in statistical learning bear an obvious kinship to decision trees as we ordinarily understand them, and they have been used widely for prediction. It is worth setting out at the start what they offer and what they cost.</p>
+<p>Statistical trees resemble the decision trees you may already know. Before fitting one, it helps to understand their main strengths and limitations.</p>
 <p><strong>Benefits.</strong></p>
 <ul>
-<li>They capture interactions between features and non-linear associations without being instructed to look for them.</li>
-<li>They handle categorical variables well, and the results remain interpretable.</li>
-<li>They are relatively fast compared with most other machine-learning algorithms.</li>
+<li>They capture interactions and non-linear associations without requiring us to specify those patterns in advance.</li>
+<li>They can handle categorical variables, and individual trees are interpretable.</li>
+<li>They are relatively fast compared with many other machine-learning algorithms.</li>
 <li><strong>They do not require the features to be rescaled.</strong></li>
 </ul>
-<p>The final point deserves a moment, since it undoes an entire section of last week. <span class="math inline">\(K\)</span>-nearest neighbors was at the mercy of the units in which its features happened to be measured, and we devoted considerable effort to placing everything on a common scale so that income would not swamp fertility. A tree, however, never compares two features to each other. Instead, it asks one question at a time, about a single variable, and on that variable’s own scale, so that multiplying a feature by a thousand changes nothing whatever and the problem simply does not arise.</p>
-<p><strong>The disadvantage,</strong> and it is a serious one, is that a single tree does not predict well out of sample.</p>
-<p>That tension is the shape of the week, in that everything after the first third is an attempt to retain the benefits while addressing the disadvantage, by growing a forest of trees and allowing them to vote.</p>
+<p>This last point differs from <span class="math inline">\(K\)</span>-nearest neighbors. Last week we rescaled features so that income would not dominate fertility in the distance calculation. A tree asks about one variable at a time, on its own scale, instead of calculating distances across features. Multiplying a feature by a thousand therefore changes the numerical split values but does not create the same scaling problem.</p>
+<p><strong>The main limitation</strong> is that a single tree often predicts poorly out of sample.</p>
+<p>We will examine that limitation, then see how combining trees into a forest can help.</p>
 </section>
 <section id="two-datasets-this-week" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="two-datasets-this-week"><span class="header-section-number">3.2</span> Two datasets this week</h2>
-<p>Part I returns to the country data from last week, on the grounds that the fastest way to see what is distinctive about a tree is to apply it to material you have already modeled by other means.</p>
-<p>Part II moves to Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>, where the outcome is binary and rare, and where the more difficult problems arise.</p>
+<p>Part I uses last week’s country data. Applying a new method to familiar data makes it easier to see how the methods differ.</p>
+<p>Part II uses Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>. The binary outcome is rare, which introduces a different set of problems.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"carData"</span>, <span class="st">"rpart"</span>, <span class="st">"rpart.plot"</span>, <span class="st">"tree"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"randomForest"</span>, <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -411,12 +411,12 @@ window.Quarto = {
 <pre><code>[1] 193</code></pre>
 </div>
 </div>
-<p>One row per country, which is worth noting now, because Part II will not have that luxury.</p>
+<p>This dataset has one row per country. Keep that structure in mind when we move to Part II.</p>
 </section>
 <section id="part-i.-a-regression-tree" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="part-i.-a-regression-tree"><span class="header-section-number">3.3</span> Part I. A regression tree</h2>
-<p>Last week we fitted a <span class="math inline">\(K\)</span>-nearest neighbors curve to the relationship between per capita GDP and infant mortality, and gave some attention to the fact that the relationship bends: mortality falls very steeply across the poorest range and then flattens almost completely. A straight line was therefore a poor description of the relationship, and <span class="math inline">\(K\)</span>-nearest neighbors accommodated the curvature instead by averaging over a moving window of neighbors.</p>
-<p>A tree accommodates it differently, and placing the two side by side is the most efficient way to establish what a tree is.</p>
+<p>Last week, we used <span class="math inline">\(K\)</span>-nearest neighbors to fit the relationship between GDP per capita and infant mortality. Mortality falls steeply among the poorest countries and then levels off, so a straight line described it poorly. <span class="math inline">\(K\)</span>-nearest neighbors followed the curvature by averaging over a moving set of neighbors.</p>
+<p>A tree handles the same pattern differently. Comparing the two helps explain its prediction rule.</p>
 <section id="one-feature" class="level3" data-number="3.3.1">
 <h3 data-number="3.3.1" class="anchored" data-anchor-id="one-feature"><span class="header-section-number">3.3.1</span> One feature</h3>
 <div class="cell">
@@ -431,9 +431,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>At each interior node there is a decision rule of the form <span class="math inline">\(x &gt; c\)</span>. Follow the branch that matches, and continue until you reach a bottom node, which is called a leaf. The number in the leaf is the prediction, namely the average infant mortality of all the countries that arrived there.</p>
-<p>Reading one path aloud amounts to stating a substantive claim about development and child survival in ordinary language, without recourse to a formula, and very few of the models encountered in this course can be communicated in that way.</p>
-<p>We can now examine what the tree is as a function.</p>
+<p>Each interior node has a rule such as <span class="math inline">\(x &gt; c\)</span>. Follow the appropriate branch until you reach a terminal node, or leaf. Its prediction is the average infant mortality of the countries in that leaf.</p>
+<p>Try reading one path aloud. You can describe the income ranges and predicted mortality in ordinary language, which makes this model relatively easy to communicate.</p>
+<p>Now plot the tree’s predictions as a function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>oo  <span class="ot">&lt;-</span> <span class="fu">order</span>(countries<span class="sc">$</span>ppgdp)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ddf <span class="ot">&lt;-</span> countries[oo, ]</span>
@@ -456,12 +456,12 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The set of leaves provides a partition of the predictor space into disjoint regions. With a single feature that partition is simply a set of intervals, marked by the dashed vertical lines. Within each interval we take the average outcome of the countries that fall there, which produces the step function drawn in red. That step function is <span class="math inline">\(\hat{f}\)</span>, and to predict for a new country we locate its interval and read off the corresponding step.</p>
-<p>The placement of the boundaries is itself informative, in that they are tightly spaced at the left, where mortality changes rapidly, and widely spaced at the right, where it does not. Notably, nothing in the procedure instructed the algorithm to distribute them in this way.</p>
+<p>The leaves divide the predictor space into separate regions. With one feature, these are intervals marked by the dashed lines. Each interval receives the average outcome of its countries, producing the red step function. This is <span class="math inline">\(\hat{f}\)</span>: for a new country, find its interval and read the prediction.</p>
+<p>The boundaries are close together on the left, where mortality changes quickly, and farther apart on the right. The algorithm chose these locations from the data without being told to space them this way.</p>
 </section>
 <section id="the-same-data-two-algorithms" class="level3" data-number="3.3.2">
 <h3 data-number="3.3.2" class="anchored" data-anchor-id="the-same-data-two-algorithms"><span class="header-section-number">3.3.2</span> The same data, two algorithms</h3>
-<p>Last week’s model can usefully be placed on the same figure, so that the two procedures may be compared directly.</p>
+<p>Put last week’s model on the same plot to compare the predictions directly.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -489,28 +489,28 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Both are step functions constructed from local averages, and neither was told the shape of the relationship in advance. The difference between them lies entirely in the manner in which the neighborhoods are determined.</p>
-<p><span class="math inline">\(K\)</span>-nearest neighbors uses a window of fixed size that slides along the axis. Every prediction averages exactly ten countries, whether those ten lie within a few hundred dollars of one another or are distributed across forty thousand. This is why the curve becomes unstable on the right, where the data thin out: the window preserves its count while losing its substantive meaning.</p>
-<p>The tree, by contrast, uses regions of fixed content, having selected where to cut and therefore how wide each region should be, narrowly where the outcome changes quickly and broadly where it does not. The cost of proceeding this way is that the steps are coarse. The gain, however, is that the width of a neighborhood becomes a decision the algorithm reached about the data, rather than a number imposed upon it in advance.</p>
+<p>Both methods produce step functions from local averages without assuming the relationship’s shape. They differ in how they choose which countries to average.</p>
+<p><span class="math inline">\(K\)</span>-nearest neighbors uses a moving window with a fixed count. Here every prediction averages ten countries, regardless of whether their incomes are close or spread across forty thousand dollars. The sparse data on the right therefore produce less comparable neighborhoods and a less stable curve.</p>
+<p>The tree chooses boundaries first and averages within the resulting regions. These can be narrow where the outcome changes quickly and broad where it changes slowly. Its steps are coarser, but their widths depend on the splits selected from the data.</p>
 </section>
 <section id="what-the-algorithm-is-minimizing" class="level3" data-number="3.3.3">
 <h3 data-number="3.3.3" class="anchored" data-anchor-id="what-the-algorithm-is-minimizing"><span class="header-section-number">3.3.3</span> What the algorithm is minimizing</h3>
-<p>We are splitting the feature space <span class="math inline">\(X = \{x_1, x_2, \dots, x_k\}\)</span> into smaller rectangles, or boxes. If we can identify a pattern of splits with low prediction error on the training data, we can then predict for a new case by determining which box it belongs to.</p>
-<p>Roughly, a tree may be thought of as a <span class="math inline">\(K\)</span>-nearest neighbors algorithm in which <span class="math inline">\(k\)</span> is dynamic: the neighborhood is a box rather than a window, and the boxes are wide where the data are sparse and narrow where they are dense, rather than fixed in advance. The figure above is that proposition drawn, and it is worth returning to whenever the relationship between the two methods becomes unclear.</p>
-<p>Formally, for a continuous outcome:</p>
+<p>We divide the feature space <span class="math inline">\(X = \{x_1, x_2, \dots, x_k\}\)</span> into smaller boxes. After choosing splits that reduce training error, we predict a new case by finding its box.</p>
+<p>As an intuition, think of a tree as a relative of <span class="math inline">\(K\)</span>-nearest neighbors with a changing <span class="math inline">\(k\)</span>. The neighborhood is a box rather than a fixed-count window. Its boundaries can adapt to the data. This comparison is useful for understanding the figure, though the two methods choose neighborhoods differently.</p>
+<p>For a continuous outcome, the objective is</p>
 <p><span class="math display">\[\begin{align}
 \min_{R_1, R_2, \dots, R_J} \sum_{j=1}^{J} \sum_{i \in R_j} (y_i - \hat{y}_{R_j})^2
 \end{align}\]</span></p>
-<p>The boxes <span class="math inline">\(R_j\)</span> are chosen so as to minimize the total squared deviation of observations from the mean response within each box. In principle there are infinitely many ways of defining the boxes, and evaluating all of them is computationally impossible. A <strong>recursive partitioning</strong> procedure is therefore used instead:</p>
+<p>Each box <span class="math inline">\(R_j\)</span> has a mean response. We want to minimize the total squared differences between observations and their box means. Searching all possible partitions is computationally infeasible, so we use <strong>recursive partitioning</strong>:</p>
 <ul>
-<li>Scan every feature to identify the one whose split yields the best improvement, and split there.</li>
-<li>Repeat within each resulting box, and continue until splitting becomes too costly or a pre-set size is reached.</li>
+<li>Search the features for the split that improves the objective most, and make that split.</li>
+<li>Repeat within the new boxes until a stopping rule, such as minimum size or split cost, is reached.</li>
 </ul>
-<p>This is a <strong>greedy</strong> approach, in that at each step it takes the split that appears best at that moment, without considering the consequences for the splits beneath it. The resulting tree is therefore a good tree arrived at through a sequence of locally sensible decisions. It is not the best one, and the best one is not known.</p>
+<p>This is a <strong>greedy</strong> procedure. It chooses the best available split at each step without considering every possible later split. The resulting tree follows locally useful decisions, but is not guaranteed to be the best possible tree.</p>
 </section>
 <section id="two-features-and-the-partition-of-the-space" class="level3" data-number="3.3.4">
 <h3 data-number="3.3.4" class="anchored" data-anchor-id="two-features-and-the-partition-of-the-space"><span class="header-section-number">3.3.4</span> Two features, and the partition of the space</h3>
-<p>Before fitting anything, it is worth looking at the two features together, with the outcome carried by the color of each point.</p>
+<p>First, plot the two features together and use color to show the outcome.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(countries, <span class="fu">aes</span>(ppgdp, pctUrban, <span class="at">colour =</span> infantMortality)) <span class="sc">+</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -522,8 +522,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Each country is a point located by its income and its urbanization, and its shade reports the outcome we are trying to predict. The dark points, where mortality is high, gather in one corner of the plot, and the pale ones occupy the rest. A tree fitted to these two features is an attempt to draw rectangles around those regions.</p>
-<p>With two features the boxes do become rectangles, and they can still be drawn.</p>
+<p>Each point is a country, located by income and urbanization. Darker points have higher mortality and gather in one corner. The tree will divide this space into rectangles.</p>
+<p>With two features, we can still draw the resulting boxes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">tree</span>(infantMortality <span class="sc">~</span> ppgdp <span class="sc">+</span> pctUrban, <span class="at">data =</span> countries,</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">control =</span> <span class="fu">tree.control</span>(<span class="at">nobs =</span> <span class="fu">nrow</span>(countries), <span class="at">mindev =</span> <span class="fl">0.002</span>))</span>
@@ -537,13 +537,13 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Every rectangle is a leaf, and the number printed within it is the predicted infant mortality for a country falling there. This is the image to retain for the remainder of the block, namely that a tree divides the space of features into boxes and then assigns a single number to each box.</p>
-<p>The <code>mindev</code> argument lets the tree grow a little further than it otherwise would, since <code>tree()</code> stops splitting quite early by default and income alone accounts for most of the variation in infant mortality.</p>
-<p>One feature of that figure deserves emphasis, given how much of last week was devoted to the opposite situation. Nothing in the partition required the two features to be placed on a common scale. Per capita GDP runs to roughly a hundred and percent urban to a hundred, and had income been left in dollars the boundaries would sit at different numbers on the axis while <strong>the partition would be identical</strong>. The difficulty that the rescaling section of last week was designed to address therefore does not arise here at all.</p>
+<p>Each rectangle corresponds to a leaf, and its printed number is the prediction for countries in that rectangle. A tree divides the feature space into boxes and assigns one prediction to each.</p>
+<p>We use <code>mindev</code> to let the tree grow further than the default. Income already accounts for much of the variation, and <code>tree()</code> otherwise stops splitting quite early.</p>
+<p>Again, no rescaling was needed. GDP per capita and percent urban both range to roughly a hundred here, but using income in dollars would only change the axis numbers. <strong>The partition would remain identical.</strong> This differs from the distance calculation in last week’s model.</p>
 </section>
 <section id="a-categorical-feature-with-no-dummy-coding" class="level3" data-number="3.3.5">
 <h3 data-number="3.3.5" class="anchored" data-anchor-id="a-categorical-feature-with-no-dummy-coding"><span class="header-section-number">3.3.5</span> A categorical feature, with no dummy coding</h3>
-<p>The UN data include <code>group</code>, which sorts countries into OECD, African, and other categories. It is a factor rather than a number, and a tree accepts it as it stands.</p>
+<p>The factor <code>group</code> classifies countries as OECD, African, or other. A tree can use it directly.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m_tree3 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(infantMortality <span class="sc">~</span> ppgdp <span class="sc">+</span> pctUrban <span class="sc">+</span> group, <span class="at">data =</span> countries)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -556,25 +556,25 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>There are no dummy variables, no reference category, and no interaction terms. The tree simply asks which group a country belongs to and directs it down the appropriate branch, and the split is then printed as the names of the categories rather than as a coefficient on an indicator.</p>
-<p>Consider whether <code>group</code> appears at all, and, if it does, what happens to income on either side of it. If the tree asks about income at a different threshold within one group than within another, it has identified an interaction, which is to say that the relationship between wealth and child mortality is not the same everywhere. Nothing in the specification requested this, whereas a linear model recovers such an interaction only if the researcher thinks in advance to look for it.</p>
-<p>Those are the first two items on the list at the head of this handout, and together they are the principal reason trees are worth knowing.</p>
+<p>We do not need dummy variables, a reference category, or explicit interaction terms. The tree splits on group membership and prints the category names on the branches.</p>
+<p>Check whether <code>group</code> appears in the tree. If it does, compare the income thresholds within the groups. Different thresholds indicate an interaction: the relationship between wealth and mortality varies by group. A linear model would need us to include an interaction term explicitly.</p>
+<p>These examples illustrate the first two strengths listed above: handling categories and finding interactions.</p>
 </section>
 <section id="cost-complexity-and-the-parameter-that-plays-the-role-of-k" class="level3" data-number="3.3.6">
 <h3 data-number="3.3.6" class="anchored" data-anchor-id="cost-complexity-and-the-parameter-that-plays-the-role-of-k"><span class="header-section-number">3.3.6</span> Cost complexity, and the parameter that plays the role of k</h3>
-<p>Left to itself, the procedure continues splitting until every leaf is small and homogeneous, which fits the training data very well indeed. Last week, however, taught us to regard that result with suspicion rather than satisfaction.</p>
-<p>The standard remedy rewrites the problem as</p>
+<p>If allowed to keep splitting, the procedure produces increasingly small, homogeneous leaves and fits the training data closely. Last week showed why we should check whether that improves prediction on new cases.</p>
+<p>We can penalize complexity by changing the objective to</p>
 <p><span class="math display">\[\begin{align}
 C(T, y) = L(T, y) + \alpha |T|
 \end{align}\]</span></p>
-<p>where <span class="math inline">\(L(T, y)\)</span> is the loss from fitting outcome <span class="math inline">\(y\)</span> with tree <span class="math inline">\(T\)</span>, and <span class="math inline">\(|T|\)</span> is the number of nodes. Small loss is always preferred. Nevertheless, we do not want a tree so complex that it captures every fluctuation in the training data and consequently predicts poorly outside it, and the size of the tree is therefore penalized, with <span class="math inline">\(\alpha\)</span> determining how heavily that penalty is applied.</p>
-<p>A large <span class="math inline">\(\alpha\)</span> makes complexity expensive and returns a small tree, which may in consequence fit poorly, whereas a small <span class="math inline">\(\alpha\)</span> permits the tree to grow large. <strong>Here</strong> <span class="math inline">\(\alpha\)</span> is analogous to <span class="math inline">\(k\)</span> in <span class="math inline">\(K\)</span>-nearest neighbors, and, as with <span class="math inline">\(k\)</span>, no value is correct in advance.</p>
-<p>The question of how to choose it has the same answer as last week, and as most weeks: cross-validation.</p>
+<p>Here <span class="math inline">\(L(T, y)\)</span> is the loss for outcome <span class="math inline">\(y\)</span> fitted with tree <span class="math inline">\(T\)</span>, and <span class="math inline">\(|T|\)</span> measures the number of nodes. We want low loss, but also penalize a tree for becoming more complex. The parameter <span class="math inline">\(\alpha\)</span> sets the strength of that penalty.</p>
+<p>A large <span class="math inline">\(\alpha\)</span> favors a small tree and may leave it too simple to fit the relationship. A small <span class="math inline">\(\alpha\)</span> allows a larger tree. The role of <span class="math inline">\(\alpha\)</span> is similar to that of <span class="math inline">\(k\)</span> in <span class="math inline">\(K\)</span>-nearest neighbors: like <span class="math inline">\(k\)</span>, it needs to be chosen for the prediction task.</p>
+<p>As with last week’s parameter, we use cross-validation to guide the choice.</p>
 </section>
 <section id="pruning" class="level3" data-number="3.3.7">
 <h3 data-number="3.3.7" class="anchored" data-anchor-id="pruning"><span class="header-section-number">3.3.7</span> Pruning</h3>
-<p>The practical procedure is to allow the tree to grow first, without any concern for its size, and then to cut it back to the complexity that cross-validation prefers. Since <code>rpart</code> cross-validates as it proceeds, the relevant table is already available.</p>
-<p>The operative word is <strong>grow</strong>, since a tree that is stopped early never becomes sufficiently complex to overfit, and in that case there is no trade-off to observe at all. We therefore set <code>cp</code> to essentially zero and allow the procedure to run until the leaves contain a handful of countries each.</p>
+<p>The usual procedure is to grow a large tree, then prune it to a size supported by cross-validation. <code>rpart</code> carries out cross-validation during fitting, so we can inspect its table directly.</p>
+<p>To observe the trade-off, we need a tree large enough to overfit. We set <code>cp</code> close to zero and let it grow until leaves contain only a few countries.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -590,8 +590,8 @@ C(T, y) = L(T, y) + \alpha |T|
 <pre><code>Leaves in the grown tree: 29 </code></pre>
 </div>
 </div>
-<p>With roughly a hundred and eighty countries and leaves holding five apiece, that tree has divided the world into a considerably larger number of categories than the world contains. It will predict its own training data very accurately and generalize poorly, which is precisely the condition we need to be able to observe.</p>
-<p><code>plotcp()</code> draws the cross-validation table that <code>rpart</code> constructed along the way, which records, for every size of tree from one split upward, the cross-validated error of a tree of that size.</p>
+<p>With roughly a hundred and eighty countries and leaves of five, the tree divides the data quite finely. It fits the training observations closely, giving us a useful case for examining overfitting and generalization.</p>
+<p><code>plotcp()</code> displays the cross-validation table, showing error across different tree sizes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotcp</span>(big_tree)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -602,15 +602,15 @@ C(T, y) = L(T, y) + \alpha |T|
 </div>
 </div>
 </div>
-<p>This figure carries four pieces of information at once, none of them labeled obviously, and it is worth taking them in turn.</p>
-<p><strong>The bottom axis is the complexity parameter,</strong> on a log scale, running from large on the left to small on the right. A large <span class="math inline">\(\alpha\)</span> implies an expensive penalty and therefore a small tree, so that complexity increases as one moves to the right, which is the same orientation as last week’s <span class="math inline">\(\log(1/k)\)</span> figure.</p>
-<p><strong>The top axis is the size of the tree,</strong> measured in number of leaves. It is the same axis expressed in more intuitive units, and it is generally the one to attend to.</p>
-<p><strong>The vertical axis is cross-validated error,</strong> scaled so that a tree with no splits at all sits at 1. A value of 0.3 indicates that the tree has removed seventy per cent of the error that would result from predicting the same number for every country.</p>
-<p><strong>The vertical bars are one standard error</strong> on either side of each estimate, and the dotted horizontal line sits one standard error above the lowest point on the curve. That line supports an alternative rule for choosing a tree, which we set aside here in favor of the simpler one below.</p>
-<p>The figure should be read in the same way as last week’s test-error curve. The error falls while additional splits are still recovering real structure, flattens, and then rises once the tree begins fitting individual countries rather than the pattern among them.</p>
+<p>There are four things to read in this figure.</p>
+<p><strong>The bottom axis shows the complexity parameter</strong> on a log scale. Large values are on the left and small ones on the right. A large <span class="math inline">\(\alpha\)</span> means a stronger penalty and a smaller tree, so complexity increases to the right, as in last week’s <span class="math inline">\(\log(1/k)\)</span> plot.</p>
+<p><strong>The top axis gives the number of leaves.</strong> This expresses the same progression in units that are easier to interpret.</p>
+<p><strong>The vertical axis shows cross-validated error</strong>, scaled relative to a tree with no splits, which has a value of 1. A value of 0.3 means the error is seventy percent lower than predicting the same value for every country.</p>
+<p><strong>The vertical bars show one standard error</strong> above and below each estimate. The dotted line is one standard error above the minimum error. It supports another selection rule, which we set aside here to use the simpler minimum-error rule.</p>
+<p>Read this like last week’s test-error curve. Additional splits initially capture useful structure. Error then levels off and rises as the tree starts fitting individual countries too closely.</p>
 <section id="choosing-where-to-cut" class="level4" data-number="3.3.7.1">
 <h4 data-number="3.3.7.1" class="anchored" data-anchor-id="choosing-where-to-cut"><span class="header-section-number">3.3.7.1</span> Choosing where to cut</h4>
-<p>We take the tree with the lowest cross-validated error, which is the value the table reports directly.</p>
+<p>We choose the tree with the lowest cross-validated error, using the value in the table.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>i_min   <span class="ot">&lt;-</span> <span class="fu">which.min</span>(cpt[, <span class="st">"xerror"</span>])</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cp_best <span class="ot">&lt;-</span> cpt[i_min, <span class="st">"CP"</span>]</span>
@@ -621,7 +621,7 @@ C(T, y) = L(T, y) + \alpha |T|
 <pre><code>Lowest CV error at 5 leaves, cp = 0.01229076 </code></pre>
 </div>
 </div>
-<p>One caution before pruning. The curve is typically rather flat near its bottom, so the difference between the best tree and its immediate neighbors is often smaller than the uncertainty in the estimate. The minimum is therefore a reasonable choice rather than a precise one, and a tree one or two splits away would usually serve about as well.</p>
+<p>The bottom of this curve is usually fairly flat. Differences between neighboring trees may be smaller than the uncertainty in their error estimates. Treat the minimum as a reasonable choice; nearby trees may perform about as well.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>best_tree <span class="ot">&lt;-</span> <span class="fu">prune</span>(big_tree, <span class="at">cp =</span> cp_best)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -634,14 +634,14 @@ C(T, y) = L(T, y) + \alpha |T|
 </div>
 </div>
 </div>
-<p>That is the whole of the method. Everything established so far, however, was established with a continuous outcome, one row per country, and a dataset already familiar from last week, and the second half of this handout changes all three of those conditions at once.</p>
+<p>We have now fitted and pruned a regression tree. Part II changes the outcome to binary, introduces a new dataset, and moves from one row per country to country-year observations.</p>
 </section>
 </section>
 </section>
 <section id="part-ii.-the-same-idea-on-a-rare-binary-outcome" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="part-ii.-the-same-idea-on-a-rare-binary-outcome"><span class="header-section-number">3.4</span> Part II. The same idea, on a rare binary outcome</h2>
-<p>We now turn to <code>onset</code>, and the algorithm itself barely changes: instead of averaging the outcome within each box we take the majority vote, and instead of squared error we use a measure of how mixed each box is. Everything concerning splitting, greediness, cost complexity, and pruning carries over unaltered.</p>
-<p>Three things do change, however: the data are new, the outcome is binary, and the outcome is very rare. The third of these occupies most of what follows, and it shapes nearly every judgment we go on to make about the model.</p>
+<p>The basic procedure carries over to <code>onset</code>. We use majority votes rather than outcome averages within boxes, and a measure of class mixture rather than squared error. Splitting, greediness, complexity penalties, and pruning still apply.</p>
+<p>The important changes are the new data, the binary outcome, and especially its rarity. That rarity will shape how we fit and evaluate the model.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/babakrezaee/"</span>,</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>              <span class="st">"AppliedAI-PoliSci/refs/heads/main/data/FearonLaitin2003.csv"</span>)</span>
@@ -659,11 +659,11 @@ C(T, y) = L(T, y) + \alpha |T|
 <pre><code>[1] 6326</code></pre>
 </div>
 </div>
-<p>These are Fearon and Laitin’s civil war data, and <code>onset</code> takes the value 1 if a civil war began in that country in that year.</p>
-<p>The covariates are drawn from Fearon and Laitin’s own specification, although the models below use eight of them rather than the full set. The reduction is made for legibility rather than for substance: a tree fitted on eleven features produces a figure that nobody can read on a screen, and the point of Part II is to be able to see what the algorithm did. The three variables set aside, prior war, non-contiguity, and political instability, remain in <code>cw</code>, so that restoring them is a matter of adding three terms to a formula. Doing so, and observing how much the figures deteriorate, is the first thing worth trying in the workshop.</p>
-<p>Two features of that block are worth noting, since each can consume an hour when encountered for the first time in one’s own project. <code>Oil</code> is capitalized in this file while nothing else is, and R will report that the object does not exist rather than inferring what was intended. <code>onset</code>, meanwhile, carries an occasional code other than 0 or 1, for wars already under way when a country entered the data, and we therefore retain only the two values we intend to model.</p>
-<p><strong>One structural difference from Part I should be acknowledged here, since we are about to accept it rather than solve it.</strong> Every row is a country in a single year, from 1945–1999, so that the United States appears fifty-five times with identical terrain, identical colonial history, and an income that barely moves between consecutive rows. Part I had one row per country and did not confront this. Here the structure cannot be collapsed away, because a civil war begins in a particular year and cannot be averaged into a country’s post-war summary. The point returns at the end of this handout, where it acquires a name.</p>
-<p>The outcome can now be counted, and the resulting figure is the one on which the remainder of this handout turns.</p>
+<p>In Fearon and Laitin’s data, <code>onset</code> equals 1 when a civil war begins in a country-year.</p>
+<p>We use eight covariates from their specification rather than all eleven, to keep the tree legible on a screen. Prior war, non-contiguity, and political instability remain in <code>cw</code>. In the workshop, add them back to the formula and examine how the tree and its readability change.</p>
+<p>Watch two details when preparing these data. <code>Oil</code> begins with a capital letter; R distinguishes it from <code>oil</code>. Also, <code>onset</code> occasionally has codes other than 0 and 1 for wars already underway when a country enters the data. We retain only the two values we intend to model.</p>
+<p><strong>The country-year structure needs attention.</strong> The data cover 1945–1999, so the United States appears fifty-five times. Terrain and colonial history remain the same, and income often changes little between years. Unlike Part I, the observations are repeated within countries. We cannot replace them with country averages because onset occurs in a particular year. We return to the implications at the end of the handout.</p>
+<p>First, count how often the outcome occurs.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(cw<span class="sc">$</span>onset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -676,13 +676,13 @@ C(T, y) = L(T, y) + \alpha |T|
 <pre><code>[1] 0.0166</code></pre>
 </div>
 </div>
-<p>Civil wars begin in roughly two country-years in a hundred, and that figure is the single most consequential quantity on this page, since nearly everything that follows is shaped by it.</p>
-<p>The immediate implication can be stated directly by considering a model that consists of one sentence, and that contains no data, no fitting, and no thought whatever:</p>
+<p>Civil war begins in roughly two of every hundred country-years. This low base rate is important for interpreting the model’s performance.</p>
+<p>Consider a baseline prediction rule that needs no fitting:</p>
 <blockquote class="blockquote">
 <p>Predict that no civil war will begin, anywhere, ever.</p>
 </blockquote>
-<p>That model is correct approximately ninety-eight per cent of the time, and reported as accuracy it appears excellent. It is nevertheless worthless, since the only cases of any substantive interest are precisely the ones it gets wrong, in every instance, by construction.</p>
-<p>The model is worth retaining for comparison, since we are about to build something considerably more sophisticated and will then need to establish whether it improves upon this.</p>
+<p>This rule is correct about ninety-eight percent of the time. Despite its high accuracy, it misses every war onset. It is therefore unhelpful for identifying the events we want to anticipate.</p>
+<p>Keep this baseline for comparison. A more sophisticated model needs to offer something beyond it.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -709,12 +709,12 @@ C(T, y) = L(T, y) + \alpha |T|
 </div>
 </div>
 </div>
-<p>That figure is not an error, and it is worth pausing over rather than correcting immediately. The tree has declined to split at all. It reports a single node containing every case, predicts no onset for all of them, and attaches a probability of 0.02, which is simply the base rate we computed a moment ago.</p>
-<p>The reason lies in the criterion. A split is retained only if it improves the tree’s classification sufficiently to justify its cost, and on an outcome occurring in two per cent of cases no split improves classification whatever. Predicting no war everywhere is already correct ninety-eight per cent of the time, and no partition of the feature space available to <code>rpart</code> does better than that. The algorithm therefore concluded, entirely correctly on its own terms, that the best available tree is the one that asks no questions at all.</p>
-<p>We have thus encountered the central difficulty of this half of the handout before fitting anything of interest. The one-sentence model set out above has not merely proved difficult to beat. It has turned out to be the model that <code>rpart</code> selects when left to its own devices, and it arrived not through any failure of the software but through the faithful execution of the objective we gave it.</p>
+<p>The tree has not split. It returns one node, predicts no onset for every case, and assigns a probability of 0.02, the base rate we calculated above. Before changing it, consider why this happened.</p>
+<p>Under the fitting criterion, a split must improve classification enough to justify its cost. On this rare outcome, the available splits do not improve on predicting no war everywhere. The fitted result is therefore a tree with no splits.</p>
+<p>The baseline is not just a difficult comparison: it is what <code>rpart</code> selects with this setup. The software has followed the objective we supplied, but the resulting model does not meet our substantive purpose.</p>
 <section id="telling-the-algorithm-that-the-rare-class-matters" class="level4" data-number="3.4.1.1">
 <h4 data-number="3.4.1.1" class="anchored" data-anchor-id="telling-the-algorithm-that-the-rare-class-matters"><span class="header-section-number">3.4.1.1</span> Telling the algorithm that the rare class matters</h4>
-<p>The standard remedy is to instruct the procedure to treat the two classes as equally important, notwithstanding that they are not equally common.</p>
+<p>One response is to give the two classes equal importance in fitting, even though they are not equally frequent.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m_class <span class="ot">&lt;-</span> <span class="fu">rpart</span>(<span class="fu">factor</span>(onset) <span class="sc">~</span> gdpenl <span class="sc">+</span> lpopl1 <span class="sc">+</span> lmtnest <span class="sc">+</span> Oil <span class="sc">+</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                   nwstate <span class="sc">+</span> polity2l <span class="sc">+</span> ethfrac <span class="sc">+</span> relfrac,</span>
@@ -731,15 +731,15 @@ C(T, y) = L(T, y) + \alpha |T|
 </div>
 </div>
 </div>
-<p>The <code>prior</code> argument instructs <code>rpart</code> to proceed as though onsets and non-onsets were equally frequent, which has the effect of making each onset count for roughly fifty times what it counted for before. Splits that separate a handful of wars from a great many non-wars now improve the objective, and the tree consequently grows. The <code>method = "class"</code> argument remains the only difference in kind from Part I, and the resulting figure is read exactly as the earlier ones were.</p>
-<p>Two observations about that argument deserve emphasis, since the second of them is the more important.</p>
-<p>First, the reweighting is a decision rather than a correction. Nothing in the data licensed it, and no diagnostic recommended it. We supplied it because we judged that a missed war matters more than a false alarm, which is a substantive judgment about consequences and not a statistical one. The tree without it was not broken; it was answering a different question, one we had posed carelessly.</p>
-<p>Second, and more consequentially, <strong>we have reweighted the tree and we have not reweighted the forest.</strong> That asymmetry is deliberate, and its consequences appear shortly.</p>
+<p>Setting <code>prior</code> this way asks <code>rpart</code> to treat onsets and non-onsets as equally frequent. Each onset then receives roughly fifty times its previous weight, making splits that distinguish wars more useful to the objective. The tree grows. We still use <code>method = "class"</code> and read its branches as before.</p>
+<p>There are two points to keep in mind about this change.</p>
+<p>First, <strong>reweighting is a substantive decision</strong>. We chose it because we consider a missed war more costly than a false alarm. The original tree was operating correctly, but our initial objective did not reflect that concern.</p>
+<p>Second, <strong>we reweight the tree but leave the forest unweighted</strong>. This is deliberate, so that we can examine the consequences below.</p>
 </section>
 </section>
 <section id="why-one-tree-is-not-enough" class="level3" data-number="3.4.2">
 <h3 data-number="3.4.2" class="anchored" data-anchor-id="why-one-tree-is-not-enough"><span class="header-section-number">3.4.2</span> Why one tree is not enough</h3>
-<p>We arrive here at the problem that motivates the remainder of the week. Fitting the same tree to slightly different data does not produce a slightly different tree; it frequently produces a different tree altogether.</p>
+<p>A single tree can be unstable: small changes in the training data may lead to a substantially different tree.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -764,21 +764,21 @@ C(T, y) = L(T, y) + \alpha |T|
 </div>
 </div>
 </div>
-<p>Three samples drawn from the same data yield three trees, and the variable sitting at the top of each is the one to watch. If the first split changes, everything beneath it changes with it, since every subsequent question is asked only of the cases that the first question directed that way.</p>
-<p>The vocabulary for this was established last week, and the term is <strong>variance</strong>, in the sense that the model responds to the particular cases placed before it rather than to the structure underlying them. A single tree has low bias, since given sufficient depth it can represent almost any shape, and high variance, since which shape it represents depends heavily on the sample. The greedy procedure aggravates the problem, because a single early decision taken on a narrow margin propagates through everything below it.</p>
-<p>A single tree is thus readable and unreliable at the same time, and the response, perhaps counterintuitively, is to stop reading it.</p>
+<p>Compare the first splits in these three trees, each fitted to a sample from the same data. A different first split changes the cases reaching each branch, and therefore changes the later splits too.</p>
+<p>This is <strong>variance</strong>, the term we introduced last week. A deep tree can represent many shapes and thus have low bias, but the shape it selects may depend heavily on the sample. Greedy splitting adds to this instability because an early decision affects all the branches below it.</p>
+<p>Although a single tree is easy to read, its instability motivates combining several trees.</p>
 </section>
 <section id="from-bagging-to-random-forests" class="level3" data-number="3.4.3">
 <h3 data-number="3.4.3" class="anchored" data-anchor-id="from-bagging-to-random-forests"><span class="header-section-number">3.4.3</span> From bagging to random forests</h3>
-<p><strong>Bagging</strong>, an abbreviation of bootstrap aggregating, is the first idea. The data are resampled with replacement a sufficient number of times that trees with good explanatory power are captured, a tree is fitted to each sample, and their predictions are averaged. The procedure is computationally intensive, and it works for the reason averaging generally works: individually noisy estimates, once averaged, are less noisy, provided their errors are not all the same error.</p>
-<p>That proviso, as it happens, is precisely where the method acquires its name. <strong>Random forests begin from bagging and add a second randomization.</strong> Rather than scanning all the features at each split, the algorithm samples a subset of <span class="math inline">\(m\)</span> variables and must then select its split from among those alone.</p>
-<p>The rationale is precise. If income is the strongest predictor, for instance, then every bagged tree splits on income first, and the trees therefore resemble one another closely and err in the same places. Requiring most trees to proceed without it at any given split breaks that correlation. The individual trees thereby become <strong>worse</strong>, and yet their average becomes <strong>better</strong>.</p>
-<p>This is the proposition to carry out of the week. A forest is not an attempt to build one excellent model. It is an attempt to build many mediocre models whose errors point in different directions, and then to let them vote.</p>
-<p>Two parameters govern the procedure: <span class="math inline">\(B\)</span> is the number of bootstrapped trees, and <span class="math inline">\(m\)</span> is the number of variables sampled at each split. A common choice is <span class="math inline">\(m = \sqrt{p}\)</span>, where <span class="math inline">\(p\)</span> is the number of features. Notably, when <span class="math inline">\(m = p\)</span> the random forest reduces to bagging.</p>
+<p><strong>Bagging</strong>, short for bootstrap aggregating, fits trees to repeated samples drawn with replacement and combines their predictions. This takes more computation than fitting one tree. Averaging reduces variation when the trees’ errors are not all the same.</p>
+<p><strong>Random forests</strong> add another source of randomization. At each split, a tree considers a sampled subset of <span class="math inline">\(m\)</span> variables rather than all the features.</p>
+<p>Suppose income is the strongest predictor. Bagged trees may repeatedly split on it, producing similar trees with correlated errors. Restricting the available features at each split makes the trees less alike. Individual trees may become worse, while their combined prediction improves because their errors are less correlated.</p>
+<p>The aim is to combine many imperfect trees whose errors differ, rather than to find one exceptionally good tree.</p>
+<p>Two parameters matter: <span class="math inline">\(B\)</span>, the number of bootstrapped trees, and <span class="math inline">\(m\)</span>, the number of features available at each split. A common choice is <span class="math inline">\(m = \sqrt{p}\)</span>, with <span class="math inline">\(p\)</span> the total feature count. When <span class="math inline">\(m = p\)</span>, the procedure reduces to bagging.</p>
 </section>
 <section id="fitting-the-forest" class="level3" data-number="3.4.4">
 <h3 data-number="3.4.4" class="anchored" data-anchor-id="fitting-the-forest"><span class="header-section-number">3.4.4</span> Fitting the forest</h3>
-<p>Last week’s claim was that changing one string changes the algorithm, and this is that change.</p>
+<p>We now change the method argument in last week’s <code>caret</code> setup.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Train<span class="sc">$</span>onset_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(Train<span class="sc">$</span>onset <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"war"</span>, <span class="st">"no_war"</span>),</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"no_war"</span>, <span class="st">"war"</span>))</span>
@@ -817,12 +817,12 @@ Accuracy was used to select the optimal model using the largest value.
 The final value used for the model was mtry = 2.</code></pre>
 </div>
 </div>
-<p>Everything apart from <code>method = "rf"</code> and the grid over <code>mtry</code> is the structure established last week: a formula, training data, a resampling scheme, and a set of values to try. The outcome had to be converted to a factor, since that is how <code>caret</code> is informed that the problem is one of classification rather than regression. Note also that nothing was rescaled, and that nothing needed to be.</p>
-<p>Note as well what is <strong>not</strong> in that call. There is no <code>prior</code>, no class weighting, and no instruction of any kind that an onset matters more than a non-onset. We supplied precisely such an instruction to the single tree a few pages ago, and we have deliberately withheld it here. What follows is the consequence.</p>
-<p>This chunk takes a minute or two to run, which is worth knowing before you begin.</p>
+<p>The structure is familiar: a formula, training data, cross-validation, and a tuning grid. The new arguments are <code>method = "rf"</code> and the grid for <code>mtry</code>. We convert the outcome to a factor to request classification. Feature rescaling is unnecessary here.</p>
+<p>We have not included class weighting or a <code>prior</code> argument in this call. Unlike the single tree, the forest receives no instruction to give onset extra weight. We will examine the effect of leaving it that way.</p>
+<p>Allow a minute or two for this chunk to run.</p>
 <section id="predicting-for-cases-the-model-has-never-seen" class="level4" data-number="3.4.4.1">
 <h4 data-number="3.4.4.1" class="anchored" data-anchor-id="predicting-for-cases-the-model-has-never-seen"><span class="header-section-number">3.4.4.1</span> Predicting for cases the model has never seen</h4>
-<p><code>train()</code> refits the model on the whole of the training data once tuning is complete, so that the object is a fitted model and prediction proceeds from it directly.</p>
+<p>After tuning, <code>train()</code> refits the selected model on the full training set. We can predict directly from the resulting object.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, <span class="at">newdata =</span> Test)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -832,7 +832,7 @@ The final value used for the model was mtry = 2.</code></pre>
 Levels: no_war war</code></pre>
 </div>
 </div>
-<p>Prediction should proceed from <code>rf</code> rather than from <code>rf$finalModel</code>, since the final model holds the fitted forest but retains no record of any preprocessing. Calling it directly may therefore supply it with data in the wrong form, and it will return an answer regardless.</p>
+<p>Use <code>rf</code> for prediction rather than <code>rf$finalModel</code>. The <code>caret</code> object retains information about preprocessing that the underlying fitted model does not. Calling the underlying model directly can therefore bypass transformations needed for new data.</p>
 </section>
 </section>
 <section id="the-accuracy-trap" class="level3" data-number="3.4.5">
@@ -852,8 +852,8 @@ Predicted no_war  war
 <pre><code>[1] 0.9826</code></pre>
 </div>
 </div>
-<p>The number itself should be considered first, and it is very high, such that in the abstract of an article it would attract no particular scrutiny.</p>
-<p>The one-sentence model from the start of Part II, the one containing no data at all, provides the comparison.</p>
+<p>The accuracy is high. Taken on its own, it could make this model look successful.</p>
+<p>Compare it with the baseline that always predicts no onset.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">mean</span>(Test<span class="sc">$</span>onset_f <span class="sc">==</span> <span class="st">"no_war"</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(baseline, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -861,15 +861,15 @@ Predicted no_war  war
 <pre><code>[1] 0.9842</code></pre>
 </div>
 </div>
-<p>Whatever the forest achieved must be read against that figure, and the gap between them is small or absent. We have grown nine hundred trees, tuned <code>mtry</code> by cross-validation, and arrived at approximately the proposition that nothing ever happens.</p>
-<p>The table itself, rather than the summary, is where the substance lies. Reading down the column of actual wars, the question is how many of the onsets in the test set the model predicted, and the answer is generally close to none.</p>
-<p>The forest is not malfunctioning. However, we requested accuracy, and accuracy on a two per cent outcome is maximized by predicting zero indefinitely, so that the model did precisely as it was instructed.</p>
-<p>This is the stump from the beginning of Part II, returning in a more elaborate form. The single tree refused to split because no split improved accuracy; the forest grew nine hundred trees and then predicted almost nothing, for the same reason. We repaired the tree by telling it that the rare class mattered, and we declined to repair the forest, and the two figures should be read together. The disease is identical in both cases, and it lies in the objective rather than in the algorithm. <strong><code>caret</code> tuned <code>mtry</code> so as to maximize accuracy, which is to say that it tuned toward the useless model, and reported success in doing so.</strong></p>
-<p>Nothing in the output announced this. The accuracy appeared excellent, the cross-validation was correctly specified, and the test set was genuinely held out. Every methodological requirement was satisfied, and the result is a model that has not once predicted the outcome it was built to predict.</p>
-<p>This is the argument of the second reading for this week <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>, and it is the reason that article exists. Week 6 takes up the repair in full, covering precision, recall, the F1 score, thresholds, and class weighting, together with the question of what to do when one error costs substantially more than the other. For the present, the diagnosis matters more than the cure.</p>
+<p>The improvement over that baseline is small or absent, despite growing nine hundred trees and tuning <code>mtry</code> by cross-validation.</p>
+<p>Now inspect the confusion matrix. Among the actual wars, how many did the forest predict? It identifies close to none.</p>
+<p>The forest is operating as specified. We selected on accuracy, which gives little incentive to identify an outcome occurring in only two percent of cases.</p>
+<p>The result resembles the initial tree with no splits. We reweighted that tree to make onset matter more, but left the forest unchanged. Read the two results together: the objective matters as well as the algorithm. <strong><code>caret</code> selected <code>mtry</code> to maximize accuracy, even though accuracy did not adequately reflect our interest in war onset.</strong></p>
+<p>The output gave no warning about this mismatch. Cross-validation ran correctly and the test set was held out, yet the resulting model failed to identify the outcome we wanted to predict. Following those procedures was not enough to make the model useful.</p>
+<p>This is the problem addressed by the second reading <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>. Week 6 covers precision, recall, F1, thresholds, and class weighting in more detail, including how unequal error costs affect evaluation. For now, focus on recognizing the problem.</p>
 <section id="the-four-cells" class="level4" data-number="3.4.5.1">
 <h4 data-number="3.4.5.1" class="anchored" data-anchor-id="the-four-cells"><span class="header-section-number">3.4.5.1</span> The four cells</h4>
-<p>The table printed above is a <strong>confusion matrix</strong>, and naming its cells requires first determining which class counts as <strong>positive</strong>, which is a decision made by the analyst rather than a property of the data. Here the positive class is war onset.</p>
+<p>The table is a <strong>confusion matrix</strong>. To name its cells, we first choose the <strong>positive</strong> class. Here it is war onset; this is an analyst’s choice rather than a property of the data.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -891,12 +891,12 @@ Predicted no_war  war
 </tr>
 </tbody>
 </table>
-<p>A <strong>false positive</strong> is a country flagged as heading toward civil war that does not in fact experience one, whereas a <strong>false negative</strong> is a civil war that nobody anticipated. These are not the same error, and no serious application treats them as equivalent. Which of them one would rather commit is a political and ethical judgment about consequences, and accuracy collapses the two into a single number precisely by declining to pose the question.</p>
+<p>A <strong>false positive</strong> flags onset in a country-year where none occurs. A <strong>false negative</strong> misses an onset that does occur. Their consequences differ, so deciding which matters more requires a political and ethical judgment. Accuracy combines them without expressing that judgment explicitly.</p>
 </section>
 </section>
 <section id="variable-importance-and-what-it-does-not-mean" class="level3" data-number="3.4.6">
 <h3 data-number="3.4.6" class="anchored" data-anchor-id="variable-importance-and-what-it-does-not-mean"><span class="header-section-number">3.4.6</span> Variable importance, and what it does not mean</h3>
-<p>We surrendered the readable tree, and variable importance is what is returned to us in its place.</p>
+<p>We cannot read a forest like an individual tree, but we can examine variable importance.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">varImpPlot</span>(rf<span class="sc">$</span>finalModel, <span class="at">main =</span> <span class="st">"Variable importance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -907,54 +907,54 @@ Predicted no_war  war
 </div>
 </div>
 </div>
-<p>The underlying idea is straightforward. For each feature, one measures the extent to which the forest’s performance depends upon it, either by totalling the improvement that feature produced across all the splits in which it was used, or by permuting its values and observing how far the predictions deteriorate. Thus a feature that can be scrambled without consequence was evidently not contributing much.</p>
-<p>Since the forest is bootstrapped, features that genuinely matter will on average be selected and used more frequently than others, and this is what makes the ranking meaningful at all.</p>
-<p>The limits of the measure, however, matter more than the figure itself.</p>
-<p><strong>Importance is not effect size.</strong> The plot has no interpretable units. A feature twice as high as another is not twice as influential in any substantive sense, and the numbers are not comparable across models or datasets.</p>
-<p><strong>Importance carries no sign.</strong> Nothing here indicates whether higher income raises or lowers the risk of onset. A feature may sit at the top of the plot with a relationship that is positive, negative, or U-shaped, and the ranking cannot distinguish among them.</p>
-<p><strong>Correlated features divide their importance between them.</strong> Where two features carry substantially the same information, the forest uses them interchangeably, and each appears half as important as either would appear alone. A feature may therefore look unimportant because it has a twin rather than because it is irrelevant. In these data, where income, population, and several regime measures are entangled with one another, the possibility is not hypothetical.</p>
-<p><strong>Impurity-based importance is biased</strong> toward features with many distinct values, so that continuous variables tend to outrank binary ones for reasons unrelated to the world. It is worth comparing where <code>Oil</code> and <code>nwstate</code>, which are binary, sit relative to <code>gdpenl</code>, which is not.</p>
-<p><strong>None of it, finally, is causal.</strong> Importance describes what the model used in order to predict. It says nothing about what would follow from changing a feature, since nothing in the procedure ever posed that question.</p>
-<p>The last point has a practical edge, in that variable importance is regularly presented, in policy briefs and in press coverage, as identifying the drivers of a problem. What it identifies is the set of predictors that a particular fitted model found useful on a particular dataset. These are different claims, and the distance between them is where a good deal of poor AI-informed policy analysis is located.</p>
+<p>Importance measures how much the model relies on a feature. One approach totals improvements from splits using that feature; another permutes its values and measures the loss in predictive performance. A feature whose values can be shuffled without affecting performance contributes little under that measure.</p>
+<p>Across the bootstrapped trees, useful features tend to be selected and used more often. The ranking summarizes their contribution to the fitted forest.</p>
+<p>Interpret this plot with several limitations in mind.</p>
+<p><strong>Importance is not effect size.</strong> Its units do not have a direct substantive interpretation. Twice the importance does not mean twice the influence, and the values are not directly comparable across models or datasets.</p>
+<p><strong>Importance has no sign.</strong> A high ranking does not tell us whether income raises or lowers predicted onset risk. It also cannot distinguish a positive relationship from a negative or U-shaped one.</p>
+<p><strong>Correlated features can share importance.</strong> If features provide similar information, the forest may use them interchangeably, reducing the importance assigned to each. A low ranking may therefore reflect overlap rather than irrelevance. Income, population, and regime measures in these data are related, so consider that possibility here.</p>
+<p><strong>Impurity-based importance favors features with many distinct values.</strong> Continuous variables may rank above binary ones partly for this reason. Compare the binary features <code>Oil</code> and <code>nwstate</code> with <code>gdpenl</code>.</p>
+<p><strong>Importance does not establish causation.</strong> It describes the predictors the forest used, without estimating what would happen if we changed them.</p>
+<p>Policy briefs and press coverage sometimes present importance rankings as the drivers of a problem. We can make a narrower claim: these features were useful for prediction in this fitted model on this dataset. Explaining causes requires additional evidence.</p>
 </section>
 </section>
 <section id="prediction-forecasting-and-early-warning" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="prediction-forecasting-and-early-warning"><span class="header-section-number">3.5</span> Prediction, forecasting, and early warning</h2>
-<p>Week 1 distinguished prediction from forecasting: prediction estimates an outcome for a case the model has not seen, whereas forecasting estimates one that has not yet occurred. Everything above is prediction, since our test set consists of country-years drawn at random from the same period as the training set.</p>
-<p>The third reading for this week concerns the other activity <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>. ViEWS is an operating early-warning system that publishes monthly forecasts of political violence for months that have not yet occurred, and the difference is not merely presentational.</p>
-<p>As soon as the target is the future, a random split becomes indefensible. If the model trains on 1995 and 1999 and is tested on 1997, it has observed the years on either side of the case it is predicting, and it will make use of them. Forecasting therefore requires splitting on time: training up to a date, forecasting beyond it, and accepting that one cannot look ahead. Nearly every published forecasting model that appeared too good to be true was too good on account of some version of this.</p>
-<p>A subtler problem remains, which cross-validation does not address, in that cross-validation assumes cases to be interchangeable while country-years plainly are not. Sudan in 1996 is not independent of Sudan in 1995, and a fold that holds one while the other trains the model is leaking information. This is the structural difference flagged at the start of Part II, and it has a name: the observations are not independent, while the standard resampling procedures assume that they are. Week 6 returns to the problem and to the ways in which it can be mitigated.</p>
+<p>Week 1 distinguished prediction from forecasting. So far we have predicted country-years randomly held out from the same historical period as the training data. We have not forecast future events.</p>
+<p>The third reading describes ViEWS <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>, which issues monthly forecasts of political violence before the target months occur. This requires a different evaluation setup.</p>
+<p>For forecasting, we need to split by time. Training on 1995 and 1999 to predict 1997 gives the model information from after the target year. Training up to a date and testing beyond it better reflects the information available when forecasting. Looking ahead can make a model appear more successful than it would be in practice.</p>
+<p>The country-year structure introduces another issue. Sudan in 1996 is related to Sudan in 1995, so putting one in a test fold and the other in training can let closely related information cross the split. Standard cross-validation treats observations as interchangeable, which does not fit this structure. We return to the problem and possible responses in Week 6.</p>
 </section>
 <section id="the-politics-of-early-warning" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="the-politics-of-early-warning"><span class="header-section-number">3.6</span> The politics of early warning</h2>
-<p>A forecast is not merely an analysis that happens to concern the future. It is, rather, an object produced in order to be acted upon, and that purpose changes what its errors mean.</p>
-<p>Suppose a system of this kind flags a country as being at elevated risk. Consequences follow, in investment decisions, aid allocations, insurance premiums, travel advisories, diplomatic posture, and on occasion in the argument for intervention. The forecast thereby enters the politics of the country it describes.</p>
-<p>That observation should be combined with the base rate. Thus, where the outcome occurs in two per cent of cases, even a model with genuinely good discrimination will produce considerably more false alarms than true warnings, simply because there are so many more non-events available to be wrong about. A country may therefore be flagged, bear the consequences of having been flagged, and have been a false positive throughout. It will not be informed of this, and the system has no means of establishing it either, until the year passes without incident and the case leaves the window.</p>
-<p>Moreover, a forecast can act upon the world it describes. If a warning of instability withdraws investment, and withdrawn investment raises the likelihood of instability, then the model has participated in the outcome it predicted and will appear more accurate for having done so. This is not a defect in the statistics. It is, instead, what occurs whenever a prediction about people is published to people who have the power to respond to it.</p>
-<p>The closing question last week concerned who defines similarity, and the closing question this week concerns who defines the threshold. Somewhere between the forest’s vote share and a red mark on a map, a number is selected that determines which countries are flagged, and that number sets the ratio of false alarms to missed wars. It is among the most consequential decisions in the entire pipeline, it is rarely made by anybody who bears its consequences, and it almost never appears in the write-up.</p>
+<p>Forecasts are often produced to guide action. Their intended use therefore matters when assessing errors.</p>
+<p>Flagging a country as high risk may influence investment, aid, insurance, travel advice, diplomacy, or arguments for intervention. A forecast can become part of the political situation it describes.</p>
+<p>With an outcome occurring in two percent of cases, even good discrimination can produce many false alarms because non-events are so numerous. A country may bear the costs of being flagged even when no onset follows. We can assess that outcome only after the forecast period has passed.</p>
+<p>Forecasts may also affect the outcome. For example, a warning might cause investment to fall, which could increase instability. The forecast could then appear more accurate partly because people acted on it. This possibility needs attention when evaluating predictions used in political decisions.</p>
+<p>Last week we asked who defines similarity. Here we should ask who chooses the threshold for a warning. Turning forest votes into a flag on a map requires a cut point that affects false alarms and missed wars. Who selects it, how is it justified, and do those bearing the consequences have a say?</p>
 </section>
 <section id="reading" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="reading"><span class="header-section-number">3.7</span> Reading</h2>
-<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
-<p>These are the data used above and the specification fitted above. The article should be read for its argument about the causes of civil war, and it is worth noting throughout that it is an explanatory article. Its authors are not attempting to predict onset; they are attempting to explain it, and the difference between those two objectives is the thread running through this week.</p>
-<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
-<p>This one should be read for its argument about rare outcomes rather than for its implementation, and, if time permits, alongside the critical exchange it provoked, since the disagreement is instructive about what a performance comparison can and cannot settle.</p>
-<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
-<p>This should be read as a description of a system that is actually in use, rather than as a methods article. Particular attention is worth giving to what its authors say about how the forecasts are intended to be interpreted, and by whom.</p>
+<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
+<p>Read this article for its explanation of civil war and the specification behind our data. Its authors seek to explain onset, whereas we use the data for prediction. Keep that difference in mind as you compare their analysis with ours.</p>
+<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
+<p>Focus on the treatment of rare outcomes rather than the implementation. If time permits, read the critical exchange it prompted as well. It raises useful questions about what model-performance comparisons can establish.</p>
+<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
+<p>Read this as an account of an early-warning system in use. Pay particular attention to how the forecasts should be interpreted and who is expected to use them.</p>
 <p><strong>Recommended, not required.</strong></p>
-<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="../references.html#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
-<p>This article forecasts both armed and unarmed conflict at the country-year level, and it does so by training eight machine-learning algorithms and combining them into five forecasting ensembles. The relevance to this week is direct, in that the logic of the random forest reappears one level higher: where a forest averages many trees whose errors point in different directions, an ensemble forecast averages many algorithms on the same reasoning. It is also worth reading for the contrast with the cases above, since the outcome of interest includes nonviolent mobilization rather than civil war alone, and unarmed uprisings are neither as rare nor as well measured.</p>
+<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
+<p>This article forecasts armed and unarmed conflict at the country-year level using eight algorithms and five forecasting ensembles. Compare its ensembles with our forest: both combine predictions from models whose errors may differ. Also consider how including nonviolent mobilization changes the task, since unarmed uprisings are less rare than civil war and their measurement presents different difficulties.</p>
 </section>
 <section id="before-the-workshop" class="level2" data-number="3.8">
 <h2 data-number="3.8" class="anchored" data-anchor-id="before-the-workshop"><span class="header-section-number">3.8</span> Before the workshop</h2>
-<p>Install <code>rpart</code>, <code>rpart.plot</code>, <code>tree</code>, <code>randomForest</code>, and <code>caret</code>, and run every chunk in this handout once. The forest takes a minute or two, which is better discovered at home than in the room.</p>
+<p>Install <code>rpart</code>, <code>rpart.plot</code>, <code>tree</code>, <code>randomForest</code>, and <code>caret</code>, and run every chunk before the workshop. Allow a minute or two for the forest.</p>
 </section>
 <section id="questions-for-the-session" class="level2" data-number="3.9">
 <h2 data-number="3.9" class="anchored" data-anchor-id="questions-for-the-session"><span class="header-section-number">3.9</span> Questions for the session</h2>
-<p>Come with a view on at least two of these.</p>
+<p>Prepare an answer to at least two questions.</p>
 <ol type="1">
 <li><p>Fearon and Laitin set out to explain civil war, whereas we used their variables to predict it. What did we learn that they did not, and what did they establish that our model cannot?</p></li>
-<li><p>A single tree is readable and unreliable, while a forest is reliable and unreadable. For a political scientist, which of these failures is the more serious, and does the answer depend on the purpose the model is to serve?</p></li>
+<li><p>A single tree is easy to read but can be unstable; a forest can improve prediction while being harder to interpret. Which concern matters more for political science? Does your answer depend on the model’s purpose?</p></li>
 <li><p>The forest deliberately makes each tree worse, by withholding features from it, in order that the ensemble should be better. Is there anything analogous in the way political institutions aggregate judgments? Committees, juries, federal structures, and multiple veto players are all admissible.</p></li>
 <li><p>Our model achieved very high accuracy and predicted almost no wars, and every technical step was performed correctly. What does this suggest about the relationship between methodological correctness and usefulness?</p></li>
 <li><p>Variable importance is regularly reported in policy documents as identifying the drivers of a problem. Write the one sentence you would add to such a document in order to make it honest, and state what would be lost in the process.</p></li>
@@ -962,7 +962,7 @@ Predicted no_war  war
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-fearon2003" class="csl-entry" role="listitem">
 Fearon, James D., and David D. Laitin. 2003. <span>“Ethnicity, Insurgency, and Civil War.”</span> <em>American Political Science Review</em> 97 (1): 75–90. <a href="https://doi.org/10.1017/S0003055403000534">https://doi.org/10.1017/S0003055403000534</a>.
 </div>

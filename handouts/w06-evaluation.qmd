@@ -2,19 +2,19 @@
 
 *Week 6, 7 October*
 
-Week 5 ended owing you an answer. A language model had classified a corpus of NATO tweets, the output had the right shape, and nothing in that session could establish whether any of it was correct, because those tweets carried no labels. Since then the same exercise has been run on material that does carry labels: the 181 tweets of the Week 4 test set, hand-coded by a human reading each one, given to a language model that was shown no labeled examples at all.
+Last week, we classified NATO tweets with a language model but had no human labels to check its answers. We have now applied it to the 181 tweets in Week 4's test set, where we do have hand-coded labels. The language model received instructions but no labeled examples.
 
-It agreed with the human coder on 95 percent of them. The Naive Bayes classifier of Week 4, trained on 724 hand-coded tweets, manages roughly 90 percent on the same cases. If those two numbers are the whole story, then Week 4 was a waste of an afternoon, and the sensible advice to anybody studying political text is to write a paragraph of English and stop there.
+It agrees with the human coder on 95 percent of those tweets. The Naive Bayes model, trained on 724 hand-coded tweets, reaches roughly 90 percent. On those figures alone, prompting a language model looks like an easier and better option. What else do we need to know before drawing that conclusion?
 
-Both numbers are accurate. However, the conclusion does not follow from them, and the gap between what these two figures measure and what they are commonly taken to show is the subject of this session.
+Both scores are accurate for this comparison. This session examines what they measure and which conclusions they support.
 
-Two reasons are developed below, and they operate at different levels. The first concerns what an accuracy figure is a statement about, which turns out to be agreement with one coder's application of one codebook rather than correspondence with the world. The second is more specific and, for anybody intending to use these labels in a project, considerably more alarming: labels that are 95 percent correct do not yield estimates that are 95 percent correct, and the error that survives is not noise but bias.
+We focus on two issues. First, agreement with a coder and codebook is not automatically correspondence with the concept we want to measure. Second, labels that are 95 percent correct need not produce estimates that are 95 percent correct. Systematic labeling errors can bias the analysis that uses them.
 
 ## Part I. What accuracy hides
 
 ### The classifier, rebuilt
 
-Everything in this part runs on the Week 4 pipeline, compressed and otherwise unchanged. Nothing in the chunk below is new, and the commentary on any line of it is in last week but one.
+Part I reuses the Week 4 pipeline in a compressed form. Refer back to that handout for explanations of its individual steps.
 
 ```{r, eval=FALSE}
 install.packages(c("tm", "SnowballC", "caret", "e1071", "ggplot2", "pROC"))
@@ -81,15 +81,15 @@ nb_pred <- factor(ifelse(prob > 0.5, "immigration", "other"),
                   levels = c("other", "immigration"))
 ```
 
-One line there is new, and the whole of this part depends on it.
+The following line adds the quantity we need for this part.
 
-Week 4 computed `score_immigration` and `score_other` and classified a tweet by asking which was larger. Those scores are sums of logarithms, so their units mean nothing outside the model and neither number can be interpreted on its own. The line that follows them converts the comparison into something that can be interpreted: $P(\text{immigration} \mid \text{tweet})$, the probability the classifier assigns to a tweet being about immigration. The transformation is the logistic one, familiar from logistic regression, and it is monotone, so it changes no tweet's position relative to any other.
+Week 4 compared `score_immigration` with `score_other`. These are sums of logarithms, and neither score is directly interpretable on its own. The new line converts their difference into $P(\text{immigration} \mid \text{tweet})$, the classifier's assigned probability. The logistic transformation preserves the ranking of tweets.
 
-**The classifier's default is to flag a tweet when that probability exceeds 0.5**, which is simply the rule that a tweet goes to whichever class the model thinks more likely. Asking whether the probability exceeds 0.5 and asking whether `score_immigration` exceeds `score_other` are the same question in two notations. That cut point, rather than anything in the classifier itself, is what we are about to interrogate.
+**The default threshold is 0.5.** Above it, the model predicts immigration. This is equivalent to choosing the class with the higher score. We will now examine what changes when we move that threshold.
 
 ### Precision and recall, at last
 
-Twice now, in the Week 2 and Week 4 assignments, two numbers have been deferred with a promise that they belong here. Both describe the same confusion matrix from different directions, and both are computed with respect to a positive class that the researcher nominates.
+Precision and recall describe different aspects of the same confusion matrix. Both depend on which class we designate as positive.
 
 ```{r}
 cm <- confusionMatrix(nb_pred, y_test, positive = "immigration")
@@ -99,7 +99,7 @@ cm$table
 round(cm$byClass[c("Precision", "Recall", "F1")], 3)
 ```
 
-Write the four cells of that table as TP, FP, FN, and TN, where positive means immigration, and the quantities are these:
+Using TP, FP, FN, and TN for its cells, with immigration as the positive class:
 
 $$
 \text{Recall} = \text{Sensitivity} = \frac{TP}{TP + FN}
@@ -113,11 +113,11 @@ $$
 F_1 = 2 \cdot \frac{\text{Recall} \times \text{Precision}}{\text{Recall} + \text{Precision}}
 $$
 
-Read the denominators, because that is where the difference lives. **Recall**, also called sensitivity or the true positive rate, divides by everything that genuinely is immigration, so it answers a question about the cases that really are positive: of the tweets that concern immigration, what proportion did the classifier find? **Precision**, which `caret` also reports as positive predictive value, divides by everything the classifier flagged, so it answers a question about the model's claims: of the tweets it called immigration, what proportion really were? The first is a statement about coverage, the second about trustworthiness, and a classifier can be excellent at one while being poor at the other.
+The denominators explain the difference. **Recall**, also called sensitivity or the true positive rate, divides by all genuine immigration tweets: what share did the model find? **Precision**, or positive predictive value, divides by all tweets the model flagged: what share were genuinely about immigration? A classifier can find most relevant cases while also producing many false alarms.
 
-**Specificity** is recall's mirror image on the other class, dividing by everything that genuinely is not immigration, and it matters most when the negative class is the one you care about protecting. **$F_1$** is the harmonic mean of precision and recall, which is a way of refusing to let a model look good by sacrificing one of them entirely.
+**Specificity** measures the share of genuine negatives correctly identified. It matters when avoiding errors on that class is important. **$F_1$** combines precision and recall through their harmonic mean, so a low value on either pulls the combined score down.
 
-`caret` will report the pair you ask for, and the `mode` argument is worth knowing:
+The `mode` argument tells `caret` which set of measures to report:
 
 ```{r}
 confusionMatrix(nb_pred, y_test, positive = "immigration",
@@ -127,11 +127,11 @@ confusionMatrix(nb_pred, y_test, positive = "immigration",
                 mode = "sens_spec")$byClass[c("Sensitivity", "Specificity")]
 ```
 
-Neither, however, is a property the classifier possesses on its own: both are properties of the classifier taken together with a decision about where the line is drawn, and the next section makes that dependence visible.
+Precision and recall also depend on the threshold used to turn scores into labels. We can see that by moving the cut point.
 
 ### The threshold is a choice, not a finding
 
-Flagging a tweet when the probability passes 0.5 is a convention rather than a result. Any other cut point produces a different classifier from the same fitted model, and nothing in the data says that one half is the right place to stand.
+The 0.5 threshold is a convention. Changing it gives different classifications from the same fitted model. The appropriate cut point depends on the task, rather than being determined by the data alone.
 
 ```{r}
 cuts <- seq(0.1, 0.9, by = 0.1)
@@ -158,7 +158,7 @@ sweep_out$default <- sweep_out$threshold == 0.5
 round(sweep_out[, 1:5], 3)
 ```
 
-Read that table one row at a time, because each row is a complete confusion matrix compressed into three numbers. At a threshold of 0.1 the classifier flags a tweet on the slightest suspicion, so it finds nearly every immigration tweet and buys that coverage with false alarms. At 0.9 it flags only what it is nearly certain about, and the tweets it flags are nearly all correct, while a good many genuine ones are let through. The row marked 0.5 is the default, and it is one row among nine rather than the answer.
+Each row summarizes a confusion matrix at a different threshold. At 0.1, the classifier finds nearly all immigration tweets but also flags many others. At 0.9, its flagged tweets are mostly correct, but it misses more genuine cases. The marked 0.5 row is the default, not necessarily the best choice for our purpose.
 
 ```{r, fig.height=6, fig.width=9}
 ggplot(sweep_out, aes(recall, precision)) +
@@ -177,27 +177,27 @@ ggplot(sweep_out, aes(recall, precision)) +
        subtitle = "Labels are the probability threshold for flagging a tweet")
 ```
 
-The curve falls from left to right, which is the trade-off drawn rather than described, and the labels say what it costs to move along it. There is nothing special about the maroon point. It is simply where a convention happens to put us, and its neighbors show what a different convention would have bought.
+The plot shows this trade-off. Each label marks a threshold and its precision and recall. The maroon point is the default; nearby points show what happens if we change it.
 
 ### Why there is a trade-off at all
 
-The curve shows that gaining one quantity costs the other, and it is worth knowing why that is inevitable rather than a quirk of this classifier.
+To understand the trade-off, look at how the two denominators behave as we lower the threshold.
 
-The two measures divide by different things, and only one denominator is fixed.
+One denominator stays fixed; the other changes with the classifier's decisions.
 
-Recall divides by the tweets that genuinely are about immigration. In our test set that is 87 tweets, and it stays 87 no matter what the classifier does. Precision divides by the tweets the classifier flagged, and that number is entirely under its control. Lower the threshold and it flags more, so it catches more of the real ones and recall rises. However, the extra tweets it picks up are the ones it was least sure about, so more of them are wrong, and precision falls.
+Recall divides by the 87 genuine immigration tweets in the test set. Lowering the threshold catches more of them, so recall rises. Precision divides by the number flagged, which grows as we lower the threshold. The additional tweets have weaker scores and include more false positives, so precision falls in this example.
 
-Put plainly: **precision is for when you need to be sure, recall is for better safe than sorry.**
+As a practical guide, **precision emphasizes confidence in a flag; recall emphasizes finding the relevant cases.**
 
-A spam filter is the clearest case, because almost everyone has an intuition about it already. Think about which mistake you would rather it made. A spam message reaching your inbox is a nuisance, and you delete it in a second. A real message sent to the junk folder, a job offer or an exam result, may never be seen at all. The costs are wildly unequal, so a spam filter is built for **precision**: when it says spam, it had better be right, and it will let some spam through to stay that way.
+Think about a spam filter. Letting a spam message into your inbox is usually a nuisance, while hiding a genuine job offer or exam result in junk may be costly. That makes precision important: when the filter labels a message as spam, we want it to be right, even if some spam gets through.
 
-Now change the application and the answer flips. A screening test for a serious disease is built for **recall**. Missing a case is the expensive mistake, while a false alarm costs a second test and some worry, so the sensible design catches everything that might be a case and sorts out the false alarms later. Same mathematics, opposite setting.
+For a screening test for a serious disease, missing a case may be more costly than arranging an additional test after a false alarm. That favors recall, with further checks used to investigate flagged cases. The mathematics is the same, but the costs point toward a different threshold.
 
-Our classifier sits closer to the spam filter than to the screening test, which is why the default threshold of 0.5 is not obviously the right one for every purpose.
+For our classifier, the appropriate balance depends on how we plan to use the labels. The default 0.5 does not settle that decision.
 
 ### Try it yourself
 
-Drag the threshold and watch the four cells move. Everything below is computed from the same 181 test tweets as the table above, and the table is laid out exactly as `caret` lays it out: predictions down the side, the truth across the top under the heading `Reference`.
+Move the threshold and watch the four cells change. The display uses the same 181 test tweets as the table above. It follows `caret`'s layout: predictions down the side and reference labels across the top.
 
 ```{r}
 #| echo: false
@@ -300,13 +300,13 @@ Plot.plot({
 })
 ```
 
-Drag it to the far left and the classifier becomes paranoid, flagging nearly everything and missing almost nothing, at the cost of a great many false alarms. Drag it to the far right and it becomes cautious, flagging only what it is nearly certain of, and quietly letting real immigration tweets through. The dot never leaves the curve, because the curve is every threshold at once.
+At the far left, the classifier flags nearly everything and misses very few cases, but produces many false alarms. At the far right, it flags fewer tweets and misses more genuine immigration tweets. The dot stays on the curve because every point represents a threshold applied to the same scores.
 
-Which point on that curve is the right one is not a question the data can answer. If the labels are going to be counted, for instance to estimate what share of a year's output concerned immigration, then false alarms inflate the count directly and precision is the quantity to protect. If the labels are going to retrieve a set of documents for a person to read, missing cases is the costly error and recall matters more, since a false alarm costs only reading time. The choice is made by the purpose, and reporting the accuracy without reporting the purpose conceals it.
+Choose the threshold with the purpose in mind. When estimating a year's immigration share, false positives inflate the count and precision matters. When retrieving documents for someone to read, recall may matter more because false positives mainly add reading time. Reporting accuracy without explaining the use leaves this choice unclear.
 
 ### ROC and AUC, the same sweep in the standard form
 
-The table above is a threshold sweep, and there is a conventional way of drawing one that you will meet in every applied paper. The **ROC curve** plots sensitivity against one minus specificity, that is, the true positive rate against the false positive rate, as the threshold moves from one to zero.
+A **receiver operating characteristic**, or ROC curve, plots sensitivity against one minus specificity. These are the true positive and false positive rates, traced as the threshold moves from one to zero.
 
 ```{r, fig.height=5.5, fig.width=6, message=FALSE, warning=FALSE}
 library(pROC)
@@ -320,29 +320,29 @@ plot(roc_nb, col = "steelblue", lwd = 2,
      main = paste("Naive Bayes, AUC =", round(auc(roc_nb), 3)))
 ```
 
-The diagonal is what a coin would achieve, since a model with no information gains a true positive for every false positive it accepts. A curve bending toward the top left is doing better than that, and the **AUC**, the area under the curve, compresses the whole picture into one number.
+The diagonal represents a classifier with no useful ranking information. A curve nearer the top left performs better. **AUC**, the area under the ROC curve, summarizes this ranking performance.
 
-That number has a clean interpretation worth remembering, because it is not an accuracy. Take one immigration tweet and one other tweet at random. The AUC is the probability that the classifier gives the immigration one the higher score. It is therefore a statement about **ranking** rather than about labeling, and it does not depend on the threshold at all.
+Imagine drawing one immigration tweet and one other tweet at random. AUC is the probability that the classifier gives the immigration tweet a higher score. It measures **ranking**, not the proportion of labels correct, and is independent of the chosen threshold.
 
-That independence is the attraction and also the trap. A model can have an excellent AUC and be useless at the threshold you actually deploy, because AUC averages over thresholds you would never choose. Report it to describe how well a model orders documents, and report precision and recall at your chosen cut point to describe what it will do in practice. Reporting only the AUC is a way of not saying what the system will actually do.
+That makes AUC useful for comparing rankings, but insufficient for assessing a deployed threshold. A model can have high AUC and still perform poorly at the cut point we use. Report precision and recall at that cut point as well.
 
 ::: {.callout-note}
-There is a second curve of the same kind, the precision-recall curve, which is what we drew above. On a balanced problem the two tell much the same story. When the positive class is rare, as with civil war onset in Week 3, the ROC curve flatters a model badly, because a large number of true negatives makes the false positive rate look small however many false alarms there are. For rare outcomes, prefer the precision-recall curve.
+The precision-recall curve above is another way to display threshold performance. With balanced classes, it often gives a similar impression to ROC. For rare positive outcomes, ROC can look favorable despite many false alarms because there are so many true negatives. Prefer the precision-recall curve for tasks such as Week 3's war-onset prediction.
 :::
 
 ::: {.callout-note}
-**Calibration** is a third property, distinct from both of these: whether a model that says seventy percent is right about seventy percent of the time. It is the central question for anything used as an early warning system, so it belongs with next week's material on crisis management rather than here.
+**Calibration** is a separate property: do cases assigned seventy percent probability have the outcome about seventy percent of the time? It is important for early warning. We leave it for next week's discussion of crisis management.
 :::
 
-That is the apparatus: precision and recall, a threshold that is a decision rather than a discovery, and a curve showing what each decision costs. It was built on a classifier we fitted ourselves, which is why every part of it could be inspected.
+We now have precision, recall, and a way to examine thresholds. Working with our own classifier let us inspect how these quantities arise.
 
-Part II turns the same apparatus on something we did not build and cannot open.
+Next, we apply evaluation to a language model whose internal workings are unavailable to us.
 
 ## Part II. Validating a language model
 
-Week 5 ended with an admission. A language model had classified a corpus, the output had the right shape, and nothing in that session established whether any of it was correct, because the NATO tweets carried no labels to check against. The instrument required was the one Week 4 built, and it is applied here.
+The NATO exercise could not establish accuracy because it lacked human labels. We now use Week 4's hand-labeled tweets to evaluate the language model.
 
-Two systems are now in play, so the naming below is fixed and used consistently. **The classifier** is the Naive Bayes model of Week 4, trained on 724 hand-coded tweets. **The model**, or the language model, is the one from last week, which was trained on nothing of ours and told what to do in a paragraph of English.
+To keep the comparison clear, **the classifier** means our Naive Bayes model, trained on 724 tweets. **The model**, or language model, means the pretrained system instructed through a prompt without fitting to our data.
 
 ```{r}
 url6 <- paste0("https://raw.githubusercontent.com/babakrezaee/",
@@ -357,7 +357,7 @@ str(llm)
 
 ### What is in the file, and where it came from
 
-The file carries four labels for every tweet, and the rest of this part is built on the differences between them, so it is worth being precise about what each one is.
+The file contains four label columns for each tweet:
 
 | Column | What produced it |
 |---|---|
@@ -366,11 +366,11 @@ The file carries four labels for every tweet, and the rest of this part is built
 | `llm_reword` | The **same model** on the same tweets, given a differently worded prompt saying the same thing, called **prompt B** |
 | `llm_model2` | A **different model** from the same provider, given prompt A again |
 
-So two things vary, and only one at a time. Comparing `llm_main` against `llm_reword` holds the model fixed and changes the wording. Comparing `llm_main` against `llm_model2` holds the wording fixed and changes the model. The exact model names and the date of the run are recorded in `data/llm_labels_w6_README.md`, since a measurement of this kind is meaningless without them.
+Comparing `llm_main` with `llm_reword` changes the prompt while holding the model fixed. Comparing `llm_main` with `llm_model2` changes the model while holding the prompt fixed. Exact model names and run dates are in `data/llm_labels_w6_README.md`; keep these details with any API-based measurement.
 
-A word on what "a different model" means here, because the vocabulary is looser than it looks. Both models come from the same provider and the same family, trained in the same way on much the same material, and they differ in **scale**: the number of parameters and the quantity of computation behind each answer. Providers rarely publish those numbers, so the practical signals available to you are the price per token and whatever tier name the provider has given it. The one used for `llm_model2` is the more expensive of the two. That matters for how much the comparison is worth, and the point is taken up at the end of this part: two models from one company are not two independent opinions.
+Both models come from the same provider and family. They differ in scale, including parameters and computation, though providers rarely disclose exact figures. Price and tier names give some practical indication; `llm_model2` uses the more expensive model. Models from the same family do not provide fully independent judgments, which matters when interpreting agreement.
 
-Both prompts were written to do the same job, and neither is a straw man.
+Both prompts are reasonable attempts to describe the same task.
 
 **Prompt A**, which produced `llm_main` and `llm_model2`:
 
@@ -386,9 +386,9 @@ Both prompts were written to do the same job, and neither is a straw man.
 >
 > Answer immigration if the tweet concerns immigration or border policy in any substantial way. Answer other for everything else.
 
-Read them side by side before going on, because the comparison later depends on your judgment that these are two reasonable attempts at one instruction rather than a good prompt and a bad one. Prompt A is longer, gives examples, and states the rule about passing mentions. Prompt B is shorter and leaves "substantial" to the model. Either is the sort of thing a researcher writes first, and neither contains an error.
+Compare the instructions. Prompt A lists examples and explicitly addresses passing mentions. Prompt B leaves the meaning of "substantial" to the model. Neither is deliberately poor, but they give different amounts of guidance. Keep this distinction in mind when reading their disagreement rate.
 
-The script that produced the file is in the repository at `R/w6_generate_llm_labels.R`, and the provenance, including what is and is not reproducible about it, is in `data/llm_labels_w6_README.md`. Read both before the session. The session concerns evaluation, and a measurement whose origin is undocumented cannot be evaluated at all.
+The generation script is `R/w6_generate_llm_labels.R`. The README records provenance and limits on reproduction. Read both before the session so you know how these labels were produced.
 
 ### Three label sources, one set of tweets
 
@@ -408,9 +408,9 @@ round(rbind(
 ), 3)
 ```
 
-The language model outperforms the classifier, and it does so having been shown no training data at all. The result is real and should be taken seriously, since it is close to what the published literature reports.
+The language model scores higher than our classifier without having received our labeled training examples. That result is worth examining and is consistent with the comparisons reported in the literature.
 
-However, the shape of the model's errors tells us more than the headline figure does. Recall is much higher than precision, which means the model rarely misses an immigration tweet and fairly regularly flags one the coder did not. Rather than theorize about why, we can read the mistakes.
+Recall is higher than precision: the model misses few immigration tweets but flags some labeled `other`. Read those cases to understand the difference.
 
 ```{r}
 wrong <- llm[llm$human != llm$llm_main, c("text", "human", "llm_main")]
@@ -424,11 +424,11 @@ for (i in 1:nrow(false_alarms)) {
 }
 ```
 
-Six of these seven are the same kind of tweet. They are campaign endorsements and lists of accomplishments, in which the border appears as one item in a series: strong on crime, strong on the border, protects the Second Amendment, loves our veterans. The defense spending bill tweet is the purest case, since "SOUTHERN BORDER WALL FUNDING" sits in a list alongside parental leave, a troop pay raise, the Space Force, and the smoking age.
+Six of these seven errors are endorsements or lists of accomplishments. The border appears alongside issues such as crime, the Second Amendment, or veterans. The defense spending tweet lists "SOUTHERN BORDER WALL FUNDING" with parental leave, troop pay, the Space Force, and the smoking age.
 
-Now recall where those tweets got their labels. The Week 4 codebook has a rule for exactly this situation: a passing mention inside a longer list is coded `other`. A second rule covers endorsement boilerplate, on the grounds that the border in such a tweet occupies one slot in a formula rather than serving as its subject. Those rules were written by one person, in an afternoon, to resolve cases the original scheme had not anticipated.
+The Week 4 codebook classifies passing mentions in lists as `other`. It also treats endorsement boilerplate that way when the border is one item rather than the main subject. One coder wrote these rules to resolve cases not covered by the original scheme.
 
-So the model is not misreading English. It is reading these tweets much as you or I would, noticing that immigration is mentioned, and failing to apply a convention that a human coder invented and wrote down somewhere the model never saw. Its errors concentrate almost entirely on the cases where the codebook had to make a judgment call.
+The disagreements therefore concern how to apply those conventions, rather than simply whether the model recognizes immigration language. The model notices the mentions but does not consistently reproduce the coder's distinction. Most errors occur where the codebook itself required a judgment call.
 
 ```{r}
 missed <- wrong[wrong$human == "immigration", ]
@@ -438,35 +438,35 @@ for (i in 1:nrow(missed)) {
 }
 ```
 
-The two it missed point the same way. One concerns the census citizenship question, which the codebook counts as immigration and which a reasonable person might not. The other is about drugs smuggled across the southern border, where the codebook says that drugs count only when the tweet ties them to immigrants or the border, and this tweet arguably does. Neither is a stupid mistake, and both are disagreements about a rule rather than about the tweet.
+The two missed tweets also involve boundaries of the scheme. One concerns the census citizenship question, which the codebook includes as immigration. The other concerns drugs crossing the southern border, which the scheme includes when tied to immigrants or the border. A reasonable coder could debate both decisions.
 
-Keep this in mind for Part III, because the whole session turns on it. Our 95 percent is not a measure of how well the model understands immigration. It is a measure of how often it happens to apply the same conventions as one human coder, and the five percent where it fails is made almost entirely of the places where those conventions were contestable.
+The 95 percent figure therefore measures agreement with one coder's conventions. The remaining five percent largely concerns contestable applications of those conventions, rather than a straightforward failure to understand the subject.
 
-One further asymmetry between the two systems is worth drawing out, since it did not appear in the table. The classifier produced a ROC curve in Part I because it reports a probability, so a threshold can be moved through it and a whole family of classifiers obtained from one fit. The language model reports a label and nothing else. **It is therefore a single point in that space rather than a curve**, with one sensitivity and one specificity, and no dial to turn. Whatever trade-off between precision and recall it happens to embody was fixed by the prompt and the model, and if it over-flags, as this one does, the only instruments available are rewriting the prompt or asking the model for a probability and hoping it means something. The classifier gives you a worse result and more control over it.
+There is another difference between the systems. Our classifier supplies a probability, so we can move a threshold and draw a ROC curve. The language model supplies only a label, giving **one point rather than a curve**. Its precision-recall balance depends on the prompt and model. We can rewrite the prompt or request probabilities, but would need to validate those probabilities too. Our classifier performs worse here while giving us more direct control of its threshold.
 
 ### Four ways to shake a measurement
 
-What we have so far is one measurement, taken once, by one model, under one prompt. It agreed with the coder 95 percent of the time. Before that number can be believed, it is worth asking whether it would survive the kinds of variation that any real research project will inflict on it without meaning to.
+So far, we have one run of one model under one prompt. Before relying on its 95 percent agreement, check how the result responds to changes that could occur in a research project.
 
-Four questions do that, and they are arranged so that each holds more fixed than the last. The first asks whether the model's claims survive being checked against the world. The second changes the wording of the instruction. The third changes the model. The fourth changes nothing at all. If a measurement cannot survive the fourth, the earlier three were never the problem.
+We use four checks. First, verify factual claims against sources. Then vary the prompt, vary the model, and finally repeat an identical call. These examine different sources of error and instability.
 
 ### Check one, the existence check: does the claim survive looking up?
 
-This check applies whenever a model asserts something that could in principle be looked up. Ask it for a source, then verify that the source exists and says what the model says it says.
+When a model makes a factual claim, ask for a source and verify both that it exists and that it supports the claim.
 
-Nothing in the file above bears on this, since it is not a classification problem, which makes it a workshop exercise rather than a chunk here. Use something you can actually check, and Fearon and Laitin's 2003 article serves well, since it is on the Week 3 reading list and already in your possession:
+The label file cannot test this kind of factual accuracy, so we will do it in the workshop. Fearon and Laitin's 2003 article is a useful starting point because it was assigned in Week 3:
 
 > Ask the model what Fearon and Laitin found about the relationship between ethnic diversity and civil war onset, and then ask it for the page on which they report it. Open the article and look.
 
-Then do the same with an article you know well from another course, and then with one you have only heard of. The third is the interesting case, because it is the one where you would have believed the answer.
+Repeat this with an article you know well, then one you have only heard of. The latter is especially useful because unfamiliarity makes a plausible answer harder to challenge.
 
-What you are looking for is not an error of the ordinary kind. It is a reference with a plausible author, a plausible journal, a plausible year, and a page number, for an article that does not exist, or a real article that says something else. The output gives you nothing to go on, since a fabricated citation is written in exactly the same confident register as a correct one.
+Watch for invented references and for real sources misrepresented by the answer. A plausible author, journal, year, or page number is not enough. Correct and fabricated citations can be written with the same confidence.
 
-The point is larger than the trick. In Part II we treated the model's labels as data, and the only reason we could trust them at all is that we had 181 human judgments to check them against. The moment a model asserts something you cannot check, you are relying on fluency as a proxy for accuracy, and these are separate properties of a text. Only one of them is visible without leaving the page.
+Our 181 human labels gave us a way to check classifications. Factual claims need their own check. Fluency is visible in the response, but accuracy usually requires looking beyond it.
 
 ### Check two, prompt stability: does the answer survive a reworded prompt?
 
-The existence check concerns what a model asserts. The remaining three concern whether a measurement holds still, and the first thing to vary is the one a researcher varies most casually: the wording of the instruction.
+The remaining checks concern measurement stability. Start with prompt wording, which researchers often adjust without treating it as a change to the instrument.
 
 ```{r}
 llm_reword <- factor(llm$llm_reword, levels = c("other", "immigration"))
@@ -476,7 +476,7 @@ table(as_written = llm_main, reworded = llm_reword)
 round(mean(llm_main == llm_reword), 3)
 ```
 
-Prompt A and prompt B are both defensible, as you saw above, and the model is identical in the two runs. The only thing that changed between them is the wording of the instruction. Yet a share of the corpus is labeled differently depending on which was used, and the identity of those tweets is more instructive than their number.
+The same model received two defensible prompts. Some tweets nevertheless receive different labels. Look at which tweets change, as well as how many.
 
 ```{r}
 moved <- llm[llm$llm_main != llm$llm_reword, ]
@@ -486,15 +486,15 @@ for (i in 1:nrow(moved)) {
 }
 ```
 
-These are the same families of tweet as the errors above. There is the long list of accomplishments with "illegal immigration coming down" buried in it, the census citizenship question again, the drug smuggling tweet again, and a poll quotation that mentions building the wall in passing. The tweets that move when the prompt moves are the tweets that were ambiguous under the codebook in the first place.
+The changing cases resemble the earlier errors: a list with "illegal immigration coming down," the census citizenship question, the drug-smuggling tweet, and a poll quotation mentioning the wall in passing. These are also difficult cases for the codebook.
 
-That is reassuring and alarming in about equal measure. Reassuring, because the instability is not random: the model wavers exactly where a careful human coder had to stop and make a decision. Alarming, because those borderline cases are frequently the substantively interesting ones, and because a researcher who ran only one prompt would never learn that an eighth of the ambiguous cases could have gone the other way.
+This pattern helps explain the instability: it occurs where human coding also required judgment. But those cases may be substantively important. A researcher using one prompt would miss that an eighth of the ambiguous cases could receive another label.
 
-Set that share against the error rate from the previous section. The model disagrees with the human coder on about five percent of tweets, and it disagrees with itself under rewording on about four percent. The instability introduced by a reasonable change of wording is therefore nearly as large as the measured error, which means that a paper reporting the accuracy of such a classifier without reporting its sensitivity to the prompt has reported roughly half of what the reader needs.
+The model disagrees with the human coder on about five percent of tweets and with its reworded-prompt run on about four percent. Prompt sensitivity is therefore almost as large as the measured error rate. Report it alongside accuracy rather than assuming the wording makes little difference.
 
 ### Check three, inter-model reliability: does a second model agree?
 
-Here the wording is held fixed and the model changes. Two models were used, and the difference between them matters for how much the comparison is worth.
+Now hold the prompt fixed and change the model. Consider how independent the two models are.
 
 ```{r}
 llm_model2 <- factor(llm$llm_model2, levels = c("other", "immigration"))
@@ -504,9 +504,9 @@ table(prompt_A_model_1 = llm_main, prompt_A_model_2 = llm_model2)
 round(mean(llm_main == llm_model2), 3)
 ```
 
-That is a second model from the **same company**, which is a weak kind of independence. Two models built by one firm, trained in similar ways on similar text, are closer to two readings from one instrument than to two instruments. If they share an assumption about what the word "border" implies, they will agree because of it rather than despite it.
+The second model comes from the **same company** and uses similar training methods and text. Shared assumptions about words such as "border" can produce agreement without providing independent confirmation.
 
-So we ran prompt A a third time, through a model from a **different company**. The same `ellmer` code does this; only the function changes, from `chat_openai()` to `chat_anthropic()`, which is the practical argument for using a package that is not tied to one provider.
+We also ran prompt A through a model from a **different company**. In `ellmer`, this changes `chat_openai()` to `chat_anthropic()`, illustrating the convenience of a common interface.
 
 ```{r}
 url_c <- paste0("https://raw.githubusercontent.com/babakrezaee/",
@@ -522,9 +522,9 @@ round(c(same_company  = mean(llm_main == llm_model2),
         other_company = mean(llm_main == llm_claude)), 3)
 ```
 
-The expectation was that agreement across companies would be clearly lower. It is lower, and by two tweets out of 181, which is nothing. We looked for the effect, did not find it at this sample size, and are reporting that rather than quietly dropping the comparison, which is the practice this session is supposed to be teaching.
+We expected lower agreement across companies. It was lower by only two tweets out of 181, too small a difference here to support that expectation. Keep such results in the report even when they do not show the effect anticipated.
 
-A more useful question is what happens when all three agree.
+We can also inspect cases where all three models agree.
 
 ```{r}
 unanimous <- llm_main == llm_model2 & llm_main == llm_claude
@@ -534,75 +534,75 @@ sum(unanimous)
 table(all_three_said = llm_main[unanimous], human = human[unanimous])
 ```
 
-The three models give the identical label on 169 of the 181 tweets. On those 169, they match the human coder 166 times. **Three systems, two companies, in unanimous agreement, and still wrong three times.**
+The models agree on 169 of 181 tweets. Of those 169, 166 match the human label. Unanimous agreement still leaves three disagreements with the coder.
 
-Those three tweets are the point of the next section. No amount of agreement among models would have found them. The only thing that did was a person who had read the tweet.
+Model agreement alone would not identify those cases. Comparing the answers with someone who had read and coded the tweets did.
 
 ### Check four, intra-model reliability: does the same model agree with itself?
 
-This is the simplest of the four, and the most unsettling. The three before it changed something: the wording, or the model. This one changes nothing at all. Run the identical prompt, on the identical model, a second time, and see whether the answers match. If check three asks whether a different model agrees, check four asks whether the same model agrees with itself.
+Finally, repeat the same prompt on the same model. This tests whether identical requests give the same labels, without changing either instrument or instruction.
 
-It does not. Run twice over these 181 tweets, the model disagreed with itself on **8 of them**, and the accuracy against the hand labels moved from 95.0 percent on one run to 93.9 percent on another. Nothing was altered between the runs. The question was the same, the model was the same, and the number you would have written in your paper depends on which afternoon you ran it.
+Across two runs on these 181 tweets, the model changed its label on **8 cases**. Accuracy against the hand labels moved from 95.0 to 93.9 percent. Even with the same request and model, the score depended on the run.
 
-Five of those eight tweets are the same ones that flip when the prompt is reworded. Counting everything that moved under any of the three perturbations, rewording, changing model, or simply asking again, the total is 12 tweets out of 181. The model is immovable on about 93 percent of the corpus and close to flipping a coin on the rest, and that unstable remainder is the same set of borderline cases the Week 4 codebook needed its tie-break rules for. The checks were not measuring three different things. They were finding the same ambiguous tweets by three different routes.
+Five of those eight also changed under prompt rewording. Across rewording, model changes, and repeated calls, 12 of 181 tweets changed at least once. About 93 percent were stable; the rest were sensitive to the request or run. They were largely the borderline cases requiring codebook tie-break rules. The checks repeatedly brought us back to the same ambiguities.
 
 ### Why that happens, and why we could not switch it off
 
-Week 5's first diagram showed the model producing a probability for every possible next token, and something then choosing one. **Temperature** is the dial on that choice.
+Week 5 showed probabilities over possible next tokens followed by a selection step. **Temperature** controls how that selection uses the probabilities.
 
-At a temperature of zero the model always takes the most likely token. The same question gives the same answer every time, which is dull for writing and exactly what you want for measurement. Turn the dial up and the choice becomes a draw rather than a maximum, so less likely tokens become reachable, the output is more varied, and repeated calls stop agreeing. For years the standard advice to anybody using these models as a research instrument was therefore simple: set the temperature to zero and report that you did.
+At zero temperature, selection takes the most likely token. Higher settings allow less likely tokens to be sampled and can produce more varied answers. Researchers have therefore commonly used zero temperature when seeking repeatable measurements and reported the setting with their methods.
 
-That advice no longer works here, and the reason is worth understanding.
+That option is unavailable for the model in this exercise.
 
-The model we are using is a **reasoning model**. Rather than answering immediately it first generates a chain of intermediate steps, working through the problem before committing, and only then produces the answer. That internal process was built and tuned at one particular setting of the dial. Turning the dial down would not make such a model more reliable; it would interfere with the very process the model was trained to carry out, and the provider has judged that the result would be worse rather than more repeatable. So the setting is locked.
+This is a **reasoning model**, which generates intermediate steps before the final answer. That process is trained and configured for a particular sampling setup, and the provider restricts changes to the setting. We cannot assume that lowering it would preserve the model's intended performance.
 
-It is locked firmly. We asked for a temperature of zero on all 181 tweets and every single call was refused, with the API replying that only the default value is supported. A setting of 0.5 is refused in the same way. The parameter exists in the R package, it is named in every methods paper on this subject, and on this model you may not use it.
+We requested zero temperature for all 181 tweets, and every call was refused: the API allowed only the default. A request for 0.5 was also refused. Although the R package exposes the parameter, this model does not let us set it.
 
-Sit with the consequence rather than the inconvenience. The standard remedy for non-determinism is unavailable, not because of a limitation of the method but because a company decided that you should not have it, for reasons that are probably sound and that you are in no position to evaluate. You can still report the instability, which is what the eight tweets above do. You cannot remove it.
+This limits our control over repeatability. The provider determines which settings are available, and we cannot evaluate all its reasons from outside. We can measure and report variation across runs, as above, but cannot remove it through the usual temperature setting here.
 
 ### Agreement is not accuracy
 
-Several agreement rates have now been produced, and the temptation is to read them as so many measurements of the same thing. They are not, and the distinction is the most important idea in this part.
+We have calculated several agreement rates. They address reliability, which needs to be distinguished from accuracy.
 
-Agreement between two prompts, between two models, between two companies, or between two runs of the same model establishes that a measurement is **reproducible**. It says that the number would come out much the same if somebody else ran it, which is a real property and not a trivial one. However, it says nothing whatever about whether the number is **right**. Models trained on overlapping corpora, with overlapping assumptions about what the word "border" implies, may agree with one another precisely because they share a bias, and their agreement is then evidence of a common error rather than of a correct answer. Check three showed exactly that, three times over.
+Agreement across prompts, models, providers, or repeated runs tells us how **reproducible** the measurement is under those conditions. It does not establish that the result is **right**. Models may agree because they share training material or assumptions, including shared errors. Our three-model comparison illustrates this possibility.
 
-Only the human labels speak to accuracy. Thus the comparison that matters is the first one, against `human`, and the reliability checks are supporting evidence rather than substitutes.
+In this exercise, human labels provide the accuracy benchmark. The reliability checks add useful information but do not replace that comparison.
 
-That said, the human labels are themselves a measurement rather than the truth. They were produced by one coder applying one written codebook, and the Week 4 documentation records the four rules invented to resolve cases the scheme did not anticipate. A second coder would place some tweets differently. The honest statement of the result is therefore not that the model is 95 percent accurate, but that it agrees 95 percent of the time with one person's application of one coding scheme to 181 tweets. Every further claim rests on that sentence, and it is a good deal weaker than the number alone suggests. On the practice of treating human judgment as the benchmark, and on what that requires, see Lowe and Benoit [@lowe2013].
+Human labels also need scrutiny. One coder applied one codebook, including four rules developed for difficult cases. Another coder might disagree. State the result precisely: the model agrees 95 percent of the time with one person's application of a coding scheme to 181 tweets. Lowe and Benoit [@lowe2013] discuss what is required when human judgment serves as the benchmark.
 
-Part II has established how far the number can be trusted as a measurement of what the coder did. Part III asks a harder question: whether what the coder did is what we wanted measured, and whether the test was a test at all.
+Part III asks whether that coding scheme measures our intended concept and whether the evaluation was properly separated from model development.
 
 ## Part III. Why a good score can be the wrong number
 
 ### What the score is a score of
 
-Political scientists have a word for the problem this section is about, and it is one of the few places in this course where the discipline is ahead of computer science rather than behind it. **Construct validity** asks whether an instrument measures the concept it claims to measure, as distinct from measuring something close to it, something correlated with it, or something merely easier to count.
+**Construct validity** concerns whether an instrument measures the concept it claims to measure, rather than a related concept or something easier to count. This is familiar territory for political scientists.
 
-The number in Part II is an agreement rate against a codebook. Whether it is also a measure of the aboutness of immigration depends entirely on whether the codebook captured that concept, and that codebook was the work of a single coder resolving awkward cases as they arose. Rule one of it, which sends a tweet listing ten accomplishments with "Border" seventh into the `other` category, is a judgment call that a different coder could defensibly reverse. Reverse it, and the labels change, and the model's accuracy against the new labels changes, and nothing about the model or the tweets has moved at all.
+Our score measures agreement with the codebook. Whether it also measures immigration content depends on the scheme's definition. Labeling a ten-item list with "Border" seventh as `other` is contestable. Changing that rule changes the labels and measured accuracy, even though the tweets and model are unchanged.
 
-Four questions bear on any evaluation, and they are not one question asked four times. Each one can be put to our own classifier.
+Consider four questions about our evaluation.
 
-**Does the measure cover the concept, or only part of it?** Our scheme counts a tweet about the census citizenship question as immigration and a tweet endorsing a candidate who is "strong on the border" as not. A reader who thinks immigration politics is substantially about how politicians signal toughness on it would say we have measured the policy debate and discarded the political performance, which for many research questions is the half that matters.
+**Does the measure cover the concept, or only part of it?** We include the census citizenship question but exclude an endorsement saying "strong on the border." If the research question concerns political displays of toughness on immigration, that exclusion may omit important content.
 
-**Does it agree with an established measure of the same thing?** The Comparative Agendas Project and the Manifesto Project have both coded political text for immigration content for years, using schemes refined over decades by multiple coders. Ours was the work of one person over a few hours. We never checked our labels against either, and we could have.
+**Does it agree with an established measure of the same thing?** The Comparative Agendas Project and Manifesto Project use political-text coding schemes developed over years with multiple coders. We could compare our single-coder scheme with those approaches, but have not done so.
 
-**Does the measure behave as the concept should behave?** Here we do reasonably well. The immigration share falls sharply after the first half of 2019, which is what anybody following the shutdown and then impeachment would expect, and a measure that showed no such movement would be suspect regardless of its agreement rate.
+**Does the measure behave as the concept should?** Immigration's measured share falls after the first half of 2019, consistent with the shift from the shutdown to impeachment. That is useful supporting evidence. An unexpected pattern would require investigation, regardless of label agreement.
 
-**What follows from using it?** Suppose this classifier were not a teaching exercise but a monitoring system, and suppose politicians learned which words triggered it. The endorsement tweets in Part II show that the border can be invoked while saying nothing about it, and a measure deployed at scale eventually changes the behavior of whoever is being measured.
+**What follows from using it?** If this became a monitoring system, politicians might adapt their language to its rules. Our endorsement cases already show how the border can appear without being the main subject. Deployment could affect the behavior the instrument is meant to measure.
 
-An evaluation that answers only the question "how often does it agree with my labels" has addressed the first of these badly and the other three not at all.
+An agreement rate alone does not answer these questions. It tells us about consistency with labels, leaving their substantive adequacy to be examined.
 
 ### When the test was not really a test
 
-A score can also be too high for a reason that has nothing to do with the concept. It can be too high because the test was not a test.
+An apparently strong score may also reflect information from the test set entering model development.
 
-The idea is the same one that makes an exam meaningful. An exam measures what a student knows only if the student has not seen the questions beforehand. Show them the paper during revision and they will score well, the marking will be correct, the arithmetic will be sound, and the number will mean nothing about what they would do on an exam they had not seen.
+Think of an exam. If students see the questions during preparation, their scores may be high and the marking perfectly correct, but those scores no longer measure performance on unseen questions.
 
-The same thing happens to models, and it has a name. **Leakage** is any way in which information from the test set reaches the model before it is tested. It does not require cheating or carelessness. It usually happens through a decision that looks like housekeeping.
+**Leakage** occurs when test-set information reaches the model or development process before evaluation. It can happen through routine preparation decisions, without deliberate cheating.
 
-We can produce it deliberately, in one line, and watch it work. The first route runs through the vocabulary.
+We can demonstrate one route by changing how we select the vocabulary.
 
-Part I built the classifier's vocabulary from the training tweets only. Here is that line again, beside the version that forgets to do so.
+Compare the training-only selection in Part I with selection using all tweets.
 
 ```{r}
 # What Part I did: look only at the 724 training tweets, and keep every word
@@ -616,19 +616,19 @@ freq_leaky <- findFreqTerms(dtm, 5)
 length(freq_leaky)
 ```
 
-`dtm` is the full matrix of 905 tweets. `dtm[train_id, ]` is just the 724 training rows, which is what Part I passed to `findFreqTerms()`. Dropping that `[train_id, ]` is the whole mistake, and it is one keystroke.
+`dtm` contains all 905 tweets; `dtm[train_id, ]` contains the 724 training rows. Passing the full matrix to `findFreqTerms()` instead of the training subset lets test documents influence vocabulary selection.
 
-The careless vocabulary is larger, by around a hundred words. Those extra words are the interesting part, and `setdiff()` isolates them: it returns the items in the first set that are not in the second.
+The resulting vocabulary contains around a hundred extra words. `setdiff()` identifies them by returning words in the first set but not the second.
 
 ```{r}
 head(setdiff(freq_leaky, freq_words), 20)
 ```
 
-Each of these is a word that was not frequent enough among the training tweets to qualify, and became frequent enough only once the test tweets were counted. They are in the model's vocabulary because of documents it is about to be graded on. Every one of them is now a feature the classifier can use, and the classifier has been told something about its own exam.
+These terms reached the frequency threshold only when we included the test tweets. They therefore enter the model because of the documents on which it will be evaluated, rather than training evidence alone.
 
-The second route is easier to take, and we took it in Part I. It runs through a choice rather than through a line of code.
+A second route concerns threshold selection. Part I gave us the opportunity to make this mistake.
 
-That threshold table reported precision, recall, and accuracy at nine cut points, all computed on the test set. Nothing is wrong with looking. The question is what happens if you then pick.
+We calculated precision, recall, and accuracy at nine test-set thresholds. Inspecting that table is useful. Selecting a threshold from it and reporting the same test score as an independent evaluation is a different matter.
 
 ```{r}
 # The row of the sweep where accuracy happens to be highest.
@@ -643,91 +643,91 @@ round(c(at_the_default = sweep_out$accuracy[sweep_out$default],
 best$threshold
 ```
 
-The best threshold is not 0.5, and it delivers a visibly higher accuracy, worth a few more tweets correct. We could report that number. It came out of real code, run on real data, with no mistake anywhere in it.
+The best threshold in this test set differs from 0.5 and classifies a few more tweets correctly. The code and arithmetic are correct.
 
-It would still be false as a statement about new tweets, because the threshold was chosen by looking at the answers. We did not estimate which cut point works; we looked up which cut point happened to work here. On the next 181 tweets it would not be the best, and the figure we reported would not be reproduced.
+But the threshold was selected using the test answers. Its score describes a choice optimized for these 181 tweets, not an independent estimate of performance on new ones. We cannot assume that threshold will remain best or that score will repeat in another sample.
 
-Notice what this episode did not include. No error message, no warning, no suspicious output, and no moment at which anybody did anything that felt wrong. **Leakage does not announce itself as a bug. It announces itself as a better result.** That is why it survives peer review.
+No error message identifies this problem. **Leakage can look like improved performance**, so we need to check how decisions were made rather than relying on warnings from the software.
 
 ### The version you cannot check
 
-Both examples above are repairable. Pass `dtm[train_id, ]`, choose the threshold on data the model has not been judged on, and the problem goes away.
+We can address these examples by selecting vocabulary from `dtm[train_id, ]` and choosing the threshold separately from final evaluation data.
 
-Now the same problem in a form where nothing can be done. **Contamination** is leakage into a model you did not train: the possibility that your test documents were part of the training data of the model you are testing. With a commercial language model, whose training corpus is undisclosed, the honest position is not that this did not happen. It is that you cannot know.
+**Contamination** raises a related problem for pretrained models: our test documents may already have appeared in their training data. With an undisclosed commercial corpus, we cannot establish that they were excluded.
 
-Our own case is not hypothetical. These are tweets by a sitting president, quoted in thousands of news articles, analysed in academic papers, and archived in at least three public GitHub repositories, including the one this corpus was built from. If any text on the internet was in that training data, this text was. The model may well have met these exact tweets before, accompanied by journalism explaining what each was about, which is considerably more than the paragraph of instruction we gave it.
+This is plausible for our corpus. Presidential tweets have been quoted in news coverage, analyzed in academic work, and archived in at least three public GitHub repositories, including our source. The model may have encountered both the tweets and commentary explaining them before our request.
 
-This cannot be checked by us or by anyone outside the company, and it is not a reason to abandon the method. It is a reason to write the limitation down rather than report 95 percent as though it were a clean out-of-sample result.
+We cannot check that possibility from outside the company. Report it as a limitation when interpreting the 95 percent score, rather than treating the result as certainly out of sample.
 
-It also unsettles the comparison in Part II. The Naive Bayes classifier saw 724 tweets and nothing else in its entire existence. The language model may have seen these tweets and the commentary about them. The contest was never as fair as the table made it look, and the fairer reading of Part II is that a system with an unknown and probably large advantage beat one with none.
+It also limits the comparison with Naive Bayes. Our classifier was trained on 724 tweets, while the language model may have encountered these documents and commentary during pretraining. The table compares their outputs, but does not give them equal prior information.
 
 ### What a benchmark number means
 
-Published evaluations of these systems are mostly benchmark scores, and three pathologies recur often enough to be recognizable. Two of them we have already committed in this handout, which is the quickest way to understand them.
+Benchmark scores dominate many published evaluations. Three recurring problems are useful to recognize, including versions of issues we have examined here.
 
-Benchmarks **saturate**. Once a test is widely used, systems are built and selected against it until the leading ones all score within a point or two of each other and of the ceiling, at which stage the test has stopped ranking the systems and started ranking the noise. The remedy is a harder test, so the cycle runs again, and the published scores across a few years of such cycles are not comparable with one another.
+Benchmarks **saturate** as systems improve and are selected against them. Near the ceiling, small score differences may reflect noise more than meaningful performance differences. Replacing the benchmark with a harder one helps, but scores from different tests are not directly comparable over time.
 
-Benchmarks are **gamed**, though rarely by fraud. The ordinary mechanism is the one from the previous section: we swept a threshold across our test set and could have reported the best value we found. Nobody lied, no rule was broken, and the reported figure would still have described our test set rather than the world. Scale that up to an industry in which benchmark position determines funding and procurement, and the pressure runs the same way without anybody deciding that it should.
+Benchmarks can be **gamed** through ordinary optimization. Selecting the best test-set threshold would produce a favorable number without a coding error. When rankings affect funding or procurement, repeated selection against a benchmark can similarly make it less informative about broader performance.
 
-And a growing share of evaluation now uses one language model to **judge** the output of another, since human raters are slow and expensive. This is efficient and it is circular, for the reason Part II gave: a judge trained on much the same text as the system it grades will share its assumptions about what a good answer looks like, so agreement between them is weak evidence of quality. We saw the small version of this in check three: three models agreed unanimously on 169 tweets and were wrong on three of them, and nothing about their agreement revealed which three.
+Language models also increasingly **judge** other models' outputs, reducing the cost of human evaluation. Shared training patterns and assumptions can make that agreement weak evidence of quality. Our smaller comparison illustrates the concern: three models agreed on 169 tweets, but three of those labels differed from the human benchmark.
 
-The practical conclusion is narrow, and it is the one thing from this section to carry out of the room. When a procurement document, a vendor, or a paper reports that a system is 94 percent accurate, the figure is a claim about performance on some benchmark, and the questions that matter are which one, constructed by whom, measured when, and against whose labels. None of those is a technical question, and a political scientist is as well placed to ask them as anybody.
+When a vendor, procurement document, or paper reports 94 percent accuracy, ask which benchmark was used, who constructed it, when it was measured, and whose labels defined success. These are substantive and institutional questions as well as technical ones.
 
 ## Part IV. When the measurement feeds a regression
 
-Everything so far has treated the labels as the end product. In a research project they almost never are. The labels become a variable, the variable enters an analysis, and the analysis produces the number that appears in the abstract.
+Labels are often an intermediate step in research. They become variables used in an analysis, so labeling errors can affect the substantive estimate.
 
-Take a question we can actually ask of these 181 tweets. Immigration dominated the first part of 2019, through the shutdown over wall funding and the national emergency declaration, and receded later in the year as impeachment took over. How much larger was the immigration share in the first half of the year than in the second?
+For these 181 tweets, we can ask how much larger the immigration share was in the first half of 2019 than in the second. The first half included the wall-funding shutdown and national emergency declaration; impeachment became more prominent later.
 
-Split the test tweets by half of the year, compute the immigration share in each half, and take the difference. Do it three times, once with each set of labels. The hand labels put the gap at roughly 36 percentage points. The model's labels put it at roughly 30, and the reworded prompt at roughly 27. A classifier that is right 95 percent of the time has understated a substantively central quantity by something between a sixth and a quarter.
+Split the tweets by half-year and calculate the share difference using each set of labels. The hand labels give roughly 36 percentage points, the model labels roughly 30, and the reworded prompt roughly 27. Despite 95 percent agreement, the model labels understate this substantive difference by between a sixth and a quarter.
 
-The mechanism is general, and worth following through once. The model over-flags, as Part II established, so it adds spurious immigration tweets in both halves of the year. In the second half, where genuine immigration tweets are scarce, those additions are a much larger share of the total. The second-half figure is therefore inflated more than the first-half figure, the gap between them narrows, and the result is pulled toward zero.
+The model over-flags in both halves. When genuine immigration tweets are scarce in the second half, false positives form a larger share of the immigration total and inflate that estimate more. This narrows the estimated gap between the halves, pulling it toward zero.
 
-Two things make this worse than ordinary measurement error. It does not shrink as the sample grows, because it is bias and not noise, so a bigger corpus labeled the same way buys a more precise estimate of the wrong number. And nothing in the output signals any of it: the analysis runs, the standard errors look ordinary, and the table is publishable. Egami and colleagues [@egami2023] show this formally, finding that labels of 80 to 90 percent accuracy produce substantial bias downstream. Our 95 percent sits above the range they examine, and the attenuation is plainly visible anyway.
+This systematic error does not disappear simply by labeling a larger corpus. More observations can produce a more precise biased estimate, and ordinary output or standard errors need not reveal it. Egami and colleagues [@egami2023] demonstrate downstream bias with labels of 80 to 90 percent accuracy. Our example shows attenuation even at 95 percent agreement.
 
 ### What to do about it
 
-Their correction needs more statistics than this course carries. The practice that makes any correction possible does not, and it is why your Type B projects were told to hand-code a validation sample.
+Their statistical correction goes beyond this course. But the practice needed to support correction does not: preserve a hand-coded validation sample, as required for Type B projects.
 
-Hand-code a random sample of your corpus before you look at what the model produced. Report the agreement rate, and report what the disagreements look like rather than only how many there are, because a systematic direction of error is far more damaging than a symmetric one. Then state your substantive result alongside the quality of the labels it rests on. A reader can discount an estimate from imperfect labels when told how imperfect they are. A reader can do nothing at all with an estimate whose labels are undescribed.
+Hand-code a random sample before inspecting the model's labels. Report agreement and describe the disagreements, including any systematic direction of error. Present the substantive estimate with information about its labels' quality. This lets readers assess a limitation they would otherwise be unable to see.
 
-Those four parts have all assumed that the evaluation can actually be carried out. The last section asks who is in a position to carry one out at all.
+Finally, consider whether an independent researcher has the access needed to perform these checks.
 
 ## The politics of who may audit
 
-Everything in this session has been possible because we hold the labels, the corpus, the code, and the output. That is an unusual position, and very little of it generalizes.
+We could evaluate this exercise because we had the corpus, labels, code, and outputs. Researchers auditing deployed systems may have much less access.
 
-A researcher wishing to evaluate a deployed system almost never has any of those things. The training data is undisclosed, so contamination cannot be checked. The weights are inaccessible, so the system can be probed only from outside, one query at a time, under terms of service that frequently prohibit exactly the systematic probing an audit requires. The model can be changed or withdrawn between the measurement and its publication. And the organization with the most complete access to the system is the one with the strongest interest in the answer.
+Undisclosed training data prevent contamination checks. Inaccessible weights leave researchers querying a system from outside, sometimes under terms that restrict systematic probing. A model may change between measurement and publication. Meanwhile, the organization with the fullest access also has an interest in the evaluation's outcome.
 
-For these reasons the question of who may audit has become a regulatory one rather than a technical one, and proposals for legal safe harbor, protecting good-faith independent evaluation from liability, are now a live issue. Black-box access is not sufficient for a rigorous audit, and arranging for something better is a matter of law and institutional design.
+Audit access therefore raises legal and institutional questions. Proposals for safe harbor would protect good-faith independent evaluation from liability. Outside queries alone may not provide everything a rigorous audit needs; arranging fuller access requires rules about who may inspect what.
 
-Week 2 asked who defines similarity, Week 3 who sets the threshold, Week 4 who writes the codebook, and Week 5 who owns the classifier. The question here is narrower and harder. **Who is allowed to check?** By the time a system is deployed at scale, the answer is usually settled, and it is usually settled in favor of the party being evaluated.
+We have asked who defines similarity, selects thresholds, writes codebooks, and owns classifiers. Now ask: **who is allowed to check?** The organization being evaluated often controls access. What arrangements would make independent scrutiny possible?
 
 ## Reading
 
 Grimmer, J., and Stewart, B. M. 2013. "Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts." *Political Analysis* 21(3): 267--297. [@grimmer2013]
 
-Assigned in Week 4 and returned to here for its central claim, that validation is not optional and cannot be replaced by a well-chosen metric. Read their discussion of validation against what we did in Part II, and ask which of their recommendations our procedure actually satisfies.
+Return to the article's argument that validation is essential and requires more than selecting a metric. Compare its recommendations with what we did in Part II. Which did our procedure satisfy?
 
 Lowe, W., and Benoit, K. 2013. "Validating Estimates of Latent Traits from Textual Data Using Human Judgment as a Benchmark." *Political Analysis* 21(3): 298--313. [@lowe2013]
 
-Published immediately after Grimmer and Stewart in the same issue, and the more useful of the two for this week. Their subject is precisely the move we made in Part II, treating human coders as the standard against which an automated measure is judged, and their contribution is to take seriously that human judgment is itself variable and must be modeled rather than assumed.
+This article appeared immediately after Grimmer and Stewart in the same issue. It examines human judgment as a benchmark, as we used it in Part II. Focus on how variability in that judgment should be modeled rather than assumed away.
 
 Egami, N., Hinck, M., Stewart, B. M., and Wei, H. 2023. "Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models." *Advances in Neural Information Processing Systems* 36. [@egami2023]
 
-The source of Part IV. The paper is technical and the estimator is beyond us, but the demonstration in its opening pages is not, and it is the single most important thing in this week's reading for anybody whose project will use model-generated labels. Read it for the result rather than the proof.
+This is the source for Part IV. The estimator is beyond our scope, but read the opening demonstration of how imperfect labels affect inference. It is particularly relevant if your project uses model-generated labels.
 
 ## Before the workshop
 
-Run the whole handout once. Nothing in it makes an API call, so it needs no key and no credit, and the only new package is `pROC`.
+Run the full handout before the workshop. It makes no API calls, so you need no key or credit. The only new package is `pROC`.
 
-Read `data/llm_labels_w6_README.md` in the course repository, particularly the section on what prevents exact reproduction. Assignment 3 assumes you have.
+Read `data/llm_labels_w6_README.md`, especially the limits on exact reproduction. You will need that information for Assignment 3.
 
-Bring one factual question in your own area of interest, specific enough that a wrong answer would be recognizable to you. You will need it for the existence check.
+Bring a factual question from your own area of interest that you can check. We will use it for the existence-check exercise.
 
 ## Questions for the session
 
-Come with a view on at least two of these.
+Prepare an answer to at least two questions.
 
 1. The language model beat a classifier trained on 724 hand-labeled examples, having seen none. Give the strongest argument you can that Week 4 was nonetheless worth doing, and then give the strongest argument against yourself.
 
