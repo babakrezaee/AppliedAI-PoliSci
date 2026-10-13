@@ -290,8 +290,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+  <a href="../handouts/w07-AI-political-object.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">AI as a Political Object</span></span></a>
   </div>
 </li>
       </ul>
@@ -383,7 +383,7 @@ window.Quarto = {
 <section id="two-datasets-this-week" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="two-datasets-this-week"><span class="header-section-number">3.2</span> Two datasets this week</h2>
 <p>Part I uses last week’s country data. Applying a new method to familiar data makes it easier to see how the methods differ.</p>
-<p>Part II uses Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>. The binary outcome is rare, which introduces a different set of problems.</p>
+<p>Part II uses Fearon and Laitin’s civil war data <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span>. The binary outcome is rare, which introduces a different set of problems.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"carData"</span>, <span class="st">"rpart"</span>, <span class="st">"rpart.plot"</span>, <span class="st">"tree"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"randomForest"</span>, <span class="st">"caret"</span>, <span class="st">"ggplot2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -866,7 +866,7 @@ Predicted no_war  war
 <p>The forest is operating as specified. We selected on accuracy, which gives little incentive to identify an outcome occurring in only two percent of cases.</p>
 <p>The result resembles the initial tree with no splits. We reweighted that tree to make onset matter more, but left the forest unchanged. Read the two results together: the objective matters as well as the algorithm. <strong><code>caret</code> selected <code>mtry</code> to maximize accuracy, even though accuracy did not adequately reflect our interest in war onset.</strong></p>
 <p>The output gave no warning about this mismatch. Cross-validation ran correctly and the test set was held out, yet the resulting model failed to identify the outcome we wanted to predict. Following those procedures was not enough to make the model useful.</p>
-<p>This is the problem addressed by the second reading <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>. Week 6 covers precision, recall, F1, thresholds, and class weighting in more detail, including how unequal error costs affect evaluation. For now, focus on recognizing the problem.</p>
+<p>This is the problem addressed by the second reading <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span>. Week 6 covers precision, recall, F1, thresholds, and class weighting in more detail, including how unequal error costs affect evaluation. For now, focus on recognizing the problem.</p>
 <section id="the-four-cells" class="level4" data-number="3.4.5.1">
 <h4 data-number="3.4.5.1" class="anchored" data-anchor-id="the-four-cells"><span class="header-section-number">3.4.5.1</span> The four cells</h4>
 <p>The table is a <strong>confusion matrix</strong>. To name its cells, we first choose the <strong>positive</strong> class. Here it is war onset; this is an analyst’s choice rather than a property of the data.</p>
@@ -921,7 +921,7 @@ Predicted no_war  war
 <section id="prediction-forecasting-and-early-warning" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="prediction-forecasting-and-early-warning"><span class="header-section-number">3.5</span> Prediction, forecasting, and early warning</h2>
 <p>Week 1 distinguished prediction from forecasting. So far we have predicted country-years randomly held out from the same historical period as the training data. We have not forecast future events.</p>
-<p>The third reading describes ViEWS <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>, which issues monthly forecasts of political violence before the target months occur. This requires a different evaluation setup.</p>
+<p>The third reading describes ViEWS <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span>, which issues monthly forecasts of political violence before the target months occur. This requires a different evaluation setup.</p>
 <p>For forecasting, we need to split by time. Training on 1995 and 1999 to predict 1997 gives the model information from after the target year. Training up to a date and testing beyond it better reflects the information available when forecasting. Looking ahead can make a model appear more successful than it would be in practice.</p>
 <p>The country-year structure introduces another issue. Sudan in 1996 is related to Sudan in 1995, so putting one in a test fold and the other in training can let closely related information cross the split. Standard cross-validation treats observations as interchangeable, which does not fit this structure. We return to the problem and possible responses in Week 6.</p>
 </section>
@@ -935,14 +935,14 @@ Predicted no_war  war
 </section>
 <section id="reading" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="reading"><span class="header-section-number">3.7</span> Reading</h2>
-<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
+<p>Fearon, J. D., and Laitin, D. D. 2003. “Ethnicity, Insurgency, and Civil War.” <em>American Political Science Review</em> 97(1): 75–90. <span class="citation" data-cites="fearon2003">(<a href="../references.html#ref-fearon2003" role="doc-biblioref">Fearon and Laitin 2003</a>)</span></p>
 <p>Read this article for its explanation of civil war and the specification behind our data. Its authors seek to explain onset, whereas we use the data for prediction. Keep that difference in mind as you compare their analysis with ours.</p>
-<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
+<p>Muchlinski, D., Siroky, D., He, J., and Kocher, M. 2016. “Comparing Random Forest with Logistic Regression for Predicting Class-Imbalanced Civil War Onset Data.” <em>Political Analysis</em> 24(1): 87–103. <span class="citation" data-cites="muchlinski2016">(<a href="../references.html#ref-muchlinski2016" role="doc-biblioref">Muchlinski et al. 2016</a>)</span></p>
 <p>Focus on the treatment of rare outcomes rather than the implementation. If time permits, read the critical exchange it prompted as well. It raises useful questions about what model-performance comparisons can establish.</p>
-<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
+<p>Hegre, H., et al.&nbsp;2019. “ViEWS: A Political Violence Early-Warning System.” <em>Journal of Peace Research</em> 56(2): 155–174. <span class="citation" data-cites="hegre2019">(<a href="../references.html#ref-hegre2019" role="doc-biblioref"><span class="nocase">Hegre et al.</span> 2019</a>)</span></p>
 <p>Read this as an account of an early-warning system in use. Pay particular attention to how the forecasts should be interpreted and who is expected to use them.</p>
 <p><strong>Recommended, not required.</strong></p>
-<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
+<p>Pinckney, J., and RezaeeDaryakenari, B. 2022. “When the Levee Breaks: A Forecasting Model of Violent and Nonviolent Dissent.” <em>International Interactions</em> 48(5): 997–1026. <span class="citation" data-cites="pinckney2022">(<a href="../references.html#ref-pinckney2022" role="doc-biblioref">Pinckney and RezaeeDaryakenari 2022</a>)</span></p>
 <p>This article forecasts armed and unarmed conflict at the country-year level using eight algorithms and five forecasting ensembles. Compare its ensembles with our forest: both combine predictions from models whose errors may differ. Also consider how including nonviolent mobilization changes the task, since unarmed uprisings are less rare than civil war and their measurement presents different difficulties.</p>
 </section>
 <section id="before-the-workshop" class="level2" data-number="3.8">
@@ -962,7 +962,7 @@ Predicted no_war  war
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-fearon2003" class="csl-entry" role="listitem">
 Fearon, James D., and David D. Laitin. 2003. <span>“Ethnicity, Insurgency, and Civil War.”</span> <em>American Political Science Review</em> 97 (1): 75–90. <a href="https://doi.org/10.1017/S0003055403000534">https://doi.org/10.1017/S0003055403000534</a>.
 </div>
