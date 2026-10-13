@@ -4,4 +4,10 @@
 
 ## Guest lecture by Dr. Matthew DiGiuseppe.
 
+## What Are Large Reasoning Models?
+
+[**Open the visual story**](lrm-story.html){target="_blank"}
+
+A short, self-contained walkthrough of what a reasoning model does differently from the language models we called from R in Week 5, and what that difference does to what you are able to verify. Read it before the session.
+
 ## Discussing the working paper "Hybrid Intelligence and Crisis Detection" by Babak RezaeeDaryakenari and Arjen Boin.
