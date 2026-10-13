@@ -90,7 +90,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../handouts/w07-final-project.html" rel="next">
+<link href="../handouts/w07-AI-political-object.html" rel="next">
 <link href="../handouts/w05-llm.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -295,8 +295,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../handouts/w07-final-project.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span></a>
+  <a href="../handouts/w07-AI-political-object.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">AI as a political object</span></span></a>
   </div>
 </li>
       </ul>
@@ -1051,7 +1051,7 @@ all_three_said other immigration
 <p>We have calculated several agreement rates. They address reliability, which needs to be distinguished from accuracy.</p>
 <p>Agreement across prompts, models, providers, or repeated runs tells us how <strong>reproducible</strong> the measurement is under those conditions. It does not establish that the result is <strong>right</strong>. Models may agree because they share training material or assumptions, including shared errors. Our three-model comparison illustrates this possibility.</p>
 <p>In this exercise, human labels provide the accuracy benchmark. The reliability checks add useful information but do not replace that comparison.</p>
-<p>Human labels also need scrutiny. One coder applied one codebook, including four rules developed for difficult cases. Another coder might disagree. State the result precisely: the model agrees 95 percent of the time with one person’s application of a coding scheme to 181 tweets. Lowe and Benoit <span class="citation" data-cites="lowe2013">(<a href="#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span> discuss what is required when human judgment serves as the benchmark.</p>
+<p>Human labels also need scrutiny. One coder applied one codebook, including four rules developed for difficult cases. Another coder might disagree. State the result precisely: the model agrees 95 percent of the time with one person’s application of a coding scheme to 181 tweets. Lowe and Benoit <span class="citation" data-cites="lowe2013">(<a href="../references.html#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span> discuss what is required when human judgment serves as the benchmark.</p>
 <p>Part III asks whether that coding scheme measures our intended concept and whether the evaluation was properly separated from model development.</p>
 </section>
 </section>
@@ -1150,7 +1150,7 @@ all_three_said other immigration
 <p>For these 181 tweets, we can ask how much larger the immigration share was in the first half of 2019 than in the second. The first half included the wall-funding shutdown and national emergency declaration; impeachment became more prominent later.</p>
 <p>Split the tweets by half-year and calculate the share difference using each set of labels. The hand labels give roughly 36 percentage points, the model labels roughly 30, and the reworded prompt roughly 27. Despite 95 percent agreement, the model labels understate this substantive difference by between a sixth and a quarter.</p>
 <p>The model over-flags in both halves. When genuine immigration tweets are scarce in the second half, false positives form a larger share of the immigration total and inflate that estimate more. This narrows the estimated gap between the halves, pulling it toward zero.</p>
-<p>This systematic error does not disappear simply by labeling a larger corpus. More observations can produce a more precise biased estimate, and ordinary output or standard errors need not reveal it. Egami and colleagues <span class="citation" data-cites="egami2023">(<a href="#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span> demonstrate downstream bias with labels of 80 to 90 percent accuracy. Our example shows attenuation even at 95 percent agreement.</p>
+<p>This systematic error does not disappear simply by labeling a larger corpus. More observations can produce a more precise biased estimate, and ordinary output or standard errors need not reveal it. Egami and colleagues <span class="citation" data-cites="egami2023">(<a href="../references.html#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span> demonstrate downstream bias with labels of 80 to 90 percent accuracy. Our example shows attenuation even at 95 percent agreement.</p>
 <section id="what-to-do-about-it" class="level3" data-number="6.4.1">
 <h3 data-number="6.4.1" class="anchored" data-anchor-id="what-to-do-about-it"><span class="header-section-number">6.4.1</span> What to do about it</h3>
 <p>Their statistical correction goes beyond this course. But the practice needed to support correction does not: preserve a hand-coded validation sample, as required for Type B projects.</p>
@@ -1167,11 +1167,11 @@ all_three_said other immigration
 </section>
 <section id="reading" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="reading"><span class="header-section-number">6.6</span> Reading</h2>
-<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="#ref-grimmer2013" role="doc-biblioref">Grimmer and Stewart 2013</a>)</span></p>
+<p>Grimmer, J., and Stewart, B. M. 2013. “Text as Data: The Promise and Pitfalls of Automatic Content Analysis Methods for Political Texts.” <em>Political Analysis</em> 21(3): 267–297. <span class="citation" data-cites="grimmer2013">(<a href="../references.html#ref-grimmer2013" role="doc-biblioref">Grimmer and Stewart 2013</a>)</span></p>
 <p>Return to the article’s argument that validation is essential and requires more than selecting a metric. Compare its recommendations with what we did in Part II. Which did our procedure satisfy?</p>
-<p>Lowe, W., and Benoit, K. 2013. “Validating Estimates of Latent Traits from Textual Data Using Human Judgment as a Benchmark.” <em>Political Analysis</em> 21(3): 298–313. <span class="citation" data-cites="lowe2013">(<a href="#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span></p>
+<p>Lowe, W., and Benoit, K. 2013. “Validating Estimates of Latent Traits from Textual Data Using Human Judgment as a Benchmark.” <em>Political Analysis</em> 21(3): 298–313. <span class="citation" data-cites="lowe2013">(<a href="../references.html#ref-lowe2013" role="doc-biblioref">Lowe and Benoit 2013</a>)</span></p>
 <p>This article appeared immediately after Grimmer and Stewart in the same issue. It examines human judgment as a benchmark, as we used it in Part II. Focus on how variability in that judgment should be modeled rather than assumed away.</p>
-<p>Egami, N., Hinck, M., Stewart, B. M., and Wei, H. 2023. “Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models.” <em>Advances in Neural Information Processing Systems</em> 36. <span class="citation" data-cites="egami2023">(<a href="#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span></p>
+<p>Egami, N., Hinck, M., Stewart, B. M., and Wei, H. 2023. “Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models.” <em>Advances in Neural Information Processing Systems</em> 36. <span class="citation" data-cites="egami2023">(<a href="../references.html#ref-egami2023" role="doc-biblioref">Egami et al. 2023</a>)</span></p>
 <p>This is the source for Part IV. The estimator is beyond our scope, but read the opening demonstration of how imperfect labels affect inference. It is particularly relevant if your project uses model-generated labels.</p>
 </section>
 <section id="before-the-workshop" class="level2" data-number="6.7">
@@ -1193,7 +1193,7 @@ all_three_said other immigration
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-egami2023" class="csl-entry" role="listitem">
 Egami, Naoki, Musashi Hinck, Brandon M. Stewart, and Hanying Wei. 2023. <span>“Using Imperfect Surrogates for Downstream Inference: Design-Based Supervised Learning for Social Science Applications of Large Language Models.”</span> <em>Advances in Neural Information Processing Systems</em> 36.
 </div>
@@ -1630,8 +1630,8 @@ window._ojs.runtime.interpretFromScriptTags();
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../handouts/w07-final-project.html" class="pagination-link" aria-label="Final Project">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Final Project</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../handouts/w07-AI-political-object.html" class="pagination-link" aria-label="AI as a political object">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">AI as a political object</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
