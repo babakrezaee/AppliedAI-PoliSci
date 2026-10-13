@@ -27,7 +27,7 @@ book:
         - handouts/w04-text-as-data.qmd
         - handouts/w05-llm.qmd
         - handouts/w06-evaluation.qmd
-        - handouts/w07-final-project.qmd
+        - handouts/w07-AI-political-object.qmd
     - references.qmd
 
 format:
